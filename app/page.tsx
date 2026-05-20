@@ -136,43 +136,43 @@ function IdentityBanner() {
 // 智能问答主卡片 - 深蓝渐变版
 function MainFeatureCard() {
   return (
-    <div className="relative mb-5 overflow-hidden rounded-2xl bg-gradient-to-br from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb] p-6">
+    <div className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb] p-7">
       {/* 背景装饰光晕 */}
       <div className="absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-cyan-400/20 blur-2xl" />
       <div className="absolute right-20 top-0 h-24 w-24 rounded-full bg-blue-300/10 blur-2xl" />
 
       {/* 右侧螃蟹Logo装饰 - 倾斜半透明效果 */}
-      <div className="absolute -right-6 top-1/2 -translate-y-1/2">
+      <div className="absolute -right-8 top-1/3 -translate-y-1/2">
         <div className="relative">
           {/* 发光底座 */}
-          <div className="absolute -bottom-4 left-1/2 h-5 w-32 -translate-x-1/2 rounded-full bg-cyan-400/25 blur-xl" />
-          {/* 倾斜的螃蟹logo - 向右倾斜60度 */}
+          <div className="absolute -bottom-6 left-1/2 h-6 w-36 -translate-x-1/2 rounded-full bg-cyan-400/20 blur-xl" />
+          {/* 倾斜的螃蟹logo - 向右倾斜 */}
           <div className="rotate-[48deg] transform">
             <Image
               src="/crab-logo.png"
               alt="AI"
-              width={150}
-              height={150}
-              className="object-contain opacity-70 brightness-0 invert drop-shadow-2xl"
+              width={180}
+              height={180}
+              className="object-contain opacity-60 brightness-0 invert drop-shadow-2xl"
             />
           </div>
         </div>
       </div>
 
       {/* 左侧内容 */}
-      <div className="relative z-10 max-w-[60%]">
-        <h2 className="mb-1.5 text-2xl font-bold text-white">智能问答</h2>
+      <div className="relative z-10 max-w-[58%]">
+        <h2 className="mb-2 text-2xl font-bold text-white">智能问答</h2>
         <p className="mb-3 text-sm text-white/80">注册问题的深层问答</p>
 
         {/* 出处说明 */}
-        <p className="mb-5 text-xs text-white/60">
+        <p className="mb-6 text-xs text-white/60">
           基于行业官方数据库，每条回答有出处
         </p>
 
         {/* 立即提问按钮 */}
         <Link
           href="/chat"
-          className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-[#1e40af] transition-all hover:bg-white/90 active:scale-[0.98]"
+          className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-sm font-medium text-[#1e40af] transition-all hover:bg-white/90 active:scale-[0.98]"
         >
           立即提问
           <ChevronRight className="h-4 w-4" />
@@ -187,24 +187,24 @@ function ScenarioGuideSection() {
   return (
     <section>
       {/* 标题 */}
-      <div className="mb-3 flex items-center gap-2">
-        <div className="h-4 w-1 rounded-full bg-primary" />
-        <h3 className="text-sm font-semibold text-foreground">
+      <div className="mb-4 flex items-center gap-2">
+        <div className="h-5 w-1.5 rounded-full bg-primary" />
+        <h3 className="text-base font-semibold text-foreground">
           为你推荐场景指南
         </h3>
       </div>
 
-      {/* 2x2 场景卡片网格 - 紧凑横向布局 */}
-      <div className="grid grid-cols-2 gap-2.5">
+      {/* 2x2 场景卡片网格 */}
+      <div className="grid grid-cols-2 gap-3">
         {scenarioGuides.map((guide) => (
           <Link
             key={guide.id}
             href={`/chat?q=${encodeURIComponent(guide.hint)}`}
-            className="group flex items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-3 transition-all hover:border-primary/30 hover:shadow-soft active:scale-[0.98]"
+            className="group flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-4 transition-all hover:border-primary/30 hover:shadow-soft active:scale-[0.98]"
           >
             {/* 图标 */}
-            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
-              <guide.icon className="h-4 w-4 text-primary" />
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10">
+              <guide.icon className="h-5 w-5 text-primary" />
             </div>
 
             {/* 标题 */}
