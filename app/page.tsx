@@ -228,10 +228,12 @@ function FeedbackButton() {
   return (
     <Link
       href="/feedback"
-      className="fixed right-4 bottom-24 z-40 flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-lg transition-all hover:bg-primary/90 active:scale-95"
+      className="fixed right-4 bottom-24 z-40 flex flex-col items-center gap-1 transition-all active:scale-95"
     >
-      <MessageCircle className="h-4 w-4" />
-      意见反馈
+      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg">
+        <MessageCircle className="h-5 w-5" />
+      </div>
+      <span className="text-xs text-muted-foreground">意见反馈</span>
     </Link>
   )
 }
