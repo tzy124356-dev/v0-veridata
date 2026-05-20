@@ -23,29 +23,29 @@ const scenarioGuides = [
   {
     id: "register",
     icon: FileText,
-    title: "注册申报准备中",
-    description: "梳理注册路径与资料要点，高效准备申报材料",
+    title: "注册申报准备",
+    description: "梳理路径，高效准备",
     hint: "要申报了，不知道从哪里开始",
   },
   {
     id: "supplement",
     icon: Bell,
     title: "收到发补通知",
-    description: "逐项解析发补意见，提供回应思路与参考",
+    description: "解析意见，回应参考",
     hint: "收到发补通知了，怎么办",
   },
   {
     id: "classify",
     icon: HelpCircle,
-    title: "产品分类界定困惑",
-    description: "多维度分析判定依据，明确产品管理类别",
+    title: "分类界定困惑",
+    description: "分析依据，明确类别",
     hint: "产品分类搞不清楚，帮我判断一下",
   },
   {
     id: "guideline",
     icon: Search,
-    title: "技术指导原则查询",
-    description: "快速检索权威指导文件，把握技术要求要点",
+    title: "指导原则查询",
+    description: "检索文件，把握要点",
     hint: "找不到对应的技术指导原则",
   },
 ]
@@ -200,20 +200,20 @@ function ScenarioGuideSection() {
           <Link
             key={guide.id}
             href={`/chat?q=${encodeURIComponent(guide.hint)}`}
-            className="group rounded-2xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:shadow-soft active:scale-[0.98]"
+            className="group rounded-xl border border-border bg-card p-3.5 transition-all hover:border-primary/30 hover:shadow-soft active:scale-[0.98]"
           >
             {/* 图标 */}
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-              <guide.icon className="h-5 w-5 text-primary" />
+            <div className="mb-2.5 flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+              <guide.icon className="h-4.5 w-4.5 text-primary" />
             </div>
 
             {/* 标题 */}
-            <h4 className="mb-1.5 text-sm font-semibold text-foreground">
+            <h4 className="mb-1 text-sm font-medium text-foreground">
               {guide.title}
             </h4>
 
             {/* 描述 */}
-            <p className="text-xs leading-relaxed text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {guide.description}
             </p>
           </Link>
