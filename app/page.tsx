@@ -70,44 +70,43 @@ export default function HomePage() {
 function HomeContent() {
   return (
     <div className="min-h-full">
-      {/* 深蓝渐变头部区域 */}
+      {/* 深蓝渐变头部区域 - 紧凑版 */}
       <div className="relative overflow-hidden bg-gradient-to-br from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb]">
         {/* 背景装饰 */}
         <div className="absolute inset-0 opacity-30">
-          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-400/20 blur-3xl" />
-          <div className="absolute -left-10 top-40 h-48 w-48 rounded-full bg-indigo-400/20 blur-3xl" />
+          <div className="absolute -right-20 -top-20 h-40 w-40 rounded-full bg-blue-400/20 blur-3xl" />
         </div>
 
-        <div className="relative px-5 pt-12 pb-10">
+        <div className="relative px-5 pt-10 pb-6">
           {/* 品牌区域 */}
-          <header className="mb-6 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+          <header className="mb-4 flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
               <svg
                 viewBox="0 0 24 24"
-                className="h-6 w-6 text-white"
+                className="h-5 w-5 text-white"
                 fill="currentColor"
               >
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-white">
+              <h1 className="text-base font-semibold text-white">
                 械研 VERIDATA
               </h1>
-              <p className="text-xs text-white/70">械研，让AI有据而行</p>
+              <p className="text-[11px] text-white/70">械研，让AI有据而行</p>
             </div>
           </header>
 
           {/* 身份选择横幅 */}
           <IdentityBanner />
-
-          {/* 智能问答主卡片 */}
-          <MainFeatureCard />
         </div>
       </div>
 
       {/* 白色内容区域 - 带圆弧顶部 */}
-      <div className="-mt-4 rounded-t-3xl bg-background px-5 pt-6 pb-6">
+      <div className="-mt-3 rounded-t-3xl bg-background px-5 pt-5 pb-6">
+        {/* 智能问答主卡片 */}
+        <MainFeatureCard />
+        
         {/* 场景指南 */}
         <ScenarioGuideSection />
       </div>
@@ -135,36 +134,32 @@ function IdentityBanner() {
   )
 }
 
-// 智能问答主卡片
+// 智能问答主卡片 - 放在白色区域中
 function MainFeatureCard() {
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1e3a8a]/80 to-[#1e40af]/60 p-5 backdrop-blur-sm">
+    <div className="relative mb-5 overflow-hidden rounded-2xl bg-gradient-to-br from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb] p-5">
       {/* 背景装饰光晕 */}
-      <div className="absolute -right-8 -bottom-8 h-40 w-40 rounded-full bg-blue-400/20 blur-2xl" />
+      <div className="absolute -right-8 -bottom-8 h-32 w-32 rounded-full bg-cyan-400/20 blur-2xl" />
 
       {/* 右侧AI图标装饰 */}
-      <div className="absolute right-4 top-1/2 -translate-y-1/2">
+      <div className="absolute right-3 top-1/2 -translate-y-1/2">
         <div className="relative">
-          {/* 发光底座 */}
-          <div className="absolute -bottom-2 left-1/2 h-3 w-20 -translate-x-1/2 rounded-full bg-cyan-400/40 blur-md" />
-          {/* AI机器人图标 */}
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400/30 to-blue-500/30 backdrop-blur-sm">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-300/40 to-blue-400/40">
-              <MessageSquare className="h-7 w-7 text-white" />
-            </div>
+          <div className="absolute -bottom-1 left-1/2 h-2 w-14 -translate-x-1/2 rounded-full bg-cyan-400/40 blur-md" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400/30 to-blue-500/30 backdrop-blur-sm">
+            <MessageSquare className="h-6 w-6 text-white" />
           </div>
         </div>
       </div>
 
       {/* 左侧内容 */}
-      <div className="relative z-10 max-w-[60%]">
-        <h2 className="mb-1 text-2xl font-bold text-white">智能问答</h2>
-        <p className="mb-4 text-sm text-white/80">注册问题的深层问答</p>
+      <div className="relative z-10 max-w-[65%]">
+        <h2 className="mb-1 text-xl font-bold text-white">智能问答</h2>
+        <p className="mb-2 text-xs text-white/80">注册问题的深层问答</p>
 
         {/* 出处说明 */}
-        <div className="mb-5 flex items-center gap-2">
-          <CheckCircle2 className="h-4 w-4 text-cyan-300" />
-          <span className="text-xs text-white/70">
+        <div className="mb-3 flex items-start gap-1.5">
+          <CheckCircle2 className="mt-0.5 h-3 w-3 flex-shrink-0 text-cyan-300" />
+          <span className="text-[11px] leading-tight text-white/70">
             基于行业官方数据库，每条回答有出处
           </span>
         </div>
@@ -172,7 +167,7 @@ function MainFeatureCard() {
         {/* 立即提问按钮 */}
         <Link
           href="/chat"
-          className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-[#1e40af] transition-all hover:bg-white/90 active:scale-[0.98]"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-white px-4 py-2 text-sm font-medium text-[#1e40af] transition-all hover:bg-white/90 active:scale-[0.98]"
         >
           立即提问
           <ChevronRight className="h-4 w-4" />
