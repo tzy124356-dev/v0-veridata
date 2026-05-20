@@ -78,7 +78,7 @@ function HomeContent() {
           <div className="absolute -left-10 top-40 h-48 w-48 rounded-full bg-indigo-400/20 blur-3xl" />
         </div>
 
-        <div className="relative px-5 pt-12 pb-6">
+        <div className="relative px-5 pt-12 pb-10">
           {/* 品牌区域 */}
           <header className="mb-6 flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
@@ -106,8 +106,8 @@ function HomeContent() {
         </div>
       </div>
 
-      {/* 白色内容区域 */}
-      <div className="bg-background px-5 py-6">
+      {/* 白色内容区域 - 带圆弧顶部 */}
+      <div className="-mt-4 rounded-t-3xl bg-background px-5 pt-6 pb-6">
         {/* 场景指南 */}
         <ScenarioGuideSection />
       </div>
