@@ -79,28 +79,31 @@ function HomeContent() {
         <div className="relative px-5 pt-10 pb-6">
           {/* 品牌区域 */}
           <header className="mb-4 flex items-center gap-3">
-            {/* 自定义Logo - 抽象科技图形 */}
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-              <svg viewBox="0 0 32 32" className="h-6 w-6" fill="none">
-                <path
-                  d="M16 4L4 10v12l12 6 12-6V10L16 4z"
-                  fill="white"
-                  fillOpacity="0.9"
-                />
-                <path
-                  d="M16 4L4 10l12 6 12-6-12-6z"
-                  fill="white"
-                />
-                <path
-                  d="M4 10v12l12 6V16L4 10z"
-                  fill="white"
-                  fillOpacity="0.7"
-                />
-                <path
-                  d="M28 10v12l-12 6V16l12-6z"
-                  fill="white"
-                  fillOpacity="0.5"
-                />
+            {/* 像素风格螃蟹Logo */}
+            <div className="flex h-10 w-10 items-center justify-center">
+              <svg viewBox="0 0 24 20" className="h-8 w-9" fill="white">
+                {/* 左钳子 */}
+                <rect x="0" y="2" width="2" height="2" />
+                <rect x="2" y="0" width="2" height="2" />
+                <rect x="2" y="4" width="2" height="2" />
+                <rect x="4" y="2" width="2" height="4" />
+                <rect x="4" y="6" width="2" height="2" />
+                <rect x="6" y="6" width="2" height="2" />
+                {/* 右钳子 */}
+                <rect x="22" y="2" width="2" height="2" />
+                <rect x="20" y="0" width="2" height="2" />
+                <rect x="20" y="4" width="2" height="2" />
+                <rect x="18" y="2" width="2" height="4" />
+                <rect x="18" y="6" width="2" height="2" />
+                <rect x="16" y="6" width="2" height="2" />
+                {/* 身体 */}
+                <rect x="6" y="8" width="12" height="2" />
+                <rect x="4" y="10" width="16" height="6" />
+                <rect x="6" y="16" width="4" height="2" />
+                <rect x="14" y="16" width="4" height="2" />
+                {/* 眼睛（镂空） */}
+                <rect x="7" y="11" width="2" height="4" fill="#1d4ed8" />
+                <rect x="15" y="11" width="2" height="4" fill="#1d4ed8" />
               </svg>
             </div>
             <div>
