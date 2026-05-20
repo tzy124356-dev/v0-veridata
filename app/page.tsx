@@ -103,8 +103,19 @@ function HomeContent() {
 
       {/* 白色内容区域 - 带圆弧顶部 */}
       <div className="-mt-3 rounded-t-3xl bg-background px-5 pt-5 pb-6">
-        {/* 智能问答主卡片 */}
-        <MainFeatureCard />
+        {/* AI智能体区块 */}
+        <section className="mb-6">
+          {/* 标题 */}
+          <div className="mb-4 flex items-center gap-2">
+            <div className="h-5 w-1.5 rounded-full bg-primary" />
+            <h3 className="text-base font-semibold text-foreground">
+              AI 智能体
+            </h3>
+          </div>
+          
+          {/* 智能问答主卡片 */}
+          <MainFeatureCard />
+        </section>
         
         {/* 场景指南 */}
         <ScenarioGuideSection />
@@ -136,7 +147,7 @@ function IdentityBanner() {
 // 智能问答主卡片 - 深蓝渐变版
 function MainFeatureCard() {
   return (
-    <div className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb] p-7">
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb] p-7">
       {/* 背景装饰光晕 */}
       <div className="absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-cyan-400/20 blur-2xl" />
       <div className="absolute right-20 top-0 h-24 w-24 rounded-full bg-blue-300/10 blur-2xl" />
