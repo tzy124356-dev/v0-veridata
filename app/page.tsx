@@ -79,7 +79,7 @@ function HomeContent() {
 
         <div className="relative px-5 pt-10 pb-6">
           {/* 品牌区域 */}
-          <header className="mb-4 flex items-center gap-3">
+          <header className="mb-4 flex items-center gap-1">
             {/* 像素风格螃蟹Logo */}
             <Image
               src="/crab-logo.png"
