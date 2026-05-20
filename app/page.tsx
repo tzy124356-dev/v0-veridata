@@ -14,6 +14,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import Image from "next/image"
 
 // 底部导航Tab类型
 type TabType = "chat" | "vault" | "profile"
@@ -80,14 +81,14 @@ function HomeContent() {
         <div className="relative px-5 pt-10 pb-6">
           {/* 品牌区域 */}
           <header className="mb-4 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-              <svg
-                viewBox="0 0 24 24"
-                className="h-5 w-5 text-white"
-                fill="currentColor"
-              >
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+              <Image
+                src="/logo.png"
+                alt="械研 VERIDATA"
+                width={28}
+                height={28}
+                className="object-contain"
+              />
             </div>
             <div>
               <h1 className="text-base font-semibold text-white">
