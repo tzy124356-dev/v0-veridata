@@ -252,7 +252,6 @@ function FeedbackButton() {
     const deltaX = clientX - startPos.current.x
     const deltaY = clientY - startPos.current.y
     
-    // 判断是否有足够的移动距离
     if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
       setHasMoved(true)
     }
@@ -260,7 +259,6 @@ function FeedbackButton() {
     const newX = startOffset.current.x + deltaX
     const newY = startOffset.current.y + deltaY
     
-    // 限制在屏幕范围内
     const maxX = window.innerWidth - 60
     const maxY = window.innerHeight - 180
     
