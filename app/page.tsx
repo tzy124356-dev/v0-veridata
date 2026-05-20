@@ -223,7 +223,7 @@ function FeedbackButton() {
   return (
     <Link
       href="/feedback"
-      className="fixed right-4 bottom-24 z-40 flex h-12 w-12 flex-col items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all active:scale-95"
+      className="fixed right-4 bottom-32 z-40 flex h-12 w-12 flex-col items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all active:scale-95"
     >
       <MessageCircle className="h-5 w-5" />
       <span className="mt-0.5 text-[10px] leading-none">反馈</span>
