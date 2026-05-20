@@ -79,13 +79,13 @@ function HomeContent() {
 
         <div className="relative px-5 pt-10 pb-6">
           {/* 品牌区域 */}
-          <header className="mb-4 flex items-center gap-2.5">
+          <header className="mb-4 flex items-center gap-3">
             {/* 像素风格螃蟹Logo */}
             <Image
               src="/crab-logo.png"
               alt="械研 VERIDATA"
-              width={32}
-              height={32}
+              width={50}
+              height={50}
               className="object-contain brightness-0 invert"
             />
             <div>
