@@ -142,18 +142,18 @@ function MainFeatureCard() {
       <div className="absolute right-20 top-0 h-24 w-24 rounded-full bg-blue-300/10 blur-2xl" />
 
       {/* 右侧螃蟹Logo装饰 - 倾斜半透明效果 */}
-      <div className="absolute right-2 top-1/2 -translate-y-1/2">
+      <div className="absolute -right-4 top-1/2 -translate-y-1/2">
         <div className="relative">
           {/* 发光底座 */}
-          <div className="absolute -bottom-2 left-1/2 h-3 w-20 -translate-x-1/2 rounded-full bg-cyan-400/40 blur-md" />
+          <div className="absolute -bottom-3 left-1/2 h-4 w-28 -translate-x-1/2 rounded-full bg-cyan-400/30 blur-lg" />
           {/* 倾斜的螃蟹logo */}
-          <div className="rotate-[-15deg] transform">
+          <div className="rotate-[-12deg] transform">
             <Image
               src="/crab-logo.png"
               alt="AI"
-              width={80}
-              height={80}
-              className="object-contain opacity-90 brightness-0 invert drop-shadow-lg"
+              width={120}
+              height={120}
+              className="object-contain opacity-80 brightness-0 invert drop-shadow-2xl"
             />
           </div>
         </div>
