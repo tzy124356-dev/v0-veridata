@@ -79,31 +79,46 @@ function HomeContent() {
         <div className="relative px-5 pt-10 pb-6">
           {/* 品牌区域 */}
           <header className="mb-4 flex items-center gap-3">
-            {/* 像素风格螃蟹Logo */}
+            {/* 像素风格螃蟹Logo - 白色版本 */}
             <div className="flex h-10 w-10 items-center justify-center">
-              <svg viewBox="0 0 24 20" className="h-8 w-9" fill="white">
-                {/* 左钳子 */}
-                <rect x="0" y="2" width="2" height="2" />
-                <rect x="2" y="0" width="2" height="2" />
-                <rect x="2" y="4" width="2" height="2" />
-                <rect x="4" y="2" width="2" height="4" />
-                <rect x="4" y="6" width="2" height="2" />
-                <rect x="6" y="6" width="2" height="2" />
-                {/* 右钳子 */}
-                <rect x="22" y="2" width="2" height="2" />
-                <rect x="20" y="0" width="2" height="2" />
-                <rect x="20" y="4" width="2" height="2" />
-                <rect x="18" y="2" width="2" height="4" />
-                <rect x="18" y="6" width="2" height="2" />
-                <rect x="16" y="6" width="2" height="2" />
-                {/* 身体 */}
-                <rect x="6" y="8" width="12" height="2" />
-                <rect x="4" y="10" width="16" height="6" />
-                <rect x="6" y="16" width="4" height="2" />
-                <rect x="14" y="16" width="4" height="2" />
-                {/* 眼睛（镂空） */}
-                <rect x="7" y="11" width="2" height="4" fill="#1d4ed8" />
-                <rect x="15" y="11" width="2" height="4" fill="#1d4ed8" />
+              <svg viewBox="0 0 32 28" className="h-8 w-9" fill="white">
+                {/* 左钳子 - 向上弯曲的L形 */}
+                <rect x="0" y="6" width="2" height="2" />
+                <rect x="0" y="4" width="2" height="2" />
+                <rect x="2" y="2" width="2" height="2" />
+                <rect x="4" y="0" width="2" height="2" />
+                <rect x="4" y="2" width="2" height="2" />
+                <rect x="2" y="4" width="2" height="4" />
+                <rect x="4" y="6" width="2" height="4" />
+                <rect x="6" y="8" width="2" height="4" />
+                
+                {/* 右钳子 - 向上弯曲的L形（镜像） */}
+                <rect x="30" y="6" width="2" height="2" />
+                <rect x="30" y="4" width="2" height="2" />
+                <rect x="28" y="2" width="2" height="2" />
+                <rect x="26" y="0" width="2" height="2" />
+                <rect x="26" y="2" width="2" height="2" />
+                <rect x="28" y="4" width="2" height="4" />
+                <rect x="26" y="6" width="2" height="4" />
+                <rect x="24" y="8" width="2" height="4" />
+                
+                {/* 身体顶部 */}
+                <rect x="10" y="8" width="12" height="2" />
+                
+                {/* 身体主体 */}
+                <rect x="8" y="10" width="16" height="10" />
+                
+                {/* 眼睛（镂空 - 用背景色填充） */}
+                <rect x="11" y="12" width="3" height="5" fill="#1d4ed8" />
+                <rect x="18" y="12" width="3" height="5" fill="#1d4ed8" />
+                
+                {/* 左腿 */}
+                <rect x="8" y="20" width="3" height="3" />
+                <rect x="12" y="20" width="2" height="4" />
+                
+                {/* 右腿 */}
+                <rect x="18" y="20" width="2" height="4" />
+                <rect x="21" y="20" width="3" height="3" />
               </svg>
             </div>
             <div>
