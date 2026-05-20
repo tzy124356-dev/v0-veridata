@@ -86,7 +86,7 @@ function HomeContent() {
               alt="械研 VERIDATA"
               width={100}
               height={100}
-              className="-mr-3 object-contain brightness-0 invert"
+              className="-ml-5 -mr-5 object-contain brightness-0 invert"
             />
             <div>
               <h1 className="text-base font-semibold text-white">
