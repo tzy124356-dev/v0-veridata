@@ -14,6 +14,8 @@ import {
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { IdentityModal } from "@/components/identity-modal"
+import { FeedbackModal } from "@/components/feedback-modal"
 
 // 底部导航Tab类型
 type TabType = "chat" | "vault" | "profile"
@@ -37,17 +39,30 @@ const knowledgeStats = [
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<TabType>("chat")
   const [showIdentityBanner, setShowIdentityBanner] = useState(true)
+  const [showIdentityModal, setShowIdentityModal] = useState(false)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
   const router = useRouter()
 
   // 处理Tab切换
   const handleTabChange = (tab: TabType) => {
     if (tab === "vault") {
       router.push("/vault")
-    } else if (tab === "chat") {
-      setActiveTab("chat")
+    } else if (tab === "profile") {
+      router.push("/profile")
     } else {
-      setActiveTab(tab)
+      setActiveTab("chat")
     }
+  }
+
+  // 处理身份信息提交
+  const handleIdentitySubmit = (data: { position: string; fields: string[] }) => {
+    console.log("Identity submitted:", data)
+    setShowIdentityBanner(false)
+  }
+
+  // 处理反馈提交
+  const handleFeedbackSubmit = (data: { type: string; content: string }) => {
+    console.log("Feedback submitted:", data)
   }
 
   return (
@@ -57,17 +72,30 @@ export default function HomePage() {
         {activeTab === "chat" && (
           <HomeContent
             showIdentityBanner={showIdentityBanner}
-            onDismissIdentity={() => setShowIdentityBanner(false)}
+            onOpenIdentityModal={() => setShowIdentityModal(true)}
           />
         )}
-        {activeTab === "profile" && <ProfileContent />}
       </main>
 
       {/* 底部导航 */}
       <BottomNavigation activeTab={activeTab} onTabChange={handleTabChange} />
 
       {/* 全局悬浮反馈按钮 */}
-      <FeedbackButton />
+      <FeedbackButton onClick={() => setShowFeedbackModal(true)} />
+
+      {/* 身份选择浮层 */}
+      <IdentityModal
+        isOpen={showIdentityModal}
+        onClose={() => setShowIdentityModal(false)}
+        onSubmit={handleIdentitySubmit}
+      />
+
+      {/* 反馈浮层 */}
+      <FeedbackModal
+        isOpen={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+        onSubmit={handleFeedbackSubmit}
+      />
     </div>
   )
 }
@@ -75,10 +103,10 @@ export default function HomePage() {
 // 首页内容
 function HomeContent({
   showIdentityBanner,
-  onDismissIdentity,
+  onOpenIdentityModal,
 }: {
   showIdentityBanner: boolean
-  onDismissIdentity: () => void
+  onOpenIdentityModal: () => void
 }) {
   return (
     <div className="gradient-deep-blue min-h-full px-5 pt-12 pb-6">
@@ -95,7 +123,7 @@ function HomeContent({
 
       {/* 身份选择横幅 */}
       {showIdentityBanner && (
-        <IdentityBanner onDismiss={onDismissIdentity} />
+        <IdentityBanner onClick={onOpenIdentityModal} />
       )}
 
       {/* 核心入口卡片 */}
@@ -127,10 +155,10 @@ function Logo() {
 }
 
 // 身份选择横幅
-function IdentityBanner({ onDismiss }: { onDismiss: () => void }) {
+function IdentityBanner({ onClick }: { onClick: () => void }) {
   return (
     <button
-      onClick={onDismiss}
+      onClick={onClick}
       className="glass mb-6 flex w-full items-center justify-between rounded-xl px-4 py-3 text-left transition-all hover:bg-secondary/50 active:scale-[0.98]"
     >
       <div className="flex items-center gap-3">
@@ -232,50 +260,6 @@ function KnowledgeBaseInfo() {
   )
 }
 
-// 个人中心内容
-function ProfileContent() {
-  return (
-    <div className="gradient-deep-blue min-h-full px-5 pt-12 pb-6">
-      <header className="mb-6">
-        <h1 className="text-xl font-semibold text-foreground">我的</h1>
-      </header>
-
-      {/* 用户信息 */}
-      <div className="glass mb-6 rounded-xl p-4">
-        <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary">
-            <User className="h-7 w-7 text-muted-foreground" />
-          </div>
-          <div>
-            <p className="font-medium text-foreground">未登录</p>
-            <p className="text-sm text-muted-foreground">点击登录</p>
-          </div>
-        </div>
-      </div>
-
-      {/* 功能列表 */}
-      <div className="glass rounded-xl">
-        {[
-          { icon: FileText, label: "我的收藏" },
-          { icon: MessageSquare, label: "历史问答记录" },
-          { icon: HelpCircle, label: "帮助文档" },
-        ].map((item, index) => (
-          <button
-            key={index}
-            className="flex w-full items-center justify-between border-b border-border/50 px-4 py-3.5 last:border-b-0"
-          >
-            <div className="flex items-center gap-3">
-              <item.icon className="h-5 w-5 text-muted-foreground" />
-              <span className="text-sm text-foreground">{item.label}</span>
-            </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
-
 // 底部导航
 function BottomNavigation({
   activeTab,
@@ -314,9 +298,10 @@ function BottomNavigation({
 }
 
 // 全局反馈按钮
-function FeedbackButton() {
+function FeedbackButton({ onClick }: { onClick: () => void }) {
   return (
     <button
+      onClick={onClick}
       className="glass fixed right-4 bottom-20 z-40 flex h-10 w-10 items-center justify-center rounded-full transition-all hover:bg-secondary/60 active:scale-95"
       aria-label="反馈"
     >
