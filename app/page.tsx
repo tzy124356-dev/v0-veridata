@@ -84,9 +84,9 @@ function HomeContent() {
             <Image
               src="/logo.png"
               alt="械研 VERIDATA"
-              width={36}
-              height={36}
-              className="object-contain mix-blend-lighten brightness-0 invert"
+              width={40}
+              height={40}
+              className="object-contain mix-blend-screen"
             />
             <div>
               <h1 className="text-base font-semibold text-white">
