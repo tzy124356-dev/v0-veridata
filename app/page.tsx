@@ -84,8 +84,8 @@ function HomeContent() {
             <Image
               src="/crab-logo.png"
               alt="械研 VERIDATA"
-              width={60}
-              height={60}
+              width={100}
+              height={100}
               className="object-contain brightness-0 invert"
             />
             <div>
