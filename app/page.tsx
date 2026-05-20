@@ -15,6 +15,8 @@ import {
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import Image from "next/image"
+import { IdentityModal } from "@/components/identity-modal"
+import { FeedbackModal } from "@/components/feedback-modal"
 
 // 底部导航Tab类型
 type TabType = "chat" | "vault" | "profile"
@@ -52,23 +54,50 @@ const scenarioGuides = [
 ]
 
 export default function HomePage() {
+  const [showIdentityModal, setShowIdentityModal] = useState(false)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
+
+  const handleIdentitySubmit = (data: { position: string; fields: string[] }) => {
+    console.log("[v0] Identity submitted:", data)
+    // TODO: 保存身份信息到后端
+  }
+
+  const handleFeedbackSubmit = (data: { type: string; content: string }) => {
+    console.log("[v0] Feedback submitted:", data)
+    // TODO: 提交反馈到后端
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <main className="flex-1 overflow-y-auto pb-20">
-        <HomeContent />
+        <HomeContent onOpenIdentityModal={() => setShowIdentityModal(true)} />
       </main>
 
       {/* 悬浮反馈按钮 */}
-      <FeedbackButton />
+      <FeedbackButton onOpenFeedback={() => setShowFeedbackModal(true)} />
 
       {/* 底部导航 */}
       <BottomNavigation activeTab="chat" />
+
+      {/* 身份选择弹窗 */}
+      <IdentityModal
+        isOpen={showIdentityModal}
+        onClose={() => setShowIdentityModal(false)}
+        onSubmit={handleIdentitySubmit}
+      />
+
+      {/* 反馈弹窗 */}
+      <FeedbackModal
+        isOpen={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+        onSubmit={handleFeedbackSubmit}
+      />
     </div>
   )
 }
 
 // 首页内容
-function HomeContent() {
+function HomeContent({ onOpenIdentityModal }: { onOpenIdentityModal: () => void }) {
   return (
     <div className="min-h-full">
       {/* 深蓝渐变头部区域 - 紧凑版 */}
@@ -98,7 +127,7 @@ function HomeContent() {
           </header>
 
           {/* 身份选择横幅 */}
-          <IdentityBanner />
+          <IdentityBanner onOpen={onOpenIdentityModal} />
         </div>
       </div>
 
@@ -126,11 +155,11 @@ function HomeContent() {
 }
 
 // 身份选择横幅
-function IdentityBanner() {
+function IdentityBanner({ onOpen }: { onOpen: () => void }) {
   return (
-    <Link
-      href="/profile/identity"
-      className="mb-5 flex items-center justify-between rounded-xl bg-white/15 px-4 py-3 backdrop-blur-sm transition-all active:bg-white/20"
+    <button
+      onClick={onOpen}
+      className="mb-5 flex w-full items-center justify-between rounded-xl bg-white/15 px-4 py-3 backdrop-blur-sm transition-all active:bg-white/20"
     >
       <div className="flex items-center gap-3">
         <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20">
@@ -141,7 +170,7 @@ function IdentityBanner() {
         </span>
       </div>
       <ChevronRight className="h-4 w-4 text-white/70" />
-    </Link>
+    </button>
   )
 }
 
@@ -231,7 +260,7 @@ function ScenarioGuideSection() {
 }
 
 // 可拖动的悬浮反馈按钮
-function FeedbackButton() {
+function FeedbackButton({ onOpenFeedback }: { onOpenFeedback: () => void }) {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const [hasMoved, setHasMoved] = useState(false)
@@ -274,7 +303,7 @@ function FeedbackButton() {
 
   const handleClick = () => {
     if (!hasMoved) {
-      window.location.href = "/feedback"
+      onOpenFeedback()
     }
   }
 
