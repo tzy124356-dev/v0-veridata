@@ -1,274 +1,256 @@
 "use client"
 
-import { useState } from "react"
 import {
   MessageSquare,
   FolderOpen,
   User,
   ChevronRight,
-  Search,
+  CheckCircle2,
   FileText,
-  Sparkles,
-  Target,
-  Users,
-  TrendingUp,
-  Home,
-  Newspaper,
+  Bell,
+  HelpCircle,
+  Search,
+  MessageCircle,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 
 // 底部导航Tab类型
-type TabType = "home" | "market" | "news" | "profile"
+type TabType = "chat" | "vault" | "profile"
 
-// AI智能体数据
-const aiAgents = [
+// 场景指南数据 - 来自PRD
+const scenarioGuides = [
   {
-    id: "ask",
-    name: "问诊",
-    subtitle: "专业咨询，一问即答",
-    status: "上线中",
-    statusColor: "bg-green-500",
-    icon: MessageSquare,
-    gradient: "from-blue-600 to-blue-400",
-    href: "/chat",
+    id: "register",
+    icon: FileText,
+    title: "注册申报准备中",
+    description: "梳理注册路径与资料要点，高效准备申报材料",
+    hint: "要申报了，不知道从哪里开始",
   },
   {
-    id: "practice",
-    name: "对练",
-    subtitle: "模拟审查官问答",
-    status: "Beta",
-    statusColor: "bg-amber-500",
-    icon: Target,
-    gradient: "from-violet-600 to-violet-400",
-    href: "/practice",
+    id: "supplement",
+    icon: Bell,
+    title: "收到发补通知",
+    description: "逐项解析发补意见，提供回应思路与参考",
+    hint: "收到发补通知了，怎么办",
   },
   {
-    id: "track",
-    name: "追踪",
-    subtitle: "项目进度看板",
-    status: "实时",
-    statusColor: "bg-green-500",
-    icon: TrendingUp,
-    gradient: "from-purple-600 to-purple-400",
-    href: "/track",
+    id: "classify",
+    icon: HelpCircle,
+    title: "产品分类界定困惑",
+    description: "多维度分析判定依据，明确产品管理类别",
+    hint: "产品分类搞不清楚，帮我判断一下",
   },
   {
-    id: "find",
-    name: "找人",
-    subtitle: "智能匹配服务商",
-    status: "新上线",
-    statusColor: "bg-blue-500",
-    icon: Users,
-    gradient: "from-indigo-600 to-indigo-400",
-    href: "/find",
+    id: "guideline",
+    icon: Search,
+    title: "技术指导原则查询",
+    description: "快速检索权威指导文件，把握技术要求要点",
+    hint: "找不到对应的技术指导原则",
   },
-]
-
-// 热门问题数据
-const hotQuestions = [
-  { id: 1, question: "二类医疗器械注册需要哪些材料？" },
-  { id: 2, question: "注册费用大概多少？周期多久？" },
-  { id: 3, question: "产品分类界定怎么确认？" },
 ]
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<TabType>("home")
-  const router = useRouter()
-
-  const handleTabChange = (tab: TabType) => {
-    setActiveTab(tab)
-    if (tab === "profile") {
-      router.push("/profile")
-    }
-  }
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <main className="flex-1 overflow-y-auto pb-20">
         <HomeContent />
       </main>
-      <BottomNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+
+      {/* 悬浮反馈按钮 */}
+      <FeedbackButton />
+
+      {/* 底部导航 */}
+      <BottomNavigation activeTab="chat" />
     </div>
   )
 }
 
 // 首页内容
 function HomeContent() {
-  const router = useRouter()
-
-  const handleSearch = () => {
-    router.push("/chat")
-  }
-
-  const handleQuestionClick = (question: string) => {
-    router.push(`/chat?q=${encodeURIComponent(question)}`)
-  }
-
   return (
     <div className="min-h-full">
       {/* 深蓝渐变头部区域 */}
-      <div className="bg-gradient-to-b from-[#1e3a8a] via-[#1e40af] to-[#2563eb] px-5 pt-12 pb-8">
-        {/* 品牌区域 */}
-        <header className="mb-6 flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-            <span className="text-xl font-bold text-white">械</span>
-          </div>
-          <div>
-            <h1 className="text-lg font-semibold text-white">械研</h1>
-            <p className="text-xs text-white/70">医械注册智能平台</p>
-          </div>
-        </header>
-
-        {/* 欢迎语 */}
-        <div className="mb-6">
-          <h2 className="mb-2 text-3xl font-bold text-white">你好</h2>
-          <p className="text-sm text-white/80">
-            医疗器械注册，让每一步都有据可查
-          </p>
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb]">
+        {/* 背景装饰 */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-400/20 blur-3xl" />
+          <div className="absolute -left-10 top-40 h-48 w-48 rounded-full bg-indigo-400/20 blur-3xl" />
         </div>
 
-        {/* 搜索栏 */}
-        <button
-          onClick={handleSearch}
-          className="flex w-full items-center gap-3 rounded-xl bg-white px-4 py-3.5 text-left shadow-lg transition-all active:scale-[0.99]"
-        >
-          <Search className="h-5 w-5 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
-            搜索注册问题、法规、案例...
-          </span>
-        </button>
+        <div className="relative px-5 pt-12 pb-6">
+          {/* 品牌区域 */}
+          <header className="mb-6 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-6 w-6 text-white"
+                fill="currentColor"
+              >
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-white">
+                械研 VERIDATA
+              </h1>
+              <p className="text-xs text-white/70">械研，让AI有据而行</p>
+            </div>
+          </header>
+
+          {/* 身份选择横幅 */}
+          <IdentityBanner />
+
+          {/* 智能问答主卡片 */}
+          <MainFeatureCard />
+        </div>
       </div>
 
       {/* 白色内容区域 */}
       <div className="bg-background px-5 py-6">
-        {/* AI 智能体 */}
-        <section className="mb-8">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-1 rounded-full bg-primary" />
-                <h3 className="text-base font-semibold text-foreground">
-                  AI 智能体
-                </h3>
-              </div>
-              <p className="mt-1 pl-3 text-xs text-muted-foreground">
-                4个专属助手，全程陪跑注册
-              </p>
-            </div>
-            <Link
-              href="/agents"
-              className="flex items-center gap-1 text-sm text-primary"
-            >
-              查看全部
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          {/* 2x2 卡片网格 */}
-          <div className="grid grid-cols-2 gap-3">
-            {aiAgents.map((agent) => (
-              <Link
-                key={agent.id}
-                href={agent.href}
-                className={cn(
-                  "relative overflow-hidden rounded-2xl bg-gradient-to-br p-4 transition-all active:scale-[0.98]",
-                  agent.gradient
-                )}
-              >
-                {/* 状态标签 */}
-                <div className="mb-3 flex items-center gap-1.5">
-                  <span
-                    className={cn(
-                      "h-1.5 w-1.5 rounded-full",
-                      agent.statusColor
-                    )}
-                  />
-                  <span className="text-xs text-white/80">{agent.status}</span>
-                </div>
-
-                {/* 图标 */}
-                <div className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                  <agent.icon className="h-5 w-5 text-white" />
-                </div>
-
-                {/* 标题和描述 */}
-                <h4 className="mb-1 text-xl font-bold text-white">
-                  {agent.name}
-                </h4>
-                <p className="text-xs text-white/70">{agent.subtitle}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* 热门问题 */}
-        <section>
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-semibold text-foreground">
-                热门问题
-              </h3>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                注册人最常咨询的问题
-              </p>
-            </div>
-            <Link
-              href="/questions"
-              className="flex items-center gap-1 text-sm text-primary"
-            >
-              全部
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          {/* 问题列表 */}
-          <div className="space-y-3">
-            {hotQuestions.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleQuestionClick(item.question)}
-                className="flex w-full items-center gap-4 rounded-xl border border-border bg-card p-4 text-left transition-all hover:bg-secondary/30 active:scale-[0.99]"
-              >
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-semibold text-primary">
-                  {item.id}
-                </span>
-                <span className="flex-1 text-sm text-foreground">
-                  {item.question}
-                </span>
-                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-              </button>
-            ))}
-          </div>
-        </section>
+        {/* 场景指南 */}
+        <ScenarioGuideSection />
       </div>
     </div>
   )
 }
 
+// 身份选择横幅
+function IdentityBanner() {
+  return (
+    <Link
+      href="/profile/identity"
+      className="mb-5 flex items-center justify-between rounded-xl bg-white/15 px-4 py-3 backdrop-blur-sm transition-all active:bg-white/20"
+    >
+      <div className="flex items-center gap-3">
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20">
+          <User className="h-4 w-4 text-white" />
+        </div>
+        <span className="text-sm text-white">
+          告诉我们你的方向，获得更精准的内容
+        </span>
+      </div>
+      <ChevronRight className="h-4 w-4 text-white/70" />
+    </Link>
+  )
+}
+
+// 智能问答主卡片
+function MainFeatureCard() {
+  return (
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1e3a8a]/80 to-[#1e40af]/60 p-5 backdrop-blur-sm">
+      {/* 背景装饰光晕 */}
+      <div className="absolute -right-8 -bottom-8 h-40 w-40 rounded-full bg-blue-400/20 blur-2xl" />
+
+      {/* 右侧AI图标装饰 */}
+      <div className="absolute right-4 top-1/2 -translate-y-1/2">
+        <div className="relative">
+          {/* 发光底座 */}
+          <div className="absolute -bottom-2 left-1/2 h-3 w-20 -translate-x-1/2 rounded-full bg-cyan-400/40 blur-md" />
+          {/* AI机器人图标 */}
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400/30 to-blue-500/30 backdrop-blur-sm">
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-300/40 to-blue-400/40">
+              <MessageSquare className="h-7 w-7 text-white" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 左侧内容 */}
+      <div className="relative z-10 max-w-[60%]">
+        <h2 className="mb-1 text-2xl font-bold text-white">智能问答</h2>
+        <p className="mb-4 text-sm text-white/80">注册问题的深层问答</p>
+
+        {/* 出处说明 */}
+        <div className="mb-5 flex items-center gap-2">
+          <CheckCircle2 className="h-4 w-4 text-cyan-300" />
+          <span className="text-xs text-white/70">
+            基于行业官方数据库，每条回答有出处
+          </span>
+        </div>
+
+        {/* 立即提问按钮 */}
+        <Link
+          href="/chat"
+          className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-[#1e40af] transition-all hover:bg-white/90 active:scale-[0.98]"
+        >
+          立即提问
+          <ChevronRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+// 场景指南区块
+function ScenarioGuideSection() {
+  return (
+    <section>
+      {/* 标题 */}
+      <div className="mb-4 flex items-center gap-2">
+        <div className="h-4 w-1 rounded-full bg-primary" />
+        <h3 className="text-base font-semibold text-foreground">
+          为你推荐场景指南
+        </h3>
+      </div>
+
+      {/* 2x2 场景卡片网格 */}
+      <div className="grid grid-cols-2 gap-3">
+        {scenarioGuides.map((guide) => (
+          <Link
+            key={guide.id}
+            href={`/chat?q=${encodeURIComponent(guide.hint)}`}
+            className="group rounded-2xl border border-border bg-card p-4 transition-all hover:border-primary/30 hover:shadow-soft active:scale-[0.98]"
+          >
+            {/* 图标 */}
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <guide.icon className="h-5 w-5 text-primary" />
+            </div>
+
+            {/* 标题 */}
+            <h4 className="mb-1.5 text-sm font-semibold text-foreground">
+              {guide.title}
+            </h4>
+
+            {/* 描述 */}
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              {guide.description}
+            </p>
+          </Link>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+// 悬浮反馈按钮
+function FeedbackButton() {
+  return (
+    <Link
+      href="/feedback"
+      className="fixed right-4 bottom-24 z-40 flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-lg transition-all hover:bg-primary/90 active:scale-95"
+    >
+      <MessageCircle className="h-4 w-4" />
+      意见反馈
+    </Link>
+  )
+}
+
 // 底部导航
-function BottomNavigation({
-  activeTab,
-  onTabChange,
-}: {
-  activeTab: TabType
-  onTabChange: (tab: TabType) => void
-}) {
+function BottomNavigation({ activeTab }: { activeTab: TabType }) {
   const tabs = [
-    { id: "home" as const, icon: Home, label: "首页" },
-    { id: "market" as const, icon: FolderOpen, label: "超市" },
-    { id: "news" as const, icon: Newspaper, label: "资讯" },
-    { id: "profile" as const, icon: User, label: "我的" },
+    { id: "chat" as const, icon: MessageSquare, label: "智能问答", href: "/" },
+    { id: "vault" as const, icon: FolderOpen, label: "我的档案库", href: "/vault" },
+    { id: "profile" as const, icon: User, label: "我的", href: "/profile" },
   ]
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background">
       <div className="flex items-center justify-around py-2 pb-safe">
         {tabs.map((tab) => (
-          <button
+          <Link
             key={tab.id}
-            onClick={() => onTabChange(tab.id)}
+            href={tab.href}
             className={cn(
               "flex flex-col items-center gap-1 px-6 py-1.5 transition-colors",
               activeTab === tab.id
@@ -278,7 +260,7 @@ function BottomNavigation({
           >
             <tab.icon className="h-5 w-5" />
             <span className="text-xs">{tab.label}</span>
-          </button>
+          </Link>
         ))}
       </div>
     </nav>
