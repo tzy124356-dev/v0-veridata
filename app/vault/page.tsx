@@ -276,60 +276,90 @@ function EmptyState({
   onDragLeave: () => void
   onDrop: (e: React.DragEvent) => void
 }) {
+  const painPoints = [
+    { icon: "01", text: "文件散落各处，需要时找不到" },
+    { icon: "02", text: "指导原则太长，关键信息难定位" },
+    { icon: "03", text: "下载了没时间看，内容不了解" },
+    { icon: "04", text: "多年积累的经验，从未真正用起来" },
+  ]
+
   return (
     <div
       className={cn(
-        "glass mt-4 rounded-2xl p-6 text-center transition-all",
-        isDragging && "ring-2 ring-primary"
+        "mt-4 transition-all",
+        isDragging && "opacity-80"
       )}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
     >
-      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-        <FolderOpen className="h-8 w-8 text-primary" />
+      {/* 主卡片 */}
+      <div className={cn(
+        "glass rounded-2xl p-6 transition-all",
+        isDragging && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+      )}>
+        {/* 图标和标题 */}
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5">
+            <FolderOpen className="h-7 w-7 text-primary" />
+          </div>
+          <h2 className="mb-1 text-lg font-semibold text-foreground">
+            构建你的专属知识库
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            上传文件，AI 帮你读透每一页
+          </p>
+        </div>
+
+        {/* 痛点列表 - 2x2网格 */}
+        <div className="mb-6 grid grid-cols-2 gap-3">
+          {painPoints.map((point) => (
+            <div
+              key={point.icon}
+              className="rounded-xl bg-secondary/50 p-3"
+            >
+              <span className="mb-1 block text-xs font-medium text-primary">
+                {point.icon}
+              </span>
+              <p className="text-xs leading-relaxed text-secondary-foreground">
+                {point.text}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* 价值主张 */}
+        <div className="mb-6 rounded-xl border border-primary/20 bg-primary/5 p-4">
+          <p className="text-center text-sm leading-relaxed text-foreground">
+            <span className="font-semibold text-primary">VeriVault</span>
+            {" "}让你上传一次，随时调用
+            <br />
+            <span className="text-muted-foreground">关键信息一问即得</span>
+          </p>
+        </div>
+
+        {/* 按钮组 */}
+        <div className="space-y-3">
+          <button
+            onClick={onUploadClick}
+            className="gradient-accent flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-medium text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]"
+          >
+            <Upload className="h-4 w-4" />
+            上传文件
+          </button>
+          
+          <button
+            onClick={onLoadDemo}
+            className="w-full rounded-xl border border-border bg-background py-3 text-sm font-medium text-muted-foreground transition-all hover:bg-secondary/50 hover:text-foreground active:scale-[0.98]"
+          >
+            查看演示
+          </button>
+        </div>
       </div>
 
-      <div className="mb-6 space-y-3 text-left">
-        <p className="text-sm leading-relaxed text-secondary-foreground">
-          文件收藏了一堆，真正用到的时候却找不到？
-        </p>
-        <p className="text-sm leading-relaxed text-secondary-foreground">
-          指导原则几十页，没时间读完，关键信息又不知道在哪里？
-        </p>
-        <p className="text-sm leading-relaxed text-secondary-foreground">
-          下载了很多文件，没时间看，需要时又不知道里面说了什么？
-        </p>
-        <p className="text-sm leading-relaxed text-secondary-foreground">
-          多年积累的文件和经验，散落各处，从没真正用起来过？
-        </p>
-      </div>
-
-      <div className="mb-6 rounded-xl bg-primary/10 p-4">
-        <p className="text-sm leading-relaxed text-foreground">
-          <span className="font-medium text-primary">VeriVault</span>{" "}
-          是你的专属知识库，上传一次，随时调用，AI帮你读透每一份文件，关键信息一问即得。
-        </p>
-      </div>
-
-      <div className="space-y-3">
-        <button
-          onClick={onUploadClick}
-          className="gradient-accent w-full rounded-xl py-3 text-sm font-medium text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]"
-        >
-          上传第一份文件，开始构建你的专属库
-        </button>
-        
-        <button
-          onClick={onLoadDemo}
-          className="w-full rounded-xl border border-border py-3 text-sm font-medium text-secondary-foreground transition-all hover:bg-secondary/50 active:scale-[0.98]"
-        >
-          加载演示数据
-        </button>
-      </div>
-
-      <p className="mt-4 text-xs text-muted-foreground">
-        支持 Word、PDF 格式，单次最多上传 5 个文件
+      {/* 底部提示 */}
+      <p className="mt-4 text-center text-xs text-muted-foreground">
+        支持 Word、PDF 格式，单个文件最大 20MB
       </p>
     </div>
   )
