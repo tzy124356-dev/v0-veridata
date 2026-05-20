@@ -195,9 +195,13 @@ function MessageBubble({ message }: { message: Message }) {
 
   const handleCopy = async () => {
     const text = message.conclusion || message.content
-    await navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Fallback for environments without clipboard API
+    }
   }
 
   if (message.type === "user") {

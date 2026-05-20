@@ -2,241 +2,247 @@
 
 import { useState } from "react"
 import {
+  ArrowLeft,
   User,
   ChevronRight,
-  FileText,
-  MessageSquare,
-  HelpCircle,
-  Bell,
-  Gift,
-  LogOut,
-  Settings,
+  Clock,
   Bookmark,
+  FileText,
+  HelpCircle,
+  Settings,
+  Bell,
   Crown,
-  ChevronLeft,
+  LogOut,
+  Shield,
+  Smartphone,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
+// 用户数据统计
+const userStats = {
+  questions: 28,
+  favorites: 12,
+  documents: 5,
+}
+
+// 功能菜单数据
+const menuItems = [
+  {
+    id: "history",
+    icon: Clock,
+    label: "历史问答记录",
+    href: "/history",
+    badge: null,
+  },
+  {
+    id: "favorites",
+    icon: Bookmark,
+    label: "我的收藏",
+    href: "/favorites",
+    badge: userStats.favorites,
+  },
+  {
+    id: "vault",
+    icon: FileText,
+    label: "我的档案库",
+    href: "/vault",
+    badge: userStats.documents,
+  },
+]
+
+const settingsItems = [
+  {
+    id: "notifications",
+    icon: Bell,
+    label: "消息通知",
+    href: "/notifications",
+  },
+  {
+    id: "account",
+    icon: Shield,
+    label: "账号与安全",
+    href: "/account",
+  },
+  {
+    id: "devices",
+    icon: Smartphone,
+    label: "登录设备管理",
+    href: "/devices",
+  },
+  {
+    id: "help",
+    icon: HelpCircle,
+    label: "帮助与反馈",
+    href: "/help",
+  },
+  {
+    id: "settings",
+    icon: Settings,
+    label: "设置",
+    href: "/settings",
+  },
+]
+
 export default function ProfilePage() {
-  const [isLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <main className="flex-1 overflow-y-auto pb-24">
-        <div className="px-5 pt-12 pb-6">
-          {/* 顶部导航 */}
-          <header className="mb-6 flex items-center justify-between">
-            <Link href="/" className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary/50">
-              <ChevronLeft className="h-5 w-5 text-foreground" />
-            </Link>
-            <h1 className="text-lg font-semibold text-foreground">我的</h1>
-            <Link href="/settings" className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary/50">
-              <Settings className="h-5 w-5 text-muted-foreground" />
-            </Link>
-          </header>
+      {/* 深蓝渐变头部 */}
+      <div className="bg-gradient-to-b from-[#1e3a8a] via-[#1e40af] to-[#2563eb] px-5 pt-12 pb-8">
+        <header className="mb-6 flex items-center justify-between">
+          <Link
+            href="/"
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20"
+          >
+            <ArrowLeft className="h-5 w-5 text-white" />
+          </Link>
+          <h1 className="text-lg font-semibold text-white">个人中心</h1>
+          <div className="w-9" />
+        </header>
 
-          {/* 用户信息卡片 */}
-          <UserInfoCard isLoggedIn={isLoggedIn} />
+        {/* 用户信息卡片 */}
+        {isLoggedIn ? (
+          <div className="rounded-xl bg-white/10 p-4 backdrop-blur-sm">
+            <div className="flex items-center gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+                <User className="h-8 w-8 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="mb-1 flex items-center gap-2">
+                  <h2 className="text-lg font-semibold text-white">张工程师</h2>
+                  <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-xs font-medium text-amber-300">
+                    专业版
+                  </span>
+                </div>
+                <p className="text-sm text-white/70">注册专员 · 医美针剂方向</p>
+              </div>
+              <Link
+                href="/profile/edit"
+                className="flex h-8 items-center rounded-lg bg-white/20 px-3 text-xs font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/30"
+              >
+                编辑
+              </Link>
+            </div>
 
-          {/* 用户成长数据 */}
-          {isLoggedIn && <GrowthStats />}
-
-          {/* 订阅信息 */}
-          <SubscriptionCard />
-
-          {/* 功能列表 */}
-          <FunctionList />
-        </div>
-      </main>
-
-      {/* 底部导航 */}
-      <BottomNavigation />
-    </div>
-  )
-}
-
-// 用户信息卡片
-function UserInfoCard({ isLoggedIn }: { isLoggedIn: boolean }) {
-  if (!isLoggedIn) {
-    return (
-      <button className="glass mb-4 w-full rounded-2xl p-5 text-left transition-all hover:bg-secondary/30 active:scale-[0.99]">
-        <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-accent/10">
-            <User className="h-8 w-8 text-primary" />
+            {/* 数据统计 */}
+            <div className="mt-4 grid grid-cols-3 gap-4 border-t border-white/10 pt-4">
+              <div className="text-center">
+                <p className="text-xl font-bold text-white">{userStats.questions}</p>
+                <p className="text-xs text-white/60">累计提问</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xl font-bold text-white">{userStats.favorites}</p>
+                <p className="text-xs text-white/60">收藏回答</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xl font-bold text-white">{userStats.documents}</p>
+                <p className="text-xs text-white/60">档案文件</p>
+              </div>
+            </div>
           </div>
-          <div className="flex-1">
-            <p className="mb-1 text-lg font-semibold text-foreground">点击登录</p>
-            <p className="text-sm text-muted-foreground">登录后享受完整功能</p>
-          </div>
-          <ChevronRight className="h-5 w-5 text-muted-foreground" />
-        </div>
-      </button>
-    )
-  }
-
-  return (
-    <div className="glass mb-4 rounded-2xl p-5">
-      <div className="flex items-center gap-4">
-        <div className="relative">
-          <div className="h-16 w-16 overflow-hidden rounded-full bg-gradient-to-br from-primary/20 to-accent/10">
-            <User className="h-full w-full p-4 text-primary" />
-          </div>
-        </div>
-        <div className="flex-1">
-          <div className="mb-1 flex items-center gap-2">
-            <p className="text-lg font-semibold text-foreground">用户昵称</p>
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
-              注册工程师
-            </span>
-          </div>
-          <button className="text-sm text-muted-foreground hover:text-foreground">
-            编辑身份信息
-          </button>
-        </div>
+        ) : (
+          <Link
+            href="/login"
+            className="flex items-center gap-4 rounded-xl bg-white/10 p-4 backdrop-blur-sm transition-colors hover:bg-white/15"
+          >
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+              <User className="h-8 w-8 text-white/60" />
+            </div>
+            <div className="flex-1">
+              <h2 className="mb-1 text-lg font-semibold text-white">点击登录</h2>
+              <p className="text-sm text-white/70">登录后享受更多功能</p>
+            </div>
+            <ChevronRight className="h-5 w-5 text-white/60" />
+          </Link>
+        )}
       </div>
-    </div>
-  )
-}
 
-// 用户成长数据
-function GrowthStats() {
-  return (
-    <div className="glass mb-4 rounded-2xl p-5">
-      <h3 className="mb-4 text-sm font-medium text-muted-foreground">
-        你已在械研
-      </h3>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="rounded-xl bg-secondary/50 p-4 text-center">
-          <p className="mb-1 text-2xl font-bold text-foreground">XX</p>
-          <p className="text-xs text-muted-foreground">次提问</p>
-        </div>
-        <div className="rounded-xl bg-secondary/50 p-4 text-center">
-          <p className="mb-1 text-2xl font-bold text-foreground">XX</p>
-          <p className="text-xs text-muted-foreground">份法规为据</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// 订阅信息卡片
-function SubscriptionCard() {
-  return (
-    <div className="glass mb-4 overflow-hidden rounded-2xl">
-      <div className="border-b border-border/50 p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Crown className="h-5 w-5 text-amber-500" />
-            <span className="font-medium text-foreground">免费版</span>
+      {/* 白色内容区域 */}
+      <main className="flex-1 bg-background px-5 py-6">
+        {/* 会员升级入口 */}
+        <Link
+          href="/pricing"
+          className="mb-6 flex items-center justify-between rounded-xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-4 transition-all hover:from-amber-100 hover:to-orange-100 active:scale-[0.99]"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-400">
+              <Crown className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-amber-900">
+                升级专业版，解锁更多功能
+              </p>
+              <p className="text-xs text-amber-700/70">无限提问 · 更大档案库 · 优先支持</p>
+            </div>
           </div>
-          <button className="rounded-full bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground transition-all hover:opacity-90 active:scale-95">
-            升级
-          </button>
-        </div>
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div>
-            <p className="text-muted-foreground">本月剩余</p>
-            <p className="font-medium text-foreground">50 / 50 次</p>
-          </div>
-          <div>
-            <p className="text-muted-foreground">档案库空间</p>
-            <p className="font-medium text-foreground">0G / 2G</p>
-          </div>
-        </div>
-      </div>
-      <Link href="/pricing" className="flex items-center justify-center gap-2 px-5 py-3 text-sm text-primary hover:bg-secondary/30">
-        查看套餐详情
-        <ChevronRight className="h-4 w-4" />
-      </Link>
-    </div>
-  )
-}
+          <ChevronRight className="h-5 w-5 text-amber-600" />
+        </Link>
 
-// 功能列表
-function FunctionList() {
-  const menuGroups = [
-    {
-      items: [
-        { icon: Bookmark, label: "我的收藏", href: "/favorites" },
-        { icon: MessageSquare, label: "历史问答记录", href: "/history" },
-      ],
-    },
-    {
-      items: [
-        { icon: Gift, label: "积分中心", href: "/points", badge: "即将上线" },
-        { icon: Bell, label: "通知中心", href: "/notifications" },
-      ],
-    },
-    {
-      items: [
-        { icon: HelpCircle, label: "帮助文档", href: "/help" },
-        { icon: FileText, label: "服务协议与隐私政策", href: "/terms" },
-      ],
-    },
-  ]
-
-  return (
-    <div className="space-y-4">
-      {menuGroups.map((group, groupIndex) => (
-        <div key={groupIndex} className="glass overflow-hidden rounded-2xl">
-          {group.items.map((item, itemIndex) => (
+        {/* 功能菜单 */}
+        <div className="mb-6 rounded-xl border border-border bg-card">
+          {menuItems.map((item, index) => (
             <Link
-              key={itemIndex}
+              key={item.id}
               href={item.href}
-              className="flex items-center justify-between border-b border-border/50 px-5 py-4 last:border-b-0 hover:bg-secondary/30 active:bg-secondary/50"
+              className={cn(
+                "flex items-center justify-between px-4 py-3.5 transition-colors hover:bg-secondary/50",
+                index !== menuItems.length - 1 && "border-b border-border"
+              )}
+            >
+              <div className="flex items-center gap-3">
+                <item.icon className="h-5 w-5 text-[#1e40af]" />
+                <span className="text-sm text-foreground">{item.label}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                {item.badge !== null && (
+                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                    {item.badge}
+                  </span>
+                )}
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* 设置菜单 */}
+        <div className="mb-6 rounded-xl border border-border bg-card">
+          {settingsItems.map((item, index) => (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={cn(
+                "flex items-center justify-between px-4 py-3.5 transition-colors hover:bg-secondary/50",
+                index !== settingsItems.length - 1 && "border-b border-border"
+              )}
             >
               <div className="flex items-center gap-3">
                 <item.icon className="h-5 w-5 text-muted-foreground" />
                 <span className="text-sm text-foreground">{item.label}</span>
-                {"badge" in item && item.badge && (
-                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
-                    {item.badge}
-                  </span>
-                )}
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </Link>
           ))}
         </div>
-      ))}
 
-      {/* 退出登录 */}
-      <button className="glass flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-4 text-sm text-destructive hover:bg-destructive/5 active:bg-destructive/10">
-        <LogOut className="h-5 w-5" />
-        退出登录
-      </button>
-    </div>
-  )
-}
-
-// 底部导航
-function BottomNavigation() {
-  const tabs = [
-    { id: "chat", icon: MessageSquare, label: "智能问答", href: "/" },
-    { id: "vault", icon: FileText, label: "我的档案库", href: "/vault" },
-    { id: "profile", icon: User, label: "我的", href: "/profile" },
-  ]
-
-  return (
-    <nav className="glass fixed inset-x-0 bottom-0 z-50 border-t border-border/50">
-      <div className="flex items-center justify-around py-2">
-        {tabs.map((tab) => (
-          <Link
-            key={tab.id}
-            href={tab.href}
-            className={cn(
-              "flex flex-col items-center gap-1 px-6 py-1.5 transition-colors",
-              tab.id === "profile"
-                ? "text-primary"
-                : "text-muted-foreground hover:text-foreground"
-            )}
+        {/* 退出登录按钮 */}
+        {isLoggedIn && (
+          <button
+            onClick={() => setIsLoggedIn(false)}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card py-3.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/5"
           >
-            <tab.icon className="h-5 w-5" />
-            <span className="text-xs">{tab.label}</span>
-          </Link>
-        ))}
-      </div>
-    </nav>
+            <LogOut className="h-4 w-4" />
+            退出登录
+          </button>
+        )}
+
+        {/* 版本信息 */}
+        <p className="mt-8 text-center text-xs text-muted-foreground">
+          械研 VERIDATA v1.0.0
+        </p>
+      </main>
+    </div>
   )
 }

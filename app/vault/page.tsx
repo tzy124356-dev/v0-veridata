@@ -11,7 +11,7 @@ import {
   Loader2,
   CheckCircle,
   Clock,
-  HelpCircle,
+  Plus,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -80,7 +80,6 @@ export default function VaultPage() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files
     if (selectedFiles) {
-      // 模拟文件上传
       const newFiles: VaultFile[] = Array.from(selectedFiles)
         .slice(0, 5)
         .map((file, index) => ({
@@ -93,11 +92,7 @@ export default function VaultPage() {
         }))
 
       setFiles((prev) => [...prev, ...newFiles])
-
-      // 模拟上传进度
-      newFiles.forEach((file) => {
-        simulateUpload(file.id)
-      })
+      newFiles.forEach((file) => simulateUpload(file.id))
     }
   }
 
@@ -108,13 +103,11 @@ export default function VaultPage() {
       if (progress >= 100) {
         progress = 100
         clearInterval(interval)
-        // 切换到处理状态
         setFiles((prev) =>
           prev.map((f) =>
             f.id === fileId ? { ...f, status: "processing", progress: 0 } : f
           )
         )
-        // 模拟处理
         setTimeout(() => {
           setFiles((prev) =>
             prev.map((f) =>
@@ -148,7 +141,6 @@ export default function VaultPage() {
     setIsDragging(false)
     const droppedFiles = e.dataTransfer.files
     if (droppedFiles.length > 0) {
-      // 处理拖放的文件
       const newFiles: VaultFile[] = Array.from(droppedFiles)
         .slice(0, 5)
         .map((file, index) => ({
@@ -165,35 +157,52 @@ export default function VaultPage() {
     }
   }
 
-  // 加载演示数据
   const loadDemoData = () => {
     setFiles(mockFiles)
   }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* 顶部导航 */}
-      <header className="glass fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b border-border/50 px-4 py-3">
-        <Link
-          href="/"
-          className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-secondary"
-        >
-          <ArrowLeft className="h-5 w-5 text-foreground" />
-        </Link>
-        <div className="text-center">
-          <h1 className="text-base font-medium text-foreground">我的档案库</h1>
-          <p className="text-xs text-muted-foreground">VeriVault</p>
-        </div>
-        <button className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-secondary">
-          <HelpCircle className="h-5 w-5 text-muted-foreground" />
-        </button>
-      </header>
+      {/* 深蓝渐变头部 */}
+      <div className="bg-gradient-to-b from-[#1e3a8a] via-[#1e40af] to-[#2563eb] px-5 pt-12 pb-6">
+        <header className="mb-4 flex items-center justify-between">
+          <Link
+            href="/"
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20"
+          >
+            <ArrowLeft className="h-5 w-5 text-white" />
+          </Link>
+          <div className="text-center">
+            <h1 className="text-lg font-semibold text-white">我的档案库</h1>
+            <p className="text-xs text-white/70">VeriVault</p>
+          </div>
+          <div className="w-9" />
+        </header>
 
-      {/* 主内容区域 */}
-      <main className="flex-1 overflow-y-auto px-4 pt-20 pb-24">
         {/* 存储空间指示 */}
-        <StorageIndicator used={usedStorage} total={totalStorage} />
+        <div className="rounded-xl bg-white/10 p-4 backdrop-blur-sm">
+          <div className="mb-2 flex items-center justify-between text-sm">
+            <span className="text-white/70">存储空间</span>
+            <span className="text-white">
+              已用 {usedStorage.toFixed(1)}G / 共 {totalStorage}G
+            </span>
+          </div>
+          <div className="h-1.5 overflow-hidden rounded-full bg-white/20">
+            <div
+              className={cn(
+                "h-full rounded-full transition-all",
+                (usedStorage / totalStorage) * 100 > 80
+                  ? "bg-red-400"
+                  : "bg-white"
+              )}
+              style={{ width: `${Math.min((usedStorage / totalStorage) * 100, 100)}%` }}
+            />
+          </div>
+        </div>
+      </div>
 
+      {/* 白色内容区域 */}
+      <main className="flex-1 overflow-y-auto bg-background px-5 py-6 pb-24">
         {isEmpty ? (
           <EmptyState
             onUploadClick={() => fileInputRef.current?.click()}
@@ -216,9 +225,9 @@ export default function VaultPage() {
       {!isEmpty && (
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="gradient-accent fixed right-4 bottom-6 z-40 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-all hover:opacity-90 active:scale-95"
+          className="fixed right-5 bottom-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-[#1e40af] to-[#2563eb] shadow-lg transition-all hover:opacity-90 active:scale-95"
         >
-          <Upload className="h-6 w-6 text-primary-foreground" />
+          <Plus className="h-6 w-6 text-white" />
         </button>
       )}
 
@@ -231,31 +240,6 @@ export default function VaultPage() {
         onChange={handleFileSelect}
         className="hidden"
       />
-    </div>
-  )
-}
-
-// 存储空间指示器
-function StorageIndicator({ used, total }: { used: number; total: number }) {
-  const percentage = Math.min((used / total) * 100, 100)
-
-  return (
-    <div className="glass mb-6 rounded-xl p-4">
-      <div className="mb-2 flex items-center justify-between text-sm">
-        <span className="text-muted-foreground">存储空间</span>
-        <span className="text-foreground">
-          已用 {used.toFixed(1)}G / 共 {total}G
-        </span>
-      </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
-        <div
-          className={cn(
-            "h-full rounded-full transition-all",
-            percentage > 80 ? "bg-destructive" : "bg-primary"
-          )}
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
     </div>
   )
 }
@@ -285,23 +269,21 @@ function EmptyState({
 
   return (
     <div
-      className={cn(
-        "mt-4 transition-all",
-        isDragging && "opacity-80"
-      )}
+      className={cn("transition-all", isDragging && "opacity-80")}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
     >
-      {/* 主卡片 */}
-      <div className={cn(
-        "glass rounded-2xl p-6 transition-all",
-        isDragging && "ring-2 ring-primary ring-offset-2 ring-offset-background"
-      )}>
+      <div
+        className={cn(
+          "rounded-2xl border border-border bg-card p-6 transition-all",
+          isDragging && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+        )}
+      >
         {/* 图标和标题 */}
         <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5">
-            <FolderOpen className="h-7 w-7 text-primary" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af]/20 to-[#2563eb]/10">
+            <FolderOpen className="h-8 w-8 text-[#1e40af]" />
           </div>
           <h2 className="mb-1 text-lg font-semibold text-foreground">
             构建你的专属知识库
@@ -314,11 +296,8 @@ function EmptyState({
         {/* 痛点列表 - 2x2网格 */}
         <div className="mb-6 grid grid-cols-2 gap-3">
           {painPoints.map((point) => (
-            <div
-              key={point.icon}
-              className="rounded-xl bg-secondary/50 p-3"
-            >
-              <span className="mb-1 block text-xs font-medium text-primary">
+            <div key={point.icon} className="rounded-xl bg-secondary/50 p-3">
+              <span className="mb-1 block text-xs font-semibold text-[#1e40af]">
                 {point.icon}
               </span>
               <p className="text-xs leading-relaxed text-secondary-foreground">
@@ -329,9 +308,9 @@ function EmptyState({
         </div>
 
         {/* 价值主张 */}
-        <div className="mb-6 rounded-xl border border-primary/20 bg-primary/5 p-4">
+        <div className="mb-6 rounded-xl border border-[#1e40af]/20 bg-[#1e40af]/5 p-4">
           <p className="text-center text-sm leading-relaxed text-foreground">
-            <span className="font-semibold text-primary">VeriVault</span>
+            <span className="font-semibold text-[#1e40af]">VeriVault</span>
             {" "}让你上传一次，随时调用
             <br />
             <span className="text-muted-foreground">关键信息一问即得</span>
@@ -342,12 +321,12 @@ function EmptyState({
         <div className="space-y-3">
           <button
             onClick={onUploadClick}
-            className="gradient-accent flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-medium text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e40af] to-[#2563eb] py-3.5 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]"
           >
             <Upload className="h-4 w-4" />
             上传文件
           </button>
-          
+
           <button
             onClick={onLoadDemo}
             className="w-full rounded-xl border border-border bg-background py-3 text-sm font-medium text-muted-foreground transition-all hover:bg-secondary/50 hover:text-foreground active:scale-[0.98]"
@@ -377,36 +356,41 @@ function FileListView({
 }) {
   return (
     <div className="space-y-4">
-      {/* 开始问答按钮 */}
+      {/* 开始问答入口 */}
       {hasReadyFiles && (
         <Link
           href="/vault/chat"
-          className="glass flex items-center justify-between rounded-xl p-4 transition-all hover:bg-secondary/50 active:scale-[0.99]"
+          className="flex items-center justify-between rounded-xl border border-[#1e40af]/20 bg-gradient-to-r from-[#1e40af]/5 to-[#2563eb]/5 p-4 transition-all hover:from-[#1e40af]/10 hover:to-[#2563eb]/10 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/20">
-              <MessageSquare className="h-5 w-5 text-primary" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e40af] to-[#2563eb]">
+              <MessageSquare className="h-5 w-5 text-white" />
             </div>
             <div>
               <p className="text-sm font-medium text-foreground">
-                文件已就绪，开始向你的专属库提问
+                向你的专属库提问
               </p>
               <p className="text-xs text-muted-foreground">
-                仅检索已上传的文件
+                {files.filter((f) => f.status === "ready").length} 个文件已就绪
               </p>
             </div>
           </div>
-          <div className="gradient-accent flex h-8 items-center rounded-lg px-3 text-xs font-medium text-primary-foreground">
+          <div className="rounded-lg bg-gradient-to-r from-[#1e40af] to-[#2563eb] px-3 py-1.5 text-xs font-medium text-white">
             开始提问
           </div>
         </Link>
       )}
 
+      {/* 文件列表标题 */}
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-medium text-foreground">
+          已上传文件
+        </h3>
+        <span className="text-xs text-muted-foreground">{files.length} 个文件</span>
+      </div>
+
       {/* 文件列表 */}
       <div className="space-y-3">
-        <h3 className="text-sm font-medium text-foreground">
-          已上传文件 ({files.length})
-        </h3>
         {files.map((file) => (
           <FileItem key={file.id} file={file} onDelete={onDelete} />
         ))}
@@ -427,21 +411,21 @@ function FileItem({
     switch (status) {
       case "uploading":
         return {
-          icon: <Loader2 className="h-4 w-4 animate-spin text-yellow-500" />,
+          icon: <Loader2 className="h-4 w-4 animate-spin text-amber-500" />,
           text: "上传中",
-          color: "text-yellow-500",
+          color: "text-amber-500",
         }
       case "processing":
         return {
-          icon: <Clock className="h-4 w-4 text-blue-400" />,
+          icon: <Clock className="h-4 w-4 text-blue-500" />,
           text: "处理中",
-          color: "text-blue-400",
+          color: "text-blue-500",
         }
       case "ready":
         return {
-          icon: <CheckCircle className="h-4 w-4 text-green-400" />,
+          icon: <CheckCircle className="h-4 w-4 text-green-500" />,
           text: "已就绪",
-          color: "text-green-400",
+          color: "text-green-500",
         }
     }
   }
@@ -449,14 +433,14 @@ function FileItem({
   const statusInfo = getStatusInfo(file.status)
 
   return (
-    <div className="glass rounded-xl p-4">
+    <div className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
           <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-lg bg-secondary">
-            <FileText className="h-5 w-5 text-primary" />
+            <FileText className="h-5 w-5 text-[#1e40af]" />
           </div>
-          <div className="flex-1">
-            <p className="mb-1 line-clamp-1 text-sm font-medium text-foreground">
+          <div className="flex-1 min-w-0">
+            <p className="mb-1 truncate text-sm font-medium text-foreground">
               {file.name}
             </p>
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -465,15 +449,15 @@ function FileItem({
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className={cn("flex items-center gap-1", statusInfo.color)}>
+        <div className="flex items-center gap-2 ml-2">
+          <div className={cn("flex items-center gap-1 shrink-0", statusInfo.color)}>
             {statusInfo.icon}
             <span className="text-xs">{statusInfo.text}</span>
           </div>
           {file.status === "ready" && (
             <button
               onClick={() => onDelete(file.id)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/20 hover:text-destructive"
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -489,7 +473,7 @@ function FileItem({
               <div
                 className={cn(
                   "h-full rounded-full transition-all",
-                  file.status === "uploading" ? "bg-yellow-500" : "bg-blue-400"
+                  file.status === "uploading" ? "bg-amber-500" : "bg-blue-500"
                 )}
                 style={{ width: `${file.progress}%` }}
               />
