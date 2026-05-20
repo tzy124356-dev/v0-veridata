@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useRef } from "react"
 import {
   MessageSquare,
   FolderOpen,
@@ -229,16 +230,87 @@ function ScenarioGuideSection() {
   )
 }
 
-// 悬浮反馈按钮
+// 可拖动的悬浮反馈按钮
 function FeedbackButton() {
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [hasMoved, setHasMoved] = useState(false)
+  const dragRef = useRef<HTMLDivElement>(null)
+  const startPos = useRef({ x: 0, y: 0 })
+  const startOffset = useRef({ x: 0, y: 0 })
+
+  const handleStart = (clientX: number, clientY: number) => {
+    setIsDragging(true)
+    setHasMoved(false)
+    startPos.current = { x: clientX, y: clientY }
+    startOffset.current = { x: position.x, y: position.y }
+  }
+
+  const handleMove = (clientX: number, clientY: number) => {
+    if (!isDragging) return
+    
+    const deltaX = clientX - startPos.current.x
+    const deltaY = clientY - startPos.current.y
+    
+    // 判断是否有足够的移动距离
+    if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+      setHasMoved(true)
+    }
+    
+    const newX = startOffset.current.x + deltaX
+    const newY = startOffset.current.y + deltaY
+    
+    // 限制在屏幕范围内
+    const maxX = window.innerWidth - 60
+    const maxY = window.innerHeight - 180
+    
+    setPosition({
+      x: Math.max(-maxX + 60, Math.min(0, newX)),
+      y: Math.max(-maxY + 60, Math.min(0, newY)),
+    })
+  }
+
+  const handleEnd = () => {
+    setIsDragging(false)
+  }
+
+  const handleClick = () => {
+    if (!hasMoved) {
+      window.location.href = "/feedback"
+    }
+  }
+
   return (
-    <Link
-      href="/feedback"
-      className="fixed right-4 bottom-32 z-40 flex h-12 w-12 flex-col items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-all active:scale-95"
+    <div
+      ref={dragRef}
+      className={cn(
+        "fixed right-4 bottom-32 z-40 flex h-12 w-12 cursor-grab flex-col items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-shadow",
+        isDragging ? "cursor-grabbing shadow-xl scale-110" : "active:scale-95"
+      )}
+      style={{
+        transform: `translate(${position.x}px, ${position.y}px)`,
+      }}
+      onMouseDown={(e) => {
+        e.preventDefault()
+        handleStart(e.clientX, e.clientY)
+      }}
+      onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
+      onMouseUp={handleEnd}
+      onMouseLeave={handleEnd}
+      onTouchStart={(e) => {
+        const touch = e.touches[0]
+        handleStart(touch.clientX, touch.clientY)
+      }}
+      onTouchMove={(e) => {
+        const touch = e.touches[0]
+        handleMove(touch.clientX, touch.clientY)
+      }}
+      onTouchEnd={handleEnd}
+      onClick={handleClick}
     >
       <MessageCircle className="h-5 w-5" />
       <span className="mt-0.5 text-[10px] leading-none">反馈</span>
-    </Link>
+    </div>
   )
 }
 
