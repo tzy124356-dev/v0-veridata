@@ -81,15 +81,13 @@ function HomeContent() {
         <div className="relative px-5 pt-10 pb-6">
           {/* 品牌区域 */}
           <header className="mb-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-              <Image
-                src="/logo.png"
-                alt="械研 VERIDATA"
-                width={28}
-                height={28}
-                className="object-contain"
-              />
-            </div>
+            <Image
+              src="/logo.png"
+              alt="械研 VERIDATA"
+              width={36}
+              height={36}
+              className="object-contain mix-blend-lighten brightness-0 invert"
+            />
             <div>
               <h1 className="text-base font-semibold text-white">
                 械研 VERIDATA
