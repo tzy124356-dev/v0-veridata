@@ -196,22 +196,17 @@ function ScenarioGuideSection() {
           <Link
             key={guide.id}
             href={`/chat?q=${encodeURIComponent(guide.hint)}`}
-            className="group flex items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-2.5 transition-all hover:border-primary/30 hover:shadow-soft active:scale-[0.98]"
+            className="group flex items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-3 transition-all hover:border-primary/30 hover:shadow-soft active:scale-[0.98]"
           >
             {/* 图标 */}
             <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
               <guide.icon className="h-4 w-4 text-primary" />
             </div>
 
-            {/* 文字 */}
-            <div className="min-w-0 flex-1">
-              <h4 className="truncate text-sm font-medium text-foreground">
-                {guide.title}
-              </h4>
-              <p className="truncate text-[11px] text-muted-foreground">
-                {guide.description}
-              </p>
-            </div>
+            {/* 标题 */}
+            <span className="text-sm font-medium text-foreground">
+              {guide.title}
+            </span>
           </Link>
         ))}
       </div>
