@@ -5,7 +5,6 @@ import {
   FolderOpen,
   User,
   ChevronRight,
-  CheckCircle2,
   FileText,
   Bell,
   HelpCircle,
@@ -14,7 +13,6 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
-import Image from "next/image"
 
 // 底部导航Tab类型
 type TabType = "chat" | "vault" | "profile"
@@ -81,13 +79,30 @@ function HomeContent() {
         <div className="relative px-5 pt-10 pb-6">
           {/* 品牌区域 */}
           <header className="mb-4 flex items-center gap-3">
-            <Image
-              src="/logo.png"
-              alt="械研 VERIDATA"
-              width={40}
-              height={40}
-              className="object-contain mix-blend-screen"
-            />
+            {/* 自定义Logo - 抽象科技图形 */}
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+              <svg viewBox="0 0 32 32" className="h-6 w-6" fill="none">
+                <path
+                  d="M16 4L4 10v12l12 6 12-6V10L16 4z"
+                  fill="white"
+                  fillOpacity="0.9"
+                />
+                <path
+                  d="M16 4L4 10l12 6 12-6-12-6z"
+                  fill="white"
+                />
+                <path
+                  d="M4 10v12l12 6V16L4 10z"
+                  fill="white"
+                  fillOpacity="0.7"
+                />
+                <path
+                  d="M28 10v12l-12 6V16l12-6z"
+                  fill="white"
+                  fillOpacity="0.5"
+                />
+              </svg>
+            </div>
             <div>
               <h1 className="text-base font-semibold text-white">
                 械研 VERIDATA
@@ -133,41 +148,51 @@ function IdentityBanner() {
   )
 }
 
-// 智能问答主卡片 - 放在白色区域中（加大版）
+// 智能问答主卡片 - 浅蓝渐变高级版
 function MainFeatureCard() {
   return (
-    <div className="relative mb-5 overflow-hidden rounded-2xl bg-gradient-to-br from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb] p-6">
-      {/* 背景装饰光晕 */}
-      <div className="absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-cyan-400/20 blur-2xl" />
-      <div className="absolute right-20 top-0 h-24 w-24 rounded-full bg-blue-300/10 blur-2xl" />
+    <div className="relative mb-5 overflow-hidden rounded-2xl bg-gradient-to-br from-[#e0f2fe] via-[#bae6fd] to-[#7dd3fc] p-6">
+      {/* 背景装饰 - 淡色光晕 */}
+      <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/40 blur-3xl" />
+      <div className="absolute -right-8 bottom-0 h-32 w-32 rounded-full bg-blue-200/30 blur-2xl" />
 
-      {/* 右侧AI图标装饰 */}
+      {/* 右侧3D AI图标 */}
       <div className="absolute right-4 top-1/2 -translate-y-1/2">
         <div className="relative">
-          <div className="absolute -bottom-2 left-1/2 h-3 w-16 -translate-x-1/2 rounded-full bg-cyan-400/50 blur-md" />
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400/30 to-blue-500/30 backdrop-blur-sm">
-            <MessageSquare className="h-8 w-8 text-white" />
+          {/* 底座光环 */}
+          <div className="absolute -bottom-3 left-1/2 -translate-x-1/2">
+            <div className="h-2 w-20 rounded-full bg-blue-400/20 blur-sm" />
+            <div className="mt-1 h-1.5 w-16 mx-auto rounded-full bg-blue-300/30 blur-sm" />
+            <div className="mt-1 h-1 w-12 mx-auto rounded-full bg-blue-200/40 blur-sm" />
+          </div>
+          {/* AI图标主体 */}
+          <div className="relative flex h-[72px] w-[72px] items-center justify-center rounded-2xl bg-gradient-to-br from-[#3b82f6] to-[#1d4ed8] shadow-lg shadow-blue-500/30">
+            {/* 内部光泽 */}
+            <div className="absolute inset-0.5 rounded-[14px] bg-gradient-to-br from-white/20 to-transparent" />
+            {/* AI文字 */}
+            <span className="relative text-xl font-bold text-white">AI</span>
+            {/* 聊天气泡装饰 */}
+            <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-white shadow-sm">
+              <MessageSquare className="h-3 w-3 text-blue-500" />
+            </div>
           </div>
         </div>
       </div>
 
       {/* 左侧内容 */}
-      <div className="relative z-10 max-w-[60%]">
-        <h2 className="mb-1.5 text-2xl font-bold text-white">智能问答</h2>
-        <p className="mb-3 text-sm text-white/80">注册问题的深层问答</p>
+      <div className="relative z-10 max-w-[55%]">
+        <h2 className="mb-1.5 text-2xl font-bold text-[#1e3a8a]">智能问答</h2>
+        <p className="mb-3 text-sm text-[#1e40af]/80">注册问题的深层问答</p>
 
         {/* 出处说明 */}
-        <div className="mb-4 flex items-start gap-2">
-          <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-cyan-300" />
-          <span className="text-xs leading-relaxed text-white/70">
-            基于行业官方数据库，每条回答有出处
-          </span>
-        </div>
+        <p className="mb-5 text-xs text-[#1e40af]/60">
+          基于行业官方数据库，每条回答有出处
+        </p>
 
         {/* 立即提问按钮 */}
         <Link
           href="/chat"
-          className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-[#1e40af] transition-all hover:bg-white/90 active:scale-[0.98]"
+          className="inline-flex items-center gap-2 rounded-full bg-[#2563eb] px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-[#1d4ed8] active:scale-[0.98]"
         >
           立即提问
           <ChevronRight className="h-4 w-4" />
