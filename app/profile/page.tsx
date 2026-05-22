@@ -29,10 +29,30 @@ export default function ProfilePage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
-      {/* 顶部头部区域 */}
-      <header className="px-5 pt-12 pb-4">
-        <h1 className="text-center text-lg font-semibold text-gray-900">我的</h1>
-      </header>
+      {/* 微信小程序导航栏 - 与首页一致 */}
+      <div className="relative flex h-11 items-center justify-center bg-gradient-to-b from-[#f0f7ff] to-[#f0f7ff]">
+        <span className="text-[17px] font-semibold tracking-wide text-foreground">
+          Veridata
+        </span>
+
+        {/* 微信胶囊按钮 */}
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-[87px] items-center rounded-full border border-black/5 bg-black/[0.04]">
+          <div className="flex flex-1 items-center justify-center text-foreground">
+            <svg width="18" height="4" viewBox="0 0 18 4">
+              <circle cx="2" cy="2" r="1.5" fill="currentColor" />
+              <circle cx="9" cy="2" r="1.5" fill="currentColor" />
+              <circle cx="16" cy="2" r="1.5" fill="currentColor" />
+            </svg>
+          </div>
+          <div className="h-4 w-px bg-black/15" />
+          <div className="flex flex-1 items-center justify-center text-foreground">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.2" />
+              <circle cx="8" cy="8" r="1.6" fill="currentColor" />
+            </svg>
+          </div>
+        </div>
+      </div>
 
       {/* 内容区域 */}
       <main className="flex-1 overflow-y-auto px-5 pb-20 scrollbar-hide">
