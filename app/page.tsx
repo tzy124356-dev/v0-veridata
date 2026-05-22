@@ -236,7 +236,7 @@ function MainFeatureCard() {
         />
 
         {/* 主描述 */}
-        <p className="mb-2.5 text-[15px] font-medium leading-normal text-white/95">
+        <p className="mt-4 mb-2.5 text-[15px] font-medium leading-normal text-white/95">
           注册问题的深层问答
         </p>
 
