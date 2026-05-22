@@ -55,7 +55,7 @@ export default function ProfilePage() {
       </div>
 
       {/* 内容区域 */}
-      <main className="flex-1 overflow-y-auto px-5 pb-20 scrollbar-hide">
+      <main className="flex-1 overflow-y-auto px-5 pt-4 pb-20 scrollbar-hide">
         <ProfileContent isLoggedIn={isLoggedIn} onLogout={() => setIsLoggedIn(false)} />
       </main>
 
