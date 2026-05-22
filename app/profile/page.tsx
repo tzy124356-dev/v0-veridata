@@ -142,7 +142,7 @@ function ProfileContent({
       {/* 会员信息 */}
       {isLoggedIn && (
         <Link
-          href="/membership"
+          href="/upgrade"
           className="mb-3 flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm transition-colors hover:bg-gray-50"
         >
           <div className="flex items-center gap-3">
