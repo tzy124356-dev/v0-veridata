@@ -567,7 +567,7 @@ function MessageBubbleA({ message }: { message: Message }) {
   if (message.type === "user") {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-gradient-to-r from-[#1e40af] to-[#3b82f6] px-4 py-3 text-sm text-white shadow-md">
+        <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-[#3b82f6] px-4 py-3 text-sm text-white shadow-md">
           {message.content}
         </div>
       </div>
