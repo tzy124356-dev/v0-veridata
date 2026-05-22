@@ -52,6 +52,20 @@ export function FeedbackFab() {
     }
   }
 
+  const handleFeedbackSubmit = (data: { type: string; content: string }) => {
+    if (typeof window !== "undefined") {
+      const item = {
+        ...data,
+        createdAt: new Date().toISOString(),
+        source: "global_fab",
+      }
+      const existing = localStorage.getItem("veridata_feedbacks")
+      const feedbacks = existing ? JSON.parse(existing) : []
+      feedbacks.push(item)
+      localStorage.setItem("veridata_feedbacks", JSON.stringify(feedbacks))
+    }
+  }
+
   // 监听全局鼠标事件
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => handleMove(e.clientX, e.clientY)
@@ -96,7 +110,11 @@ export function FeedbackFab() {
         <MessageCircle className="h-5 w-5" />
         <span className="mt-0.5 text-[9px] leading-none">反馈</span>
       </div>
-      <FeedbackModal isOpen={showModal} onClose={() => setShowModal(false)} />
+      <FeedbackModal 
+        isOpen={showModal} 
+        onClose={() => setShowModal(false)} 
+        onSubmit={handleFeedbackSubmit}
+      />
     </>
   )
 }

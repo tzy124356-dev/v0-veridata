@@ -357,7 +357,7 @@ function EmptyState({
 
       {/* 底部说明 */}
       <p className="mt-4 text-center text-xs text-gray-400">
-        支持 Word、PDF，单文件最大 20MB
+        当前仅支持 Word（.doc/.docx），单文件最大 20MB，单次最多 5 个文件
       </p>
     </div>
   )

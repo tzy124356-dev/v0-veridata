@@ -180,12 +180,12 @@ const mockHistoryMessages: Record<string, Message[]> = {
     },
     {
       id: "h1-2",
-      type: "ai",
+      type: "assistant",
       content: "根据《医疗器械注册与备案管理办法》，医美针剂作为第三类医疗器械，注册申报需要准备以下材料...",
       conclusion: "医美针剂注册申报需准备：1) 注册申请表；2) 证明性文件；3) 产品技术要求；4) 产品检验报告；5) 临床评价资料；6) 说明书和标签样稿；7) 质量管理体系文件。",
       legalBasis: [
-        { title: "医疗器械注册与备案管理办法", url: "#" },
-        { title: "医疗器械注册申报资料要求", url: "#" },
+        { title: "医疗器械注册与备案管理办法", clause: "第十四条", content: "申请医疗器械注册，应当按照规定提交注册申报资料。", url: "#" },
+        { title: "医疗器械注册申报资料要求", clause: "附件要求", content: "注册申报资料应包括综述资料、研究资料、临床评价资料等。", url: "#" },
       ],
       reasoning: "医美针剂通常属于第三类医疗器械，需要进行严格的注册审批流程。根据现行法规，申报材料需涵盖产品安全性、有效性的全部证明文件。",
       timestamp: new Date("2024-01-15T14:30:30"),
@@ -200,11 +200,11 @@ const mockHistoryMessages: Record<string, Message[]> = {
     },
     {
       id: "h2-2",
-      type: "ai",
+      type: "assistant",
       content: "收到发补通知后，建议按以下步骤处理...",
       conclusion: "收到发补通知后应：1) 仔细阅读发补意见；2) 组织团队逐条分析；3) 制定补充资料计划；4) 在规定时限内提交补充材料；5) 必要时申请延期或沟通。",
       legalBasis: [
-        { title: "医疗器械注册审查程序", url: "#" },
+        { title: "医疗器械注册审查程序", clause: "第二十条", content: "技术审评过程中需要申请人补充资料的，应当一次性告知需要补充的全部内容。", url: "#" },
       ],
       reasoning: "发补是注册审评过程中的常见环节，及时、准确地响应发补意见对于顺利获批至关重要。",
       timestamp: new Date("2024-01-15T10:15:30"),
@@ -219,12 +219,12 @@ const mockHistoryMessages: Record<string, Message[]> = {
     },
     {
       id: "h3-2",
-      type: "ai",
+      type: "assistant",
       content: "透明质酸类产品的分类主要依据其预期用途和作用机理...",
       conclusion: "透明质酸类产品分类标准：1) 用于填充增容的属于第三类；2) 用于保湿护理的可能属于化妆品；3) 具有治疗作用的需按药品管理。具体分类需根据产品预期用途、作用部位和作用机理综合判定。",
       legalBasis: [
-        { title: "医疗器械分类目录", url: "#" },
-        { title: "医疗器械分类规则", url: "#" },
+        { title: "医疗器械分类目录", clause: "13-09-02", content: "注射用交联透明质酸钠凝胶属于第三类医疗器械。", url: "#" },
+        { title: "医疗器械分类规则", clause: "第六条", content: "根据医疗器械的结构特征、使用形式和使用状态进行分类。", url: "#" },
       ],
       reasoning: "透明质酸类产品的监管类别取决于其预期用途，同一成分可能因用途不同而归入不同监管类别。",
       timestamp: new Date("2024-01-14T16:42:30"),
@@ -239,11 +239,11 @@ const mockHistoryMessages: Record<string, Message[]> = {
     },
     {
       id: "h4-2",
-      type: "ai",
+      type: "assistant",
       content: "根据《医疗器械临床评价技术指导原则》，临床评价应包括...",
       conclusion: "临床评价要求包括：1) 临床评价路径选择；2) 同品种医疗器械临床数据分析；3) 临床文献数据分析；4) 临床试验数据（如需）；5) 临床评价报告编写。",
       legalBasis: [
-        { title: "医疗器械临床评价技术指导原则", url: "#" },
+        { title: "医疗器械临床评价技术指导原则", clause: "第四章", content: "临床评价应包括临床文献数据、临床经验数据和临床试验数据的系统分析。", url: "#" },
       ],
       reasoning: "临床评价是证明医疗器械安全性和有效性的关键环节，评价方式和深度需与产品风险程度相匹配。",
       timestamp: new Date("2024-01-14T09:20:30"),
@@ -258,11 +258,11 @@ const mockHistoryMessages: Record<string, Message[]> = {
     },
     {
       id: "h5-2",
-      type: "ai",
+      type: "assistant",
       content: "有效期验证应按照《医疗器械稳定性研究技术审查指导原则》...",
       conclusion: "有效期验证方法：1) 加速稳定性试验；2) 长期稳定性试验；3) 运输稳定性试验。需检测物理、化学、生物学等关键质量指标随时间变化情况。",
       legalBasis: [
-        { title: "医疗器械稳定性研究技术审查指导原则", url: "#" },
+        { title: "医疗器械稳定性研究技术审查指导原则", clause: "第三章", content: "稳定性研究应包括加速稳定性试验和实时稳定性试验。", url: "#" },
       ],
       reasoning: "稳定性研究是确定产品有效期的科学依据，需综合考虑产品特性和储存条件。",
       timestamp: new Date("2024-01-12T15:00:30"),

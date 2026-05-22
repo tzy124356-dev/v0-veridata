@@ -45,7 +45,7 @@ const faqCategories = [
     questions: [
       {
         q: "支持上传哪些文件格式？",
-        a: "目前支持PDF、Word（.doc/.docx）、Excel（.xls/.xlsx）等常见文档格式。",
+        a: "当前版本仅支持 Word 文档（.doc/.docx）。PDF、Excel 等格式将在后续版本逐步支持。",
       },
       {
         q: "档案库空间不够用了怎么办？",
