@@ -399,8 +399,8 @@ function FileListView({
           </div>
 
           {/* 文件详情 */}
-          <div className="px-4 py-3">
-            <div className="grid grid-cols-2 gap-y-2 text-xs">
+          <div className="flex items-center px-4 py-3">
+            <div className="grid flex-1 grid-cols-2 gap-y-2 text-xs">
               <div>
                 <span className="text-gray-400">大小</span>
                 <p className="font-medium text-gray-700">{file.size}</p>
@@ -411,29 +411,26 @@ function FileListView({
               </div>
             </div>
 
-            {/* 上传进度 */}
-            {file.status === "uploading" && (
-              <div className="mt-3">
-                <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
-                  <div
-                    className="h-full rounded-full bg-blue-500 transition-all"
-                    style={{ width: `${file.progress || 0}%` }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* 删除操作栏 */}
-          <div className="flex border-t border-gray-100">
+            {/* 删除按钮 */}
             <button
               onClick={() => onDelete(file.id)}
-              className="flex flex-1 items-center justify-center gap-2 py-2.5 text-xs text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-300 transition-colors hover:bg-red-50 hover:text-red-500"
             >
-              <Trash2 className="h-3.5 w-3.5" />
-              删除
+              <Trash2 className="h-4 w-4" />
             </button>
           </div>
+
+          {/* 上传进度 */}
+          {file.status === "uploading" && (
+            <div className="px-4 pb-3">
+              <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
+                <div
+                  className="h-full rounded-full bg-blue-500 transition-all"
+                  style={{ width: `${file.progress || 0}%` }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       ))}
     </div>
