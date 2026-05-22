@@ -265,7 +265,7 @@ function ChatVersionA({
                   handleSend()
                 }
               }}
-              placeholder="输入您的问题..."
+              placeholder="输入您���问题..."
               rows={1}
               className="max-h-32 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
             />
@@ -354,8 +354,6 @@ function MessageBubbleA({ message }: { message: Message }) {
   const [showReasoning, setShowReasoning] = useState(false)
   const [copied, setCopied] = useState(false)
   const [bookmarked, setBookmarked] = useState(false)
-  const [liked, setLiked] = useState(false)
-  const [showLikeToast, setShowLikeToast] = useState(false)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
   const handleCopy = async () => {
@@ -363,21 +361,13 @@ function MessageBubbleA({ message }: { message: Message }) {
     try {
       await navigator.clipboard.writeText(text)
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setTimeout(() => setCopied(false), 1500)
     } catch {}
   }
 
   const handleBookmark = () => {
     setBookmarked(!bookmarked)
     // TODO: 同步到"我的"收藏
-  }
-
-  const handleLike = () => {
-    if (!liked) {
-      setLiked(true)
-      setShowLikeToast(true)
-      setTimeout(() => setShowLikeToast(false), 1000)
-    }
   }
 
   const handleDislike = () => {
@@ -469,16 +459,8 @@ function MessageBubbleA({ message }: { message: Message }) {
           </button>
         </div>
         <div className="flex items-center gap-1">
-          <button 
-            onClick={handleLike}
-            className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-lg transition-colors",
-              liked 
-                ? "text-[#1e40af] bg-[#1e40af]/10" 
-                : "text-gray-400 hover:bg-[#1e40af]/10 hover:text-[#1e40af]"
-            )}
-          >
-            <ThumbsUp className={cn("h-3.5 w-3.5", liked && "fill-current")} />
+          <button className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-[#1e40af]/10 hover:text-[#1e40af]">
+            <ThumbsUp className="h-3.5 w-3.5" />
           </button>
           <button 
             onClick={handleDislike}
@@ -489,10 +471,10 @@ function MessageBubbleA({ message }: { message: Message }) {
         </div>
       </div>
 
-      {/* 点赞反馈 Toast */}
-      {showLikeToast && (
+      {/* 复制成功 Toast */}
+      {copied && (
         <div className="fixed left-1/2 top-1/2 z-[200] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-black/70 px-4 py-2 text-sm text-white">
-          收到反馈
+          已复制到剪贴板
         </div>
       )}
 
