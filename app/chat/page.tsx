@@ -309,24 +309,9 @@ function EmptyStateA({ onScenarioClick }: { onScenarioClick: (hint: string) => v
         <Sparkles className="h-10 w-10 text-[#1e40af]" />
       </div>
       <h2 className="mb-2 text-lg font-semibold text-gray-900">有什么可以帮到你？</h2>
-      <p className="mb-8 text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-gray-500">
         基于行业官方数据库，每条回答有出处
       </p>
-
-      <div className="w-full max-w-sm space-y-3">
-        <p className="text-center text-xs text-gray-400">选择一个场景开始</p>
-        <div className="flex flex-wrap justify-center gap-2">
-          {scenarioTags.map((tag) => (
-            <button
-              key={tag.id}
-              onClick={() => onScenarioClick(tag.hint)}
-              className="rounded-full border border-[#1e40af]/15 bg-white px-4 py-2 text-sm text-gray-700 shadow-sm transition-all hover:border-[#1e40af]/30 hover:bg-[#1e40af]/5 active:scale-95"
-            >
-              {tag.label}
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   )
 }
