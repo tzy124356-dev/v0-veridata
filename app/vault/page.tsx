@@ -244,7 +244,7 @@ export default function VaultPage() {
   )
 }
 
-// 空状态
+// 空状态 - 包含3个设计方案供选择
 function EmptyState({
   onUploadClick,
   onLoadDemo,
@@ -260,12 +260,7 @@ function EmptyState({
   onDragLeave: () => void
   onDrop: (e: React.DragEvent) => void
 }) {
-  const painPoints = [
-    { icon: "01", text: "文件散落各处，需要时找不到" },
-    { icon: "02", text: "指导原则太长，关键信息难定位" },
-    { icon: "03", text: "下载了没时间看，内容不了解" },
-    { icon: "04", text: "多年积累的经验，从未真正用起来" },
-  ]
+  const [designVersion, setDesignVersion] = useState<"A" | "B" | "C">("A")
 
   return (
     <div
@@ -274,72 +269,267 @@ function EmptyState({
       onDragLeave={onDragLeave}
       onDrop={onDrop}
     >
-      <div
-        className={cn(
-          "rounded-2xl border border-border bg-card p-6 transition-all",
-          isDragging && "ring-2 ring-primary ring-offset-2 ring-offset-background"
-        )}
-      >
-        {/* 图标和标题 */}
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af]/20 to-[#2563eb]/10">
-            <FolderOpen className="h-8 w-8 text-[#1e40af]" />
-          </div>
-          <h2 className="mb-1 text-lg font-semibold text-foreground">
-            构建你的专属知识库
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            上传文件，AI 帮你读透每一页
-          </p>
-        </div>
+      {/* 设计方案切换器 - 开发时使用，正式版删除 */}
+      <div className="mb-4 flex items-center justify-center gap-2">
+        <span className="text-xs text-muted-foreground">方案：</span>
+        {(["A", "B", "C"] as const).map((v) => (
+          <button
+            key={v}
+            onClick={() => setDesignVersion(v)}
+            className={cn(
+              "h-8 w-8 rounded-lg text-xs font-medium transition-all",
+              designVersion === v
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-muted-foreground hover:bg-secondary/80"
+            )}
+          >
+            {v}
+          </button>
+        ))}
+      </div>
 
-        {/* 痛点列表 - 2x2网格 */}
-        <div className="mb-6 grid grid-cols-2 gap-3">
-          {painPoints.map((point) => (
-            <div key={point.icon} className="rounded-xl bg-secondary/50 p-3">
-              <span className="mb-1 block text-xs font-semibold text-[#1e40af]">
-                {point.icon}
-              </span>
-              <p className="text-xs leading-relaxed text-secondary-foreground">
-                {point.text}
-              </p>
+      {designVersion === "A" && (
+        <EmptyStateVersionA
+          onUploadClick={onUploadClick}
+          onLoadDemo={onLoadDemo}
+          isDragging={isDragging}
+        />
+      )}
+      {designVersion === "B" && (
+        <EmptyStateVersionB
+          onUploadClick={onUploadClick}
+          onLoadDemo={onLoadDemo}
+          isDragging={isDragging}
+        />
+      )}
+      {designVersion === "C" && (
+        <EmptyStateVersionC
+          onUploadClick={onUploadClick}
+          onLoadDemo={onLoadDemo}
+          isDragging={isDragging}
+        />
+      )}
+    </div>
+  )
+}
+
+// 方案A：极简列表式 - 用简洁的列表展示功能点
+function EmptyStateVersionA({
+  onUploadClick,
+  onLoadDemo,
+  isDragging,
+}: {
+  onUploadClick: () => void
+  onLoadDemo: () => void
+  isDragging: boolean
+}) {
+  const features = [
+    "统一管理，告别文件散落",
+    "智能解析，快速定位关键信息",
+    "随时提问，知识一问即得",
+  ]
+
+  return (
+    <div
+      className={cn(
+        "rounded-2xl border border-border bg-card p-6 transition-all",
+        isDragging && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+      )}
+    >
+      {/* 图标和标题 */}
+      <div className="mb-8 text-center">
+        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#2563eb]">
+          <FolderOpen className="h-10 w-10 text-white" />
+        </div>
+        <h2 className="mb-2 text-xl font-bold text-foreground">
+          构建你的专属知识库
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          上传文件，AI 帮你读透每一页
+        </p>
+      </div>
+
+      {/* 功能列表 - 简洁列表 */}
+      <div className="mb-8 space-y-3">
+        {features.map((feature, index) => (
+          <div key={index} className="flex items-center gap-3">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#1e40af]/10">
+              <CheckCircle className="h-4 w-4 text-[#1e40af]" />
             </div>
-          ))}
-        </div>
+            <span className="text-sm text-foreground">{feature}</span>
+          </div>
+        ))}
+      </div>
 
-        {/* 价值主张 */}
-        <div className="mb-6 rounded-xl border border-[#1e40af]/20 bg-[#1e40af]/5 p-4">
-          <p className="text-center text-sm leading-relaxed text-foreground">
-            <span className="font-semibold text-[#1e40af]">VeriVault</span>
-            {" "}让你上传一次，随时调用
-            <br />
-            <span className="text-muted-foreground">关键信息一问即得</span>
-          </p>
-        </div>
+      {/* 按钮组 */}
+      <div className="space-y-3">
+        <button
+          onClick={onUploadClick}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e40af] to-[#2563eb] py-3.5 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]"
+        >
+          <Upload className="h-4 w-4" />
+          上传文件
+        </button>
 
-        {/* 按钮组 */}
-        <div className="space-y-3">
-          <button
-            onClick={onUploadClick}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e40af] to-[#2563eb] py-3.5 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]"
-          >
-            <Upload className="h-4 w-4" />
-            上传文件
-          </button>
-
-          <button
-            onClick={onLoadDemo}
-            className="w-full rounded-xl border border-border bg-background py-3 text-sm font-medium text-muted-foreground transition-all hover:bg-secondary/50 hover:text-foreground active:scale-[0.98]"
-          >
-            查看演示
-          </button>
-        </div>
+        <button
+          onClick={onLoadDemo}
+          className="w-full rounded-xl border border-border bg-background py-3 text-sm font-medium text-muted-foreground transition-all hover:bg-secondary/50 hover:text-foreground active:scale-[0.98]"
+        >
+          查看演示
+        </button>
       </div>
 
       {/* 底部提示 */}
       <p className="mt-4 text-center text-xs text-muted-foreground">
         支持 Word、PDF 格式，单个文件最大 20MB
       </p>
+    </div>
+  )
+}
+
+// 方案B：流程步骤式 - 展示上传到使用的流程
+function EmptyStateVersionB({
+  onUploadClick,
+  onLoadDemo,
+  isDragging,
+}: {
+  onUploadClick: () => void
+  onLoadDemo: () => void
+  isDragging: boolean
+}) {
+  const steps = [
+    { step: "1", title: "上传", desc: "上传你的文档资料" },
+    { step: "2", title: "解析", desc: "AI 智能解析内容" },
+    { step: "3", title: "提问", desc: "随时向文档提问" },
+  ]
+
+  return (
+    <div
+      className={cn(
+        "rounded-2xl border border-border bg-card p-6 transition-all",
+        isDragging && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+      )}
+    >
+      {/* 图标和标题 */}
+      <div className="mb-6 text-center">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#2563eb]">
+          <FolderOpen className="h-8 w-8 text-white" />
+        </div>
+        <h2 className="mb-1 text-lg font-semibold text-foreground">
+          构建你的专属知识库
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          三步开启智能文档问答
+        </p>
+      </div>
+
+      {/* 步骤流程 - 横向 */}
+      <div className="mb-6 flex items-start justify-between px-2">
+        {steps.map((item, index) => (
+          <div key={item.step} className="flex flex-col items-center">
+            <div className="relative">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#2563eb] text-lg font-bold text-white">
+                {item.step}
+              </div>
+              {index < steps.length - 1 && (
+                <div className="absolute top-1/2 left-full h-0.5 w-8 -translate-y-1/2 bg-gradient-to-r from-[#1e40af]/50 to-[#2563eb]/20" />
+              )}
+            </div>
+            <span className="mt-2 text-sm font-medium text-foreground">{item.title}</span>
+            <span className="mt-0.5 text-center text-xs text-muted-foreground">{item.desc}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* 价值主张 */}
+      <div className="mb-6 rounded-xl bg-secondary/50 p-4 text-center">
+        <p className="text-sm text-foreground">
+          <span className="font-semibold text-[#1e40af]">VeriVault</span>
+          {" "}让你上传一次，随时调用
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">关键信息一问即得</p>
+      </div>
+
+      {/* 按钮组 */}
+      <div className="space-y-3">
+        <button
+          onClick={onUploadClick}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e40af] to-[#2563eb] py-3.5 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]"
+        >
+          <Upload className="h-4 w-4" />
+          开始上传
+        </button>
+
+        <button
+          onClick={onLoadDemo}
+          className="w-full rounded-xl border border-border bg-background py-3 text-sm font-medium text-muted-foreground transition-all hover:bg-secondary/50 hover:text-foreground active:scale-[0.98]"
+        >
+          查看演示
+        </button>
+      </div>
+
+      {/* 底部提示 */}
+      <p className="mt-4 text-center text-xs text-muted-foreground">
+        支持 Word、PDF 格式，单个文件最大 20MB
+      </p>
+    </div>
+  )
+}
+
+// 方案C：极简纯净式 - 去除痛点，只保留核心
+function EmptyStateVersionC({
+  onUploadClick,
+  onLoadDemo,
+  isDragging,
+}: {
+  onUploadClick: () => void
+  onLoadDemo: () => void
+  isDragging: boolean
+}) {
+  return (
+    <div
+      className={cn(
+        "rounded-2xl border border-border bg-card p-8 transition-all",
+        isDragging && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+      )}
+    >
+      {/* 大图标 */}
+      <div className="mb-6 text-center">
+        <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-[#1e40af]/10 to-[#2563eb]/5">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#2563eb]">
+            <FolderOpen className="h-8 w-8 text-white" />
+          </div>
+        </div>
+        <h2 className="mb-2 text-xl font-bold text-foreground">
+          VeriVault
+        </h2>
+        <p className="mb-1 text-base text-foreground">
+          你的专属知识库
+        </p>
+        <p className="text-sm text-muted-foreground">
+          上传文件，AI 帮你读透每一页，随时提问
+        </p>
+      </div>
+
+      {/* 虚线上传区域 */}
+      <div
+        onClick={onUploadClick}
+        className="mb-6 cursor-pointer rounded-xl border-2 border-dashed border-[#1e40af]/30 bg-[#1e40af]/5 p-6 text-center transition-all hover:border-[#1e40af]/50 hover:bg-[#1e40af]/10"
+      >
+        <Upload className="mx-auto mb-2 h-8 w-8 text-[#1e40af]" />
+        <p className="text-sm font-medium text-[#1e40af]">点击或拖拽上传文件</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          支持 Word、PDF 格式，最大 20MB
+        </p>
+      </div>
+
+      {/* 查看演示 */}
+      <button
+        onClick={onLoadDemo}
+        className="w-full rounded-xl border border-border bg-background py-3 text-sm font-medium text-muted-foreground transition-all hover:bg-secondary/50 hover:text-foreground active:scale-[0.98]"
+      >
+        查看演示
+      </button>
     </div>
   )
 }
