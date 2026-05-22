@@ -54,7 +54,7 @@ export default function LoginPage() {
               src="/crab-logo.png"
               alt="械研 Logo"
               fill
-              className="object-contain"
+              className="object-contain brightness-0 invert"
               priority
             />
           </div>

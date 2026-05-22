@@ -38,7 +38,7 @@ export default function SplashPage() {
             src="/crab-logo.png"
             alt="械研 Logo"
             fill
-            className="object-contain drop-shadow-lg"
+            className="object-contain brightness-0 invert drop-shadow-lg"
             priority
           />
         </div>
