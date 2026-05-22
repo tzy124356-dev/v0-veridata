@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import {
   User,
   ChevronRight,
@@ -13,6 +13,7 @@ import {
   FolderOpen,
   MessageCircle,
   Crown,
+  Coins,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -84,6 +85,18 @@ function ProfileContent({
   isLoggedIn: boolean
   onLogout: () => void
 }) {
+  const [totalPoints, setTotalPoints] = useState(95)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("user_points")
+      if (stored) {
+        const points = JSON.parse(stored)
+        setTotalPoints(points.free + points.gift + points.member)
+      }
+    }
+  }, [])
+
   const menuItems = [
     { icon: Clock, label: "历史记录", href: "/history" },
     { icon: Bookmark, label: "我的收藏", href: "/favorites", badge: userStats.favorites },
@@ -108,7 +121,7 @@ function ProfileContent({
               <div className="mb-1 flex items-center gap-2">
                 <h2 className="text-base font-semibold text-gray-900">张工程师</h2>
                 <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
-                  专业版
+                  轻度版
                 </span>
               </div>
               <p className="text-xs text-gray-500">注册专员 · 医美针剂方向</p>
@@ -126,8 +139,8 @@ function ProfileContent({
               <p className="text-[10px] text-gray-400">收藏回答</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-bold text-[#1e40af]">{userStats.documents}</p>
-              <p className="text-[10px] text-gray-400">档案文件</p>
+              <p className="text-lg font-bold text-[#1e40af]">{totalPoints}</p>
+              <p className="text-[10px] text-gray-400">剩余积分</p>
             </div>
           </div>
         </div>
@@ -160,7 +173,27 @@ function ProfileContent({
             <span className="text-sm text-gray-900">会员信息</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-amber-600">专业版</span>
+            <span className="text-xs text-amber-600">轻度版</span>
+            <ChevronRight className="h-4 w-4 text-gray-300" />
+          </div>
+        </Link>
+      )}
+
+      {/* 我的积分 */}
+      {isLoggedIn && (
+        <Link
+          href="/points"
+          className="mb-3 flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm transition-colors hover:bg-gray-50"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50">
+              <Coins className="h-4 w-4 text-violet-500" />
+            </div>
+            <span className="text-sm text-gray-900">我的积分</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-orange-500">{totalPoints}</span>
+            <span className="text-[10px] text-gray-400">积分</span>
             <ChevronRight className="h-4 w-4 text-gray-300" />
           </div>
         </Link>

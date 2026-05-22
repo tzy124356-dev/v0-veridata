@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import {
   ChevronLeft,
   Bell,
@@ -180,6 +181,17 @@ function NotificationItem({
   notification: (typeof mockNotifications)[0]
   onMarkRead: (id: number) => void
 }) {
+  const router = useRouter()
+
+  const handleClick = () => {
+    onMarkRead(notification.id)
+    // 积分类型跳转到积分中心
+    if (notification.type === "points") {
+      router.push("/points")
+    }
+    // feedback 和 update 类型仅标记已读，不跳转
+  }
+
   const getIcon = () => {
     switch (notification.type) {
       case "feedback":
@@ -204,7 +216,7 @@ function NotificationItem({
 
   return (
     <button
-      onClick={() => onMarkRead(notification.id)}
+      onClick={handleClick}
       className={cn(
         "glass w-full rounded-xl p-4 text-left transition-all hover:bg-secondary/30 active:scale-[0.99]",
         !notification.isRead && "ring-1 ring-primary/30"

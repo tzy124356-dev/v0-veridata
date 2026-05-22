@@ -9,14 +9,21 @@ export default function SplashPage() {
   const [fadeOut, setFadeOut] = useState(false)
 
   useEffect(() => {
+    // 检查登录态
+    const isLoggedIn = typeof window !== "undefined" && localStorage.getItem("wechat_logged_in") === "true"
+
     // 1.5秒后开始淡出
     const fadeTimer = setTimeout(() => {
       setFadeOut(true)
     }, 1500)
 
-    // 2秒后跳转到登录页
+    // 2秒后跳转
     const redirectTimer = setTimeout(() => {
-      router.push("/login")
+      if (isLoggedIn) {
+        router.replace("/") // 已登录则跳转首页
+      } else {
+        router.push("/login") // 未登录则跳转登录页
+      }
     }, 2000)
 
     return () => {

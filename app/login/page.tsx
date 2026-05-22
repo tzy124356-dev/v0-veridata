@@ -24,6 +24,22 @@ export default function LoginPage() {
     setLoginSuccess(true)
     await new Promise((resolve) => setTimeout(resolve, 800))
 
+    // 设置登录状态和初始化数据
+    if (typeof window !== "undefined") {
+      localStorage.setItem("wechat_logged_in", "true")
+      
+      // 初始化积分（未购买会员）
+      if (!localStorage.getItem("user_points")) {
+        localStorage.setItem("user_points", JSON.stringify({ free: 40, gift: 5, member: 0 }))
+      }
+      
+      // 生成邀请码
+      if (!localStorage.getItem("user_invite_code")) {
+        const code = "YJ" + Math.floor(10000 + Math.random() * 90000)
+        localStorage.setItem("user_invite_code", code)
+      }
+    }
+
     // 跳转到首页
     router.push("/")
   }
@@ -38,6 +54,22 @@ export default function LoginPage() {
 
     setLoginSuccess(true)
     await new Promise((resolve) => setTimeout(resolve, 800))
+
+    // 设置登录状态和初始化数据
+    if (typeof window !== "undefined") {
+      localStorage.setItem("wechat_logged_in", "true")
+      
+      // 初始化积分（未购买会员）
+      if (!localStorage.getItem("user_points")) {
+        localStorage.setItem("user_points", JSON.stringify({ free: 40, gift: 5, member: 0 }))
+      }
+      
+      // 生成邀请码
+      if (!localStorage.getItem("user_invite_code")) {
+        const code = "YJ" + Math.floor(10000 + Math.random() * 90000)
+        localStorage.setItem("user_invite_code", code)
+      }
+    }
 
     // 跳转到首页
     router.push("/")

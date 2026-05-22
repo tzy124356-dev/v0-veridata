@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
   ArrowLeft,
   Check,
@@ -12,6 +13,7 @@ import {
   MessageSquare,
   HardDrive,
   Star,
+  Info,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -59,9 +61,30 @@ export default function UpgradePage() {
 
 // 版本A：卡片对比式 - 三列卡片垂直排列
 function UpgradeVersionA() {
+  const router = useRouter()
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
   const [showTeamModal, setShowTeamModal] = useState(false)
+
+  const handleSubscribe = () => {
+    if (!selectedPlan || selectedPlan === "free") return
+
+    // 更新 localStorage 积分
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("user_points")
+      const points = stored ? JSON.parse(stored) : { free: 40, gift: 5, member: 0 }
+      
+      // lite +300, pro +1000
+      const addPoints = selectedPlan === "lite" ? 300 : 1000
+      points.member += addPoints
+      localStorage.setItem("user_points", JSON.stringify(points))
+    }
+
+    alert("订阅成功，积分已到账")
+    setTimeout(() => {
+      router.push("/points")
+    }, 1000)
+  }
 
   return (
     <div className="flex flex-col pb-8">
@@ -108,6 +131,14 @@ function UpgradeVersionA() {
           年付
           <span className="ml-1 text-xs text-[#1e40af]">省15%</span>
         </button>
+      </div>
+
+      {/* 积分规则提示卡 */}
+      <div className="mx-4 mb-3 flex items-start gap-2 rounded-xl bg-[#1e40af]/5 px-4 py-3">
+        <Info className="h-4 w-4 flex-shrink-0 text-[#1e40af]" />
+        <p className="text-xs leading-relaxed text-gray-600">
+          订阅即获积分，1 积分可发起 1 次提问。积分按"免费 → 赠送 → 会员"顺序扣减，付费部分留到最后。
+        </p>
       </div>
 
       {/* 套餐卡片 */}
@@ -161,6 +192,7 @@ function UpgradeVersionA() {
               <span className="inline-flex items-center gap-1 rounded-lg bg-gray-50 px-2.5 py-1 text-xs text-gray-600">
                 <MessageSquare className="h-3.5 w-3.5 -scale-x-100" />
                 {plan.questions}
+                <span className="ml-1.5 text-[10px] text-gray-400">= {plan.questions.replace("次/月", "")} 积分/月</span>
               </span>
               <span className="inline-flex items-center gap-1 rounded-lg bg-gray-50 px-2.5 py-1 text-xs text-gray-600">
                 <HardDrive className="h-3.5 w-3.5" />
@@ -197,7 +229,10 @@ function UpgradeVersionA() {
       {/* 立即订阅按钮 */}
       {selectedPlan && selectedPlan !== "free" && (
         <div className="fixed inset-x-0 bottom-0 border-t border-gray-100 bg-white p-4">
-          <button className="w-full rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3.5 text-base font-semibold text-white shadow-lg shadow-[#1e40af]/25">
+          <button 
+            onClick={handleSubscribe}
+            className="w-full rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3.5 text-base font-semibold text-white shadow-lg shadow-[#1e40af]/25"
+          >
             微信支付订阅
           </button>
           <p className="mt-2 text-center text-xs text-gray-400">
