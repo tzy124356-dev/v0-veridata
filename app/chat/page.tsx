@@ -212,12 +212,7 @@ function ChatVersionA({
         >
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </Link>
-        <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
-            <Sparkles className="h-3.5 w-3.5 text-white" />
-          </div>
-          <span className="text-sm font-semibold text-gray-900">智能问答</span>
-        </div>
+        <div className="w-9" /> {/* 占位，保持布局平衡 */}
         <div className="flex items-center gap-1">
           <button className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-gray-100">
             <Clock className="h-5 w-5 text-gray-400" />
