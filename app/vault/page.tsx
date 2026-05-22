@@ -361,7 +361,7 @@ function FileListView({
               : "bg-gray-100 text-gray-400 cursor-not-allowed pointer-events-none"
           )}
         >
-          <MessageSquare className="h-4 w-4" />
+          <MessageSquare className="h-4 w-4 -scale-x-100" />
           向知识库提问
         </Link>
 
