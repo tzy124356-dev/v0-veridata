@@ -301,14 +301,14 @@ function ChatVersionA({
 function EmptyStateA({ onScenarioClick }: { onScenarioClick: (hint: string) => void }) {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center py-8">
-      <Image
-        src="/crab-logo.png"
-        alt="Logo"
-        width={64}
-        height={64}
-        className="mb-3 h-16 w-16"
-      />
-      <h2 className="mb-2 text-lg font-semibold text-gray-900">
+      <h2 className="mb-2 flex items-center gap-3 text-lg font-semibold text-gray-900">
+        <Image
+          src="/crab-logo.png"
+          alt="Logo"
+          width={64}
+          height={64}
+          className="h-16 w-16"
+        />
         有什么可以帮到你？
       </h2>
       <p className="text-center text-sm text-gray-500">
