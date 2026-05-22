@@ -267,7 +267,7 @@ function StorageCard({
   )
 }
 
-// 空状态组件 - 轻渐变医疗科技风
+// 空状态组件 - 三版设计供选择
 function EmptyState({
   isDragging,
   onDragOver,
@@ -281,6 +281,14 @@ function EmptyState({
   onDrop: (e: React.DragEvent) => void
   onUploadClick: () => void
 }) {
+  const [version, setVersion] = useState<"A" | "B" | "C">("A")
+
+  const features = [
+    "统一管理，告别文件散落",
+    "智能解析，快速定位关键信息",
+    "随时提问，知识一问即得",
+  ]
+
   return (
     <div
       className={cn("mt-6 transition-all", isDragging && "opacity-80")}
@@ -288,47 +296,137 @@ function EmptyState({
       onDragLeave={onDragLeave}
       onDrop={onDrop}
     >
-      {/* 主卡片 */}
-      <div className="rounded-2xl bg-white p-6 shadow-sm">
-        {/* 标题区域 - 简洁居中式 */}
-        <div className="mb-5 text-center">
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af]/10 to-[#3b82f6]/10">
-            <FolderOpen className="h-7 w-7 text-[#1e40af]" />
-          </div>
-          <h2 className="text-xl font-bold text-gray-900">
-            专属知识库
-          </h2>
-        </div>
-
-        {/* 能力点 - 列表 */}
-        <div className="mb-6 space-y-2.5">
-          {[
-            "统一管理，告别文件散落",
-            "智能解析，快速定位关键信息",
-            "随时提问，知识一问即得",
-          ].map((text, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-3 rounded-xl bg-[#f8fafc] px-4 py-3"
-            >
-              <CheckCircle className="h-4 w-4 text-[#1e40af]" />
-              <span className="text-sm text-gray-700">{text}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* 上传按钮 */}
-        <button
-          onClick={onUploadClick}
-          className={cn(
-            "flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3.5 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]",
-            isDragging && "ring-2 ring-[#1e40af] ring-offset-2"
-          )}
-        >
-          <Upload className="h-4 w-4" />
-          上传文件
-        </button>
+      {/* 版本切换器 - 选定后删除 */}
+      <div className="mb-3 flex items-center justify-center gap-2">
+        <span className="text-[10px] text-gray-400">卡片版本：</span>
+        {(["A", "B", "C"] as const).map((v) => (
+          <button
+            key={v}
+            onClick={() => setVersion(v)}
+            className={cn(
+              "h-6 w-6 rounded text-[10px] font-medium transition-all",
+              version === v
+                ? "bg-[#1e40af] text-white"
+                : "bg-gray-100 text-gray-500"
+            )}
+          >
+            {v}
+          </button>
+        ))}
       </div>
+
+      {/* 版本A：细边框卡片 - 白色背景 + 浅蓝色细边框 */}
+      {version === "A" && (
+        <div className="rounded-2xl border border-[#1e40af]/20 bg-white p-6 shadow-sm">
+          <div className="mb-5 text-center">
+            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af]/10 to-[#3b82f6]/10">
+              <FolderOpen className="h-7 w-7 text-[#1e40af]" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900">专属知识库</h2>
+            <p className="mt-1 text-xs text-[#1e40af]/60">VeriVault</p>
+          </div>
+
+          <div className="mb-6 space-y-2.5">
+            {features.map((text, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-3 rounded-xl bg-[#f8fafc] px-4 py-3"
+              >
+                <CheckCircle className="h-4 w-4 text-[#1e40af]" />
+                <span className="text-sm text-gray-700">{text}</span>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={onUploadClick}
+            className={cn(
+              "flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3.5 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]",
+              isDragging && "ring-2 ring-[#1e40af] ring-offset-2"
+            )}
+          >
+            <Upload className="h-4 w-4" />
+            上传文件
+          </button>
+        </div>
+      )}
+
+      {/* 版本B：渐变背景卡片 - 极淡蓝色渐变背景 */}
+      {version === "B" && (
+        <div className="rounded-2xl bg-gradient-to-br from-white via-[#f0f7ff] to-[#e8f2ff] p-6 shadow-sm ring-1 ring-[#1e40af]/5">
+          <div className="mb-5 text-center">
+            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-sm">
+              <FolderOpen className="h-7 w-7 text-[#1e40af]" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900">专属知识库</h2>
+            <p className="mt-1 text-xs text-[#1e40af]/60">VeriVault</p>
+          </div>
+
+          <div className="mb-6 space-y-2.5">
+            {features.map((text, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-3 rounded-xl bg-white/80 px-4 py-3 backdrop-blur-sm"
+              >
+                <CheckCircle className="h-4 w-4 text-[#1e40af]" />
+                <span className="text-sm text-gray-700">{text}</span>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={onUploadClick}
+            className={cn(
+              "flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3.5 text-sm font-medium text-white shadow-md shadow-[#1e40af]/20 transition-all hover:opacity-90 active:scale-[0.98]",
+              isDragging && "ring-2 ring-[#1e40af] ring-offset-2"
+            )}
+          >
+            <Upload className="h-4 w-4" />
+            上传文件
+          </button>
+        </div>
+      )}
+
+      {/* 版本C：顶部装饰条 - 白色卡片 + 顶部蓝色渐变装饰条 */}
+      {version === "C" && (
+        <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
+          {/* 顶部装饰条 */}
+          <div className="h-1.5 bg-gradient-to-r from-[#1e40af] to-[#3b82f6]" />
+          
+          <div className="p-6">
+            <div className="mb-5 text-center">
+              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af]/10 to-[#3b82f6]/10">
+                <FolderOpen className="h-7 w-7 text-[#1e40af]" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900">专属知识库</h2>
+              <p className="mt-1 text-xs text-[#1e40af]/60">VeriVault</p>
+            </div>
+
+            <div className="mb-6 space-y-2.5">
+              {features.map((text, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 rounded-xl bg-[#f8fafc] px-4 py-3"
+                >
+                  <CheckCircle className="h-4 w-4 text-[#1e40af]" />
+                  <span className="text-sm text-gray-700">{text}</span>
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={onUploadClick}
+              className={cn(
+                "flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3.5 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]",
+                isDragging && "ring-2 ring-[#1e40af] ring-offset-2"
+              )}
+            >
+              <Upload className="h-4 w-4" />
+              上传文件
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* 底部说明 */}
       <p className="mt-4 text-center text-xs text-gray-400">
