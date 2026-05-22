@@ -168,7 +168,7 @@ export default function VaultPage() {
       {/* 微信小程序导航栏 - 与首页一致 */}
       <div className="relative flex h-11 items-center justify-center bg-gradient-to-b from-[#f0f7ff] to-[#f0f7ff]">
         <span className="text-[17px] font-semibold tracking-wide text-foreground">
-          VeriVault
+          Veridata
         </span>
 
         {/* 微信胶囊按钮 */}
