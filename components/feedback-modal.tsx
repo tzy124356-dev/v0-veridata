@@ -111,7 +111,7 @@ export function FeedbackModal({
                         className={cn(
                           "flex items-center gap-2 rounded-xl p-3 text-left transition-all active:scale-[0.98]",
                           selectedType === type.id
-                            ? "bg-primary text-primary-foreground"
+                            ? "bg-[#2d61d3] text-white"
                             : "bg-secondary/50 text-secondary-foreground hover:bg-secondary"
                         )}
                       >
@@ -150,7 +150,7 @@ export function FeedbackModal({
                   className={cn(
                     "flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-medium transition-all",
                     canSubmit && !isSubmitting
-                      ? "gradient-accent text-primary-foreground hover:opacity-90 active:scale-[0.98]"
+                      ? "bg-gradient-to-r from-[#1e40af] to-[#3b82f6] text-white hover:opacity-90 active:scale-[0.98]"
                       : "bg-secondary text-muted-foreground"
                   )}
                 >
