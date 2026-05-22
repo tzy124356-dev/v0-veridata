@@ -175,6 +175,8 @@ function ChatPageContent() {
         handleScenarioClick={handleScenarioClick}
         inputRef={inputRef}
         messagesEndRef={messagesEndRef}
+        knowledgeSource={knowledgeSource}
+        setKnowledgeSource={setKnowledgeSource}
       />
 
       {/* 知识库范围弹窗 */}
@@ -195,6 +197,8 @@ function ChatVersionA({
   handleScenarioClick,
   inputRef,
   messagesEndRef,
+  knowledgeSource,
+  setKnowledgeSource,
 }: {
   messages: Message[]
   inputValue: string
@@ -204,6 +208,8 @@ function ChatVersionA({
   handleScenarioClick: (hint: string) => void
   inputRef: React.RefObject<HTMLTextAreaElement | null>
   messagesEndRef: React.RefObject<HTMLDivElement | null>
+  knowledgeSource: "official" | "myVault"
+  setKnowledgeSource: (source: "official" | "myVault") => void
 }) {
   return (
     <>
