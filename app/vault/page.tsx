@@ -12,9 +12,6 @@ import {
   CheckCircle,
   Clock,
   Plus,
-  Files,
-  Search,
-  MessageCircleQuestion,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -253,11 +250,6 @@ function EmptyState({
   onUploadClick: () => void
   onLoadDemo: () => void
 }) {
-  const capabilities = [
-    { icon: Files, text: "统一管理文件" },
-    { icon: Search, text: "快速提取关键信息" },
-    { icon: MessageCircleQuestion, text: "支持边看边问" },
-  ]
 
   return (
     <div
@@ -283,13 +275,17 @@ function EmptyState({
 
         {/* 能力点 - 列表 */}
         <div className="mb-6 space-y-2.5">
-          {capabilities.map((item, index) => (
+          {[
+            "统一管理，告别文件散落",
+            "智能解析，快速定位关键信息",
+            "随时提问，知识一问即得",
+          ].map((text, index) => (
             <div
               key={index}
               className="flex items-center gap-3 rounded-xl bg-[#f8fafc] px-4 py-3"
             >
-              <item.icon className="h-4 w-4 text-[#1e40af]" />
-              <span className="text-sm text-gray-700">{item.text}</span>
+              <CheckCircle className="h-4 w-4 text-[#1e40af]" />
+              <span className="text-sm text-gray-700">{text}</span>
             </div>
           ))}
         </div>
