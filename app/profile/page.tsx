@@ -75,9 +75,7 @@ function ProfileContent({
 }: {
   isLoggedIn: boolean
   onLogout: () => void
-}) {
-  const [colorScheme, setColorScheme] = useState<"A" | "B" | "C">("A")
-
+) {
   const menuItems = [
     { icon: Clock, label: "历史记录", href: "/history" },
     { icon: Bookmark, label: "我的收藏", href: "/favorites", badge: userStats.favorites },
@@ -91,51 +89,17 @@ function ProfileContent({
 
   return (
     <>
-      {/* 配色方案切换器 - 选定后删除 */}
-      <div className="mb-3 flex items-center justify-center gap-2">
-        <span className="text-[10px] text-gray-400">配色方案：</span>
-        {(["A", "B", "C"] as const).map((v) => (
-          <button
-            key={v}
-            onClick={() => setColorScheme(v)}
-            className={cn(
-              "h-6 w-6 rounded text-[10px] font-medium transition-all",
-              colorScheme === v
-                ? "bg-[#1e40af] text-white"
-                : "bg-gray-100 text-gray-500"
-            )}
-          >
-            {v}
-          </button>
-        ))}
-      </div>
-
       {/* 用户信息卡片 */}
       {isLoggedIn ? (
-        <div className={cn(
-          "mb-4 rounded-2xl p-5 shadow-sm",
-          colorScheme === "A" && "bg-white",
-          colorScheme === "B" && "bg-gradient-to-br from-white to-amber-50/50",
-          colorScheme === "C" && "bg-gradient-to-br from-white to-violet-50/50"
-        )}>
+        <div className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
           <div className="flex items-center gap-4">
-            <div className={cn(
-              "flex h-14 w-14 items-center justify-center rounded-full",
-              colorScheme === "A" && "bg-gradient-to-br from-[#1e40af] to-[#3b82f6]",
-              colorScheme === "B" && "bg-gradient-to-br from-amber-400 to-orange-500",
-              colorScheme === "C" && "bg-gradient-to-br from-violet-500 to-purple-600"
-            )}>
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
               <User className="h-7 w-7 text-white" />
             </div>
             <div className="flex-1">
               <div className="mb-1 flex items-center gap-2">
                 <h2 className="text-base font-semibold text-gray-900">张工程师</h2>
-                <span className={cn(
-                  "rounded-full px-2 py-0.5 text-xs font-medium",
-                  colorScheme === "A" && "bg-amber-100 text-amber-700",
-                  colorScheme === "B" && "bg-gradient-to-r from-amber-400 to-orange-400 text-white",
-                  colorScheme === "C" && "bg-gradient-to-r from-violet-400 to-purple-400 text-white"
-                )}>
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
                   专业版
                 </span>
               </div>
@@ -144,42 +108,17 @@ function ProfileContent({
           </div>
 
           {/* 数据统计 */}
-          <div className={cn(
-            "mt-4 grid grid-cols-3 gap-2 rounded-xl p-3",
-            colorScheme === "A" && "bg-gray-50",
-            colorScheme === "B" && "bg-amber-50/50",
-            colorScheme === "C" && "bg-violet-50/50"
-          )}>
+          <div className="mt-4 grid grid-cols-3 gap-2 rounded-xl bg-gray-50 p-3">
             <div className="text-center">
-              <p className={cn(
-                "text-lg font-bold",
-                colorScheme === "A" && "text-[#1e40af]",
-                colorScheme === "B" && "text-amber-600",
-                colorScheme === "C" && "text-violet-600"
-              )}>{userStats.questions}</p>
+              <p className="text-lg font-bold text-[#1e40af]">{userStats.questions}</p>
               <p className="text-[10px] text-gray-400">累计提问</p>
             </div>
-            <div className={cn(
-              "text-center border-x",
-              colorScheme === "A" && "border-gray-200",
-              colorScheme === "B" && "border-amber-200/50",
-              colorScheme === "C" && "border-violet-200/50"
-            )}>
-              <p className={cn(
-                "text-lg font-bold",
-                colorScheme === "A" && "text-[#1e40af]",
-                colorScheme === "B" && "text-amber-600",
-                colorScheme === "C" && "text-violet-600"
-              )}>{userStats.favorites}</p>
+            <div className="text-center border-x border-gray-200">
+              <p className="text-lg font-bold text-[#1e40af]">{userStats.favorites}</p>
               <p className="text-[10px] text-gray-400">收藏回答</p>
             </div>
             <div className="text-center">
-              <p className={cn(
-                "text-lg font-bold",
-                colorScheme === "A" && "text-[#1e40af]",
-                colorScheme === "B" && "text-amber-600",
-                colorScheme === "C" && "text-violet-600"
-              )}>{userStats.documents}</p>
+              <p className="text-lg font-bold text-[#1e40af]">{userStats.documents}</p>
               <p className="text-[10px] text-gray-400">档案文件</p>
             </div>
           </div>
@@ -204,48 +143,23 @@ function ProfileContent({
       {isLoggedIn && (
         <Link
           href="/membership"
-          className={cn(
-            "mb-3 flex items-center justify-between rounded-2xl px-4 py-3.5 shadow-sm transition-colors",
-            colorScheme === "A" && "bg-white hover:bg-gray-50",
-            colorScheme === "B" && "bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100",
-            colorScheme === "C" && "bg-gradient-to-r from-violet-50 to-purple-50 hover:from-violet-100 hover:to-purple-100"
-          )}
+          className="mb-3 flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm transition-colors hover:bg-gray-50"
         >
           <div className="flex items-center gap-3">
-            <div className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-lg",
-              colorScheme === "A" && "bg-amber-50",
-              colorScheme === "B" && "bg-white",
-              colorScheme === "C" && "bg-white"
-            )}>
-              <Crown className={cn(
-                "h-4 w-4",
-                colorScheme === "A" && "text-amber-500",
-                colorScheme === "B" && "text-amber-500",
-                colorScheme === "C" && "text-violet-500"
-              )} />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
+              <Crown className="h-4 w-4 text-amber-500" />
             </div>
             <span className="text-sm text-gray-900">会员信息</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className={cn(
-              "text-xs",
-              colorScheme === "A" && "text-amber-600",
-              colorScheme === "B" && "text-amber-600",
-              colorScheme === "C" && "text-violet-600"
-            )}>专业版</span>
+            <span className="text-xs text-amber-600">专业版</span>
             <ChevronRight className="h-4 w-4 text-gray-300" />
           </div>
         </Link>
       )}
 
       {/* 功能菜单 */}
-      <div className={cn(
-        "mb-3 overflow-hidden rounded-2xl shadow-sm",
-        colorScheme === "A" && "bg-white",
-        colorScheme === "B" && "bg-white",
-        colorScheme === "C" && "bg-white"
-      )}>
+      <div className="mb-3 overflow-hidden rounded-2xl bg-white shadow-sm">
         {menuItems.map((item, index) => (
           <Link
             key={item.label}
@@ -256,29 +170,14 @@ function ProfileContent({
             )}
           >
             <div className="flex items-center gap-3">
-              <div className={cn(
-                "flex h-8 w-8 items-center justify-center rounded-lg",
-                colorScheme === "A" && "bg-[#1e40af]/5",
-                colorScheme === "B" && "bg-amber-50",
-                colorScheme === "C" && "bg-violet-50"
-              )}>
-                <item.icon className={cn(
-                  "h-4 w-4",
-                  colorScheme === "A" && "text-[#1e40af]",
-                  colorScheme === "B" && "text-amber-600",
-                  colorScheme === "C" && "text-violet-600"
-                )} />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1e40af]/5">
+                <item.icon className="h-4 w-4 text-[#1e40af]" />
               </div>
               <span className="text-sm text-gray-900">{item.label}</span>
             </div>
             <div className="flex items-center gap-2">
               {item.badge && (
-                <span className={cn(
-                  "rounded-full px-2 py-0.5 text-xs",
-                  colorScheme === "A" && "bg-[#1e40af]/10 text-[#1e40af]",
-                  colorScheme === "B" && "bg-amber-100 text-amber-600",
-                  colorScheme === "C" && "bg-violet-100 text-violet-600"
-                )}>
+                <span className="rounded-full bg-[#1e40af]/10 px-2 py-0.5 text-xs text-[#1e40af]">
                   {item.badge}
                 </span>
               )}
