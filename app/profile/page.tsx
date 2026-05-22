@@ -9,8 +9,6 @@ import {
   FileText,
   HelpCircle,
   Settings,
-  Crown,
-  LogOut,
   MessageSquare,
   FolderOpen,
   MessageCircle,
@@ -27,7 +25,6 @@ const userStats = {
 
 export default function ProfilePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(true)
-  const [version, setVersion] = useState<"A" | "B" | "C">("A")
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
@@ -36,36 +33,9 @@ export default function ProfilePage() {
         <h1 className="text-center text-lg font-semibold text-gray-900">我的</h1>
       </header>
 
-      {/* 版本切换器 - 选定后删除 */}
-      <div className="mb-4 flex items-center justify-center gap-2 px-5">
-        <span className="text-xs text-gray-400">版本：</span>
-        {(["A", "B", "C"] as const).map((v) => (
-          <button
-            key={v}
-            onClick={() => setVersion(v)}
-            className={cn(
-              "h-7 w-7 rounded-lg text-xs font-medium transition-all",
-              version === v
-                ? "bg-[#1e40af] text-white"
-                : "bg-gray-100 text-gray-500"
-            )}
-          >
-            {v}
-          </button>
-        ))}
-      </div>
-
       {/* 内容区域 */}
       <main className="flex-1 overflow-y-auto px-5 pb-20 scrollbar-hide">
-        {version === "A" && (
-          <ProfileVersionA isLoggedIn={isLoggedIn} onLogout={() => setIsLoggedIn(false)} />
-        )}
-        {version === "B" && (
-          <ProfileVersionB isLoggedIn={isLoggedIn} onLogout={() => setIsLoggedIn(false)} />
-        )}
-        {version === "C" && (
-          <ProfileVersionC isLoggedIn={isLoggedIn} onLogout={() => setIsLoggedIn(false)} />
-        )}
+        <ProfileContent isLoggedIn={isLoggedIn} onLogout={() => setIsLoggedIn(false)} />
       </main>
 
       {/* 悬浮反馈按钮 */}
@@ -77,8 +47,8 @@ export default function ProfilePage() {
   )
 }
 
-// 版本A：简洁卡片式 - 用户卡片 + 精简菜单 + 大按钮退出
-function ProfileVersionA({
+// 简洁卡片式 - 用户卡片 + 精简菜单 + 大按钮退出
+function ProfileContent({
   isLoggedIn,
   onLogout,
 }: {
@@ -208,234 +178,6 @@ function ProfileVersionA({
       )}
 
       <p className="mt-6 text-center text-xs text-gray-300">v1.0.0</p>
-    </>
-  )
-}
-
-// 版本B：紧凑网格式 - 顶部用户条 + 网格功能入口 + 底部设置
-function ProfileVersionB({
-  isLoggedIn,
-  onLogout,
-}: {
-  isLoggedIn: boolean
-  onLogout: () => void
-}) {
-  const quickActions = [
-    { icon: Clock, label: "历史记录", href: "/history", count: userStats.questions },
-    { icon: Bookmark, label: "我的收藏", href: "/favorites", count: userStats.favorites },
-    { icon: FileText, label: "档案库", href: "/vault", count: userStats.documents },
-    { icon: HelpCircle, label: "帮助", href: "/help", count: null },
-  ]
-
-  return (
-    <>
-      {/* 用户信息条 */}
-      {isLoggedIn ? (
-        <div className="mb-4 flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
-            <User className="h-6 w-6 text-white" />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-sm font-semibold text-gray-900">张工程师</h2>
-            <p className="text-xs text-gray-400">注册专员 · 医美针剂</p>
-          </div>
-          <div className="flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1">
-            <Crown className="h-3.5 w-3.5 text-amber-500" />
-            <span className="text-xs font-medium text-amber-600">专业版</span>
-          </div>
-        </div>
-      ) : (
-        <Link
-          href="/login"
-          className="mb-4 flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm"
-        >
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-            <User className="h-6 w-6 text-gray-400" />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-sm font-semibold text-gray-900">点击登录</h2>
-            <p className="text-xs text-gray-400">解锁全部功能</p>
-          </div>
-          <ChevronRight className="h-5 w-5 text-gray-300" />
-        </Link>
-      )}
-
-      {/* 快捷功能网格 */}
-      <div className="mb-4 grid grid-cols-4 gap-3">
-        {quickActions.map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            className="flex flex-col items-center gap-2 rounded-xl bg-white p-3 shadow-sm transition-all hover:shadow-md active:scale-95"
-          >
-            <div className="relative">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1e40af]/5">
-                <item.icon className="h-5 w-5 text-[#1e40af]" />
-              </div>
-              {item.count !== null && (
-                <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#1e40af] px-1 text-[10px] font-medium text-white">
-                  {item.count}
-                </span>
-              )}
-            </div>
-            <span className="text-xs text-gray-600">{item.label}</span>
-          </Link>
-        ))}
-      </div>
-
-      {/* 设置区域 */}
-      <div className="rounded-2xl bg-white shadow-sm">
-        <Link
-          href="/settings"
-          className="flex items-center justify-between border-b border-gray-50 px-4 py-3.5"
-        >
-          <div className="flex items-center gap-3">
-            <Settings className="h-4 w-4 text-gray-400" />
-            <span className="text-sm text-gray-900">设置</span>
-          </div>
-          <ChevronRight className="h-4 w-4 text-gray-300" />
-        </Link>
-        {isLoggedIn && (
-          <button
-            onClick={onLogout}
-            className="flex w-full items-center justify-between px-4 py-3.5 text-left transition-colors hover:bg-gray-50"
-          >
-            <div className="flex items-center gap-3">
-              <LogOut className="h-4 w-4 text-gray-400" />
-              <span className="text-sm text-gray-500">退出登录</span>
-            </div>
-          </button>
-        )}
-      </div>
-
-      <p className="mt-6 text-center text-xs text-gray-300">械研 VERIDATA v1.0.0</p>
-    </>
-  )
-}
-
-// 版本C：信息突出式 - 大头像居中 + 横向统计 + 分组菜单
-function ProfileVersionC({
-  isLoggedIn,
-  onLogout,
-}: {
-  isLoggedIn: boolean
-  onLogout: () => void
-}) {
-  return (
-    <>
-      {/* 用户信息 - 居中大头像 */}
-      {isLoggedIn ? (
-        <div className="mb-5 flex flex-col items-center">
-          <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6] shadow-lg shadow-[#1e40af]/20">
-            <User className="h-10 w-10 text-white" />
-          </div>
-          <h2 className="mb-1 text-lg font-semibold text-gray-900">张工程师</h2>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500">注册专员 · 医美针剂</span>
-            <span className="rounded-full bg-gradient-to-r from-amber-400 to-orange-400 px-2 py-0.5 text-[10px] font-medium text-white">
-              专业版
-            </span>
-          </div>
-        </div>
-      ) : (
-        <Link href="/login" className="mb-5 flex flex-col items-center">
-          <div className="mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
-            <User className="h-10 w-10 text-gray-400" />
-          </div>
-          <h2 className="mb-1 text-lg font-semibold text-gray-900">点击登录</h2>
-          <p className="text-xs text-gray-500">登录后享受更多功能</p>
-        </Link>
-      )}
-
-      {/* 数据统计横条 */}
-      {isLoggedIn && (
-        <div className="mb-4 flex items-center justify-around rounded-2xl bg-white p-4 shadow-sm">
-          <Link href="/history" className="flex flex-col items-center">
-            <p className="text-xl font-bold text-[#1e40af]">{userStats.questions}</p>
-            <p className="text-[10px] text-gray-400">累计提问</p>
-          </Link>
-          <div className="h-8 w-px bg-gray-100" />
-          <Link href="/favorites" className="flex flex-col items-center">
-            <p className="text-xl font-bold text-[#1e40af]">{userStats.favorites}</p>
-            <p className="text-[10px] text-gray-400">收藏回答</p>
-          </Link>
-          <div className="h-8 w-px bg-gray-100" />
-          <Link href="/vault" className="flex flex-col items-center">
-            <p className="text-xl font-bold text-[#1e40af]">{userStats.documents}</p>
-            <p className="text-[10px] text-gray-400">档案文件</p>
-          </Link>
-        </div>
-      )}
-
-      {/* 功能菜单 */}
-      <div className="mb-3 overflow-hidden rounded-2xl bg-white shadow-sm">
-        <Link
-          href="/history"
-          className="flex items-center justify-between border-b border-gray-50 px-4 py-3.5"
-        >
-          <div className="flex items-center gap-3">
-            <Clock className="h-4 w-4 text-[#1e40af]" />
-            <span className="text-sm text-gray-900">历史问答记录</span>
-          </div>
-          <ChevronRight className="h-4 w-4 text-gray-300" />
-        </Link>
-        <Link
-          href="/favorites"
-          className="flex items-center justify-between border-b border-gray-50 px-4 py-3.5"
-        >
-          <div className="flex items-center gap-3">
-            <Bookmark className="h-4 w-4 text-[#1e40af]" />
-            <span className="text-sm text-gray-900">我的收藏</span>
-          </div>
-          <ChevronRight className="h-4 w-4 text-gray-300" />
-        </Link>
-        <Link
-          href="/vault"
-          className="flex items-center justify-between px-4 py-3.5"
-        >
-          <div className="flex items-center gap-3">
-            <FileText className="h-4 w-4 text-[#1e40af]" />
-            <span className="text-sm text-gray-900">我的档案库</span>
-          </div>
-          <ChevronRight className="h-4 w-4 text-gray-300" />
-        </Link>
-      </div>
-
-      {/* 其他菜单 */}
-      <div className="mb-4 overflow-hidden rounded-2xl bg-white shadow-sm">
-        <Link
-          href="/help"
-          className="flex items-center justify-between border-b border-gray-50 px-4 py-3.5"
-        >
-          <div className="flex items-center gap-3">
-            <HelpCircle className="h-4 w-4 text-gray-400" />
-            <span className="text-sm text-gray-900">帮助与反馈</span>
-          </div>
-          <ChevronRight className="h-4 w-4 text-gray-300" />
-        </Link>
-        <Link
-          href="/settings"
-          className="flex items-center justify-between px-4 py-3.5"
-        >
-          <div className="flex items-center gap-3">
-            <Settings className="h-4 w-4 text-gray-400" />
-            <span className="text-sm text-gray-900">设置</span>
-          </div>
-          <ChevronRight className="h-4 w-4 text-gray-300" />
-        </Link>
-      </div>
-
-      {/* 退出登录 */}
-      {isLoggedIn && (
-        <button
-          onClick={onLogout}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-3.5 text-sm text-gray-400 shadow-sm transition-colors hover:text-red-500"
-        >
-          退出登录
-        </button>
-      )}
-
-      <p className="mt-6 text-center text-xs text-gray-300">械研 VERIDATA v1.0.0</p>
     </>
   )
 }
