@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 
 export default function SplashPage() {
   const router = useRouter()
@@ -30,35 +31,16 @@ export default function SplashPage() {
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
     >
-      {/* Logo 区域 */}
+      {/* Logo 区域 - 使用首页相同的 crab-logo.png */}
       <div className="mb-8 flex items-center justify-center">
-        {/* 像素风格螃蟹 Logo */}
-        <div className="relative h-24 w-24">
-          <svg
-            viewBox="0 0 64 64"
-            className="h-full w-full"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {/* 螃蟹身体 - 像素风格 */}
-            <rect x="20" y="24" width="24" height="16" fill="white" />
-            <rect x="16" y="28" width="4" height="8" fill="white" />
-            <rect x="44" y="28" width="4" height="8" fill="white" />
-            {/* 眼睛 */}
-            <rect x="24" y="20" width="4" height="4" fill="white" />
-            <rect x="36" y="20" width="4" height="4" fill="white" />
-            <rect x="25" y="21" width="2" height="2" fill="#1e40af" />
-            <rect x="37" y="21" width="2" height="2" fill="#1e40af" />
-            {/* 钳子 */}
-            <rect x="8" y="24" width="8" height="4" fill="white" />
-            <rect x="8" y="28" width="4" height="8" fill="white" />
-            <rect x="48" y="24" width="8" height="4" fill="white" />
-            <rect x="52" y="28" width="4" height="8" fill="white" />
-            {/* 腿 */}
-            <rect x="22" y="40" width="4" height="6" fill="white" />
-            <rect x="30" y="40" width="4" height="8" fill="white" />
-            <rect x="38" y="40" width="4" height="6" fill="white" />
-          </svg>
+        <div className="relative h-32 w-32">
+          <Image
+            src="/crab-logo.png"
+            alt="械研 Logo"
+            fill
+            className="object-contain drop-shadow-lg"
+            priority
+          />
         </div>
       </div>
 

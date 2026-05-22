@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { MessageCircle, Phone, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -46,30 +47,17 @@ export default function LoginPage() {
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
       {/* 顶部品牌区域 */}
       <div className="flex flex-1 flex-col items-center justify-center px-6 pb-8">
-        {/* Logo */}
-        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#3b82f6] shadow-lg">
-          <svg
-            viewBox="0 0 64 64"
-            className="h-12 w-12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {/* 像素风格螃蟹 Logo */}
-            <rect x="20" y="24" width="24" height="16" fill="white" />
-            <rect x="16" y="28" width="4" height="8" fill="white" />
-            <rect x="44" y="28" width="4" height="8" fill="white" />
-            <rect x="24" y="20" width="4" height="4" fill="white" />
-            <rect x="36" y="20" width="4" height="4" fill="white" />
-            <rect x="25" y="21" width="2" height="2" fill="#1e40af" />
-            <rect x="37" y="21" width="2" height="2" fill="#1e40af" />
-            <rect x="8" y="24" width="8" height="4" fill="white" />
-            <rect x="8" y="28" width="4" height="8" fill="white" />
-            <rect x="48" y="24" width="8" height="4" fill="white" />
-            <rect x="52" y="28" width="4" height="8" fill="white" />
-            <rect x="22" y="40" width="4" height="6" fill="white" />
-            <rect x="30" y="40" width="4" height="8" fill="white" />
-            <rect x="38" y="40" width="4" height="6" fill="white" />
-          </svg>
+        {/* Logo - 使用首页相同的 crab-logo.png */}
+        <div className="mb-6 flex h-28 w-28 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#3b82f6] p-4 shadow-lg">
+          <div className="relative h-full w-full">
+            <Image
+              src="/crab-logo.png"
+              alt="械研 Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
         </div>
 
         {/* 品牌名 */}
