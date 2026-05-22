@@ -12,6 +12,8 @@ import {
   CheckCircle,
   Clock,
   Plus,
+  MessageCircle,
+  User,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -230,6 +232,12 @@ export default function VaultPage() {
         onChange={handleFileSelect}
         className="hidden"
       />
+
+      {/* 悬浮反馈按钮 */}
+      <FeedbackButton />
+
+      {/* 底部导航 */}
+      <BottomNavigation activeTab="vault" />
     </div>
   )
 }
@@ -488,4 +496,118 @@ function formatFileSize(bytes: number): string {
   const sizes = ["B", "KB", "MB", "GB"]
   const i = Math.floor(Math.log(bytes) / Math.log(k))
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i]
+}
+
+// 可拖动的悬浮反馈按钮
+function FeedbackButton() {
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [hasMoved, setHasMoved] = useState(false)
+  const startPos = useRef({ x: 0, y: 0 })
+  const startOffset = useRef({ x: 0, y: 0 })
+
+  const handleStart = (clientX: number, clientY: number) => {
+    setIsDragging(true)
+    setHasMoved(false)
+    startPos.current = { x: clientX, y: clientY }
+    startOffset.current = { x: position.x, y: position.y }
+  }
+
+  const handleMove = (clientX: number, clientY: number) => {
+    if (!isDragging) return
+    
+    const deltaX = clientX - startPos.current.x
+    const deltaY = clientY - startPos.current.y
+    
+    if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+      setHasMoved(true)
+    }
+    
+    const newX = startOffset.current.x + deltaX
+    const newY = startOffset.current.y + deltaY
+    
+    const maxX = window.innerWidth - 60
+    const maxY = window.innerHeight - 180
+    
+    setPosition({
+      x: Math.max(-maxX + 60, Math.min(0, newX)),
+      y: Math.max(-maxY + 60, Math.min(0, newY)),
+    })
+  }
+
+  const handleEnd = () => {
+    setIsDragging(false)
+  }
+
+  const handleClick = () => {
+    if (!hasMoved) {
+      // TODO: 打开反馈弹窗
+    }
+  }
+
+  return (
+    <div
+      className={cn(
+        "fixed right-4 bottom-28 z-40 flex h-12 w-12 cursor-grab flex-col items-center justify-center rounded-full border-2 border-white bg-[#1e40af] text-white shadow-lg transition-shadow",
+        isDragging ? "cursor-grabbing shadow-xl scale-110" : "active:scale-95"
+      )}
+      style={{
+        transform: `translate(${position.x}px, ${position.y}px)`,
+      }}
+      onMouseDown={(e) => {
+        e.preventDefault()
+        handleStart(e.clientX, e.clientY)
+      }}
+      onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
+      onMouseUp={handleEnd}
+      onMouseLeave={handleEnd}
+      onTouchStart={(e) => {
+        const touch = e.touches[0]
+        handleStart(touch.clientX, touch.clientY)
+      }}
+      onTouchMove={(e) => {
+        const touch = e.touches[0]
+        handleMove(touch.clientX, touch.clientY)
+      }}
+      onTouchEnd={handleEnd}
+      onClick={handleClick}
+    >
+      <MessageCircle className="h-5 w-5" />
+      <span className="mt-0.5 text-[9px] leading-none">反馈</span>
+    </div>
+  )
+}
+
+// 底部导航
+function BottomNavigation({ activeTab }: { activeTab: "chat" | "vault" | "profile" }) {
+  const navItems = [
+    { id: "chat" as const, label: "智能问答", icon: MessageSquare, href: "/" },
+    { id: "vault" as const, label: "我的档案库", icon: FolderOpen, href: "/vault" },
+    { id: "profile" as const, label: "我的", icon: User, href: "/profile" },
+  ]
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-gray-100 bg-white/95 backdrop-blur-sm">
+      <div className="flex items-center justify-around py-2">
+        {navItems.map((item) => {
+          const isActive = activeTab === item.id
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={cn(
+                "flex flex-col items-center gap-1 px-4 py-1 transition-colors",
+                isActive ? "text-[#1e40af]" : "text-gray-400"
+              )}
+            >
+              <item.icon className={cn("h-5 w-5", isActive && "text-[#1e40af]")} />
+              <span className="text-[10px]">{item.label}</span>
+            </Link>
+          )
+        })}
+      </div>
+      {/* iPhone 底部安全区域 */}
+      <div className="h-safe-bottom bg-white" />
+    </nav>
+  )
 }
