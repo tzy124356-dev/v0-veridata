@@ -353,7 +353,7 @@ function FileListView({
       <div className="flex items-center gap-3">
         {/* 向档案库提问按钮 */}
         <Link
-          href="/"
+          href="/chat?source=myVault"
           className={cn(
             "flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium transition-all active:scale-[0.98]",
             hasReadyFiles

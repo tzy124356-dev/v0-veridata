@@ -113,13 +113,17 @@ function ChatPageContent() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
-  // 处理URL中的预设问题
+  // 处理URL中的预设问题和知识库来源
   useEffect(() => {
     if (hasInitialized) return
     const presetQuestion = searchParams.get("q")
+    const source = searchParams.get("source")
     if (presetQuestion) {
       setInputValue(presetQuestion)
       inputRef.current?.focus()
+    }
+    if (source === "myVault") {
+      setKnowledgeSource("myVault")
     }
     setHasInitialized(true)
   }, [searchParams, hasInitialized])
