@@ -11,6 +11,11 @@ export default function InvitePage() {
 
   const handleRegister = () => {
     if (typeof window !== "undefined") {
+      // 如果已登录，直接进首页
+      if (localStorage.getItem("wechat_logged_in") === "true") {
+        window.location.href = "/"
+        return
+      }
       localStorage.setItem("invited_by", code)
       window.location.href = "/login"
     }
