@@ -20,9 +20,11 @@ import {
   Sparkles,
   Lightbulb,
   FolderOpen,
+  Share2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { ShareCardModal } from "@/components/share-card-modal"
 
 // 场景标签数据
 const scenarioTags = [
@@ -540,6 +542,7 @@ function MessageBubbleA({ message, bubbleColor }: { message: Message; bubbleColo
   const [liked, setLiked] = useState(false)
   const [showLikeToast, setShowLikeToast] = useState(false)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
+  const [showShareModal, setShowShareModal] = useState(false)
 
   const handleCopy = () => {
     const text = message.conclusion || message.content
@@ -653,6 +656,13 @@ function MessageBubbleA({ message, bubbleColor }: { message: Message; bubbleColo
             <Bookmark className={cn("h-3.5 w-3.5", bookmarked && "fill-current")} />
             {bookmarked ? "已收藏" : "收藏"}
           </button>
+          <button 
+            onClick={() => setShowShareModal(true)}
+            className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+          >
+            <Share2 className="h-3.5 w-3.5" />
+            分享
+          </button>
         </div>
         <div className="flex items-center gap-1">
           <button 
@@ -693,6 +703,19 @@ function MessageBubbleA({ message, bubbleColor }: { message: Message; bubbleColo
       {showFeedbackModal && (
         <FeedbackModal onClose={() => setShowFeedbackModal(false)} />
       )}
+
+      {/* 分享卡片弹窗 */}
+      <ShareCardModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        question="医美针剂注册申报需要准备哪些材料？"
+        answer={message.conclusion ?? message.content ?? ""}
+        inviteCode={
+          typeof window !== "undefined"
+            ? (localStorage.getItem("user_invite_code") ?? "YJ00000")
+            : "YJ00000"
+        }
+      />
     </div>
   )
 }

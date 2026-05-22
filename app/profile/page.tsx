@@ -15,6 +15,8 @@ import {
   Crown,
   Coins,
   Pencil,
+  Copy,
+  Sparkles,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -97,6 +99,8 @@ function ProfileContent({
   const [totalPoints, setTotalPoints] = useState(95)
   const [identity, setIdentity] = useState<UserIdentity | null>(null)
   const [showIdentityModal, setShowIdentityModal] = useState(false)
+  const [inviteCode, setInviteCode] = useState("")
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -105,9 +109,21 @@ function ProfileContent({
         const points = JSON.parse(stored)
         setTotalPoints(points.free + points.gift + points.member)
       }
+      setInviteCode(localStorage.getItem("user_invite_code") ?? "")
     }
     setIdentity(readUserIdentity())
   }, [])
+
+  const handleCopyInviteCode = async () => {
+    if (!inviteCode) return
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/invite/${inviteCode}`)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      alert(`邀请链接：${window.location.origin}/invite/${inviteCode}`)
+    }
+  }
 
   const handleIdentityUpdate = (data: UserIdentity) => {
     writeUserIdentity(data)
@@ -167,6 +183,28 @@ function ProfileContent({
               </button>
             )}
           </div>
+
+          {/* 邀请码展示区 */}
+          {inviteCode && (
+            <div className="mt-4 flex items-center justify-between rounded-xl bg-gradient-to-r from-[#1e40af]/5 to-orange-50/50 px-4 py-3">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white">
+                  <Sparkles className="h-4 w-4 text-orange-500" />
+                </div>
+                <div>
+                  <p className="text-[10px] leading-none text-gray-400">我的邀请码</p>
+                  <p className="mt-1 font-mono text-sm font-bold leading-none text-[#1e40af]">{inviteCode}</p>
+                </div>
+              </div>
+              <button
+                onClick={handleCopyInviteCode}
+                className="flex items-center gap-1 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-[#1e40af] shadow-sm hover:shadow"
+              >
+                <Copy className="h-3 w-3" />
+                {copied ? "已复制" : "复制链接"}
+              </button>
+            </div>
+          )}
 
           {/* 数据统计 */}
           <div className="mt-4 grid grid-cols-3 gap-2 rounded-xl bg-gray-50 p-3">

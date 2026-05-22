@@ -38,6 +38,24 @@ export default function LoginPage() {
         const code = "YJ" + Math.floor(10000 + Math.random() * 90000)
         localStorage.setItem("user_invite_code", code)
       }
+
+      // 检测邀请关系，发放新人礼包
+      const invitedBy = localStorage.getItem("invited_by")
+      if (invitedBy) {
+        // 新用户获得 30 积分新人礼
+        const pointsRaw = localStorage.getItem("user_points")
+        if (pointsRaw) {
+          try {
+            const points = JSON.parse(pointsRaw)
+            points.gift = (points.gift ?? 0) + 30
+            localStorage.setItem("user_points", JSON.stringify(points))
+          } catch {}
+        }
+        // 记录邀请关系，invited_by 用过后清除
+        // 注：实际场景中，邀请人的 +100 积分由后端在新用户注册成功后异步发放
+        localStorage.setItem("invited_by_used", invitedBy)
+        localStorage.removeItem("invited_by")
+      }
     }
 
     // 跳转到首页
@@ -68,6 +86,24 @@ export default function LoginPage() {
       if (!localStorage.getItem("user_invite_code")) {
         const code = "YJ" + Math.floor(10000 + Math.random() * 90000)
         localStorage.setItem("user_invite_code", code)
+      }
+
+      // 检测邀请关系，发放新人礼包
+      const invitedBy = localStorage.getItem("invited_by")
+      if (invitedBy) {
+        // 新用户获得 30 积分新人礼
+        const pointsRaw = localStorage.getItem("user_points")
+        if (pointsRaw) {
+          try {
+            const points = JSON.parse(pointsRaw)
+            points.gift = (points.gift ?? 0) + 30
+            localStorage.setItem("user_points", JSON.stringify(points))
+          } catch {}
+        }
+        // 记录邀请关系，invited_by 用过后清除
+        // 注：实际场景中，邀请人的 +100 积分由后端在新用户注册成功后异步发放
+        localStorage.setItem("invited_by_used", invitedBy)
+        localStorage.removeItem("invited_by")
       }
     }
 
