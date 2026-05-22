@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { FeedbackModal } from "@/components/feedback-modal"
 
 // 文件状态类型
 type FileStatus = "uploading" | "processing" | "ready"
@@ -60,6 +61,7 @@ const mockFiles: VaultFile[] = [
 export default function VaultPage() {
   const [files, setFiles] = useState<VaultFile[]>([])
   const [isDragging, setIsDragging] = useState(false)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const isEmpty = files.length === 0
@@ -223,7 +225,13 @@ export default function VaultPage() {
       />
 
       {/* 悬浮反馈按钮 */}
-      <FeedbackButton />
+      <FeedbackButton onOpenFeedback={() => setShowFeedbackModal(true)} />
+
+      {/* 反馈弹窗 */}
+      <FeedbackModal 
+        isOpen={showFeedbackModal} 
+        onClose={() => setShowFeedbackModal(false)} 
+      />
 
       {/* 底部导航 */}
       <BottomNavigation activeTab="vault" />
@@ -792,7 +800,7 @@ function formatFileSize(bytes: number): string {
 }
 
 // 可拖动的悬浮反馈按钮 - 与首页完全一致
-function FeedbackButton() {
+function FeedbackButton({ onOpenFeedback }: { onOpenFeedback: () => void }) {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const [hasMoved, setHasMoved] = useState(false)
@@ -834,7 +842,7 @@ function FeedbackButton() {
 
   const handleClick = () => {
     if (!hasMoved) {
-      // TODO: 打开反馈弹窗
+      onOpenFeedback()
     }
   }
 

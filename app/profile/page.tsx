@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { FeedbackModal } from "@/components/feedback-modal"
 
 // 用户数据统计
 const userStats = {
@@ -26,6 +27,7 @@ const userStats = {
 
 export default function ProfilePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
@@ -60,7 +62,13 @@ export default function ProfilePage() {
       </main>
 
       {/* 悬浮反馈按钮 */}
-      <FeedbackButton />
+      <FeedbackButton onOpenFeedback={() => setShowFeedbackModal(true)} />
+
+      {/* 反馈弹窗 */}
+      <FeedbackModal 
+        isOpen={showFeedbackModal} 
+        onClose={() => setShowFeedbackModal(false)} 
+      />
 
       {/* 底部导航 */}
       <BottomNavigation activeTab="profile" />
@@ -225,7 +233,7 @@ function ProfileContent({
 }
 
 // 可拖动的悬浮反馈按钮 - 与首页完全一致
-function FeedbackButton() {
+function FeedbackButton({ onOpenFeedback }: { onOpenFeedback: () => void }) {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const [hasMoved, setHasMoved] = useState(false)
@@ -267,7 +275,7 @@ function FeedbackButton() {
 
   const handleClick = () => {
     if (!hasMoved) {
-      // TODO: 打开反馈弹窗
+      onOpenFeedback()
     }
   }
 
