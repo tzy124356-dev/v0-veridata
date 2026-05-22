@@ -353,6 +353,10 @@ function EmptyStateA({
 function MessageBubbleA({ message }: { message: Message }) {
   const [showReasoning, setShowReasoning] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [bookmarked, setBookmarked] = useState(false)
+  const [liked, setLiked] = useState(false)
+  const [showLikeToast, setShowLikeToast] = useState(false)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
   const handleCopy = async () => {
     const text = message.conclusion || message.content
@@ -361,6 +365,23 @@ function MessageBubbleA({ message }: { message: Message }) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch {}
+  }
+
+  const handleBookmark = () => {
+    setBookmarked(!bookmarked)
+    // TODO: 同步到"我的"收藏
+  }
+
+  const handleLike = () => {
+    if (!liked) {
+      setLiked(true)
+      setShowLikeToast(true)
+      setTimeout(() => setShowLikeToast(false), 1000)
+    }
+  }
+
+  const handleDislike = () => {
+    setShowFeedbackModal(true)
   }
 
   if (message.type === "user") {
@@ -434,20 +455,51 @@ function MessageBubbleA({ message }: { message: Message }) {
             <Copy className="h-3.5 w-3.5" />
             {copied ? "已复制" : "复制"}
           </button>
-          <button className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
-            <Bookmark className="h-3.5 w-3.5" />
-            收藏
+          <button 
+            onClick={handleBookmark}
+            className={cn(
+              "flex h-8 items-center gap-1 rounded-lg px-2 text-xs transition-colors",
+              bookmarked 
+                ? "text-amber-500 bg-amber-50" 
+                : "text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            )}
+          >
+            <Bookmark className={cn("h-3.5 w-3.5", bookmarked && "fill-current")} />
+            {bookmarked ? "已收藏" : "收藏"}
           </button>
         </div>
         <div className="flex items-center gap-1">
-          <button className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-[#1e40af]/10 hover:text-[#1e40af]">
-            <ThumbsUp className="h-3.5 w-3.5" />
+          <button 
+            onClick={handleLike}
+            className={cn(
+              "flex h-8 w-8 items-center justify-center rounded-lg transition-colors",
+              liked 
+                ? "text-[#1e40af] bg-[#1e40af]/10" 
+                : "text-gray-400 hover:bg-[#1e40af]/10 hover:text-[#1e40af]"
+            )}
+          >
+            <ThumbsUp className={cn("h-3.5 w-3.5", liked && "fill-current")} />
           </button>
-          <button className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500">
+          <button 
+            onClick={handleDislike}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+          >
             <ThumbsDown className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
+
+      {/* 点赞反馈 Toast */}
+      {showLikeToast && (
+        <div className="fixed left-1/2 top-1/2 z-[200] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-black/70 px-4 py-2 text-sm text-white">
+          收到反馈
+        </div>
+      )}
+
+      {/* 反馈弹窗 */}
+      {showFeedbackModal && (
+        <FeedbackModal onClose={() => setShowFeedbackModal(false)} />
+      )}
     </div>
   )
 }
@@ -460,6 +512,104 @@ function LoadingIndicatorA() {
         <Loader2 className="h-4 w-4 animate-spin text-white" />
       </div>
       <span className="text-sm text-gray-500">正在检索知识库...</span>
+    </div>
+  )
+}
+
+// 反馈弹窗
+function FeedbackModal({ onClose }: { onClose: () => void }) {
+  const [selectedReasons, setSelectedReasons] = useState<string[]>([])
+  const [feedbackText, setFeedbackText] = useState("")
+  const [submitted, setSubmitted] = useState(false)
+
+  const feedbackReasons = [
+    "回答不准确",
+    "引用法规有误",
+    "内容不完整",
+    "与问题不相关",
+    "格式混乱",
+    "其他问题",
+  ]
+
+  const toggleReason = (reason: string) => {
+    setSelectedReasons(prev => 
+      prev.includes(reason) 
+        ? prev.filter(r => r !== reason)
+        : [...prev, reason]
+    )
+  }
+
+  const handleSubmit = () => {
+    // TODO: 提交反馈到后端
+    setSubmitted(true)
+    setTimeout(() => {
+      onClose()
+    }, 1000)
+  }
+
+  if (submitted) {
+    return (
+      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50">
+        <div className="rounded-2xl bg-white p-6 text-center">
+          <div className="mb-3 flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-green-100">
+            <ThumbsUp className="h-6 w-6 text-green-600" />
+          </div>
+          <p className="text-sm text-gray-700">感谢您的反馈</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="fixed inset-0 z-[200] flex items-end justify-center bg-black/50">
+      <div className="w-full max-w-lg animate-in slide-in-from-bottom duration-300 rounded-t-3xl bg-white p-6" style={{ maxHeight: "80vh" }}>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-900">问题反馈</h2>
+          <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-gray-100">
+            <X className="h-5 w-5 text-gray-400" />
+          </button>
+        </div>
+
+        <p className="mb-3 text-sm text-gray-500">请选择问题类型（可多选）</p>
+        <div className="mb-4 flex flex-wrap gap-2">
+          {feedbackReasons.map((reason) => (
+            <button
+              key={reason}
+              onClick={() => toggleReason(reason)}
+              className={cn(
+                "rounded-full px-3 py-1.5 text-sm transition-all",
+                selectedReasons.includes(reason)
+                  ? "bg-[#1e40af] text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              )}
+            >
+              {reason}
+            </button>
+          ))}
+        </div>
+
+        <p className="mb-2 text-sm text-gray-500">补充说明（可选）</p>
+        <textarea
+          value={feedbackText}
+          onChange={(e) => setFeedbackText(e.target.value)}
+          placeholder="请描述您遇到的具体问题..."
+          className="mb-4 w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700 placeholder:text-gray-400 focus:border-[#1e40af]/30 focus:outline-none focus:ring-2 focus:ring-[#1e40af]/10"
+          rows={3}
+        />
+
+        <button
+          onClick={handleSubmit}
+          disabled={selectedReasons.length === 0}
+          className={cn(
+            "w-full rounded-xl py-3 text-sm font-medium transition-all",
+            selectedReasons.length > 0
+              ? "bg-gradient-to-r from-[#1e40af] to-[#3b82f6] text-white"
+              : "bg-gray-100 text-gray-400 cursor-not-allowed"
+          )}
+        >
+          提交反馈
+        </button>
+      </div>
     </div>
   )
 }
