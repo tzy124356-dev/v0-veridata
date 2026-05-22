@@ -236,7 +236,7 @@ function UpgradeVersionA() {
             微信支付订阅
           </button>
           <p className="mt-2 text-center text-xs text-gray-400">
-            支持开具发票 · 7天无理由退款
+            支持开具发票 · 积分用完前不支持退款
           </p>
         </div>
       )}
