@@ -199,7 +199,7 @@ export default function VaultPage() {
       </div>
 
       {/* 内容区域 */}
-      <main className="flex-1 overflow-y-auto px-5 pb-20">
+      <main className="flex-1 overflow-y-auto px-5 pb-20 scrollbar-hide">
         {isEmpty ? (
           <EmptyState
             isDragging={isDragging}
