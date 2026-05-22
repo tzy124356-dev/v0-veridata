@@ -229,10 +229,10 @@ function MainFeatureCard() {
           智能问答
         </h2>
 
-        {/* 白色渐变分割线 */}
+        {/* 白色渐变分割线 - 两端虚中间实 */}
         <div 
           className="my-[22px] h-px w-24"
-          style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%)' }}
+          style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%)' }}
         />
 
         {/* 主描述 */}
