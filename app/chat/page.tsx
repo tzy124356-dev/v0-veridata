@@ -265,7 +265,7 @@ function ChatVersionA({
                   handleSend()
                 }
               }}
-              placeholder="输入您的问题..."
+              placeholder="输入���的问题..."
               rows={1}
               className="max-h-32 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
             />
@@ -373,8 +373,8 @@ function MessageBubbleA({ message }: { message: Message }) {
   }
 
   const handleLike = () => {
+    setLiked(!liked)
     if (!liked) {
-      setLiked(true)
       setShowLikeToast(true)
       setTimeout(() => setShowLikeToast(false), 1000)
     }
