@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
+import Image from "next/image"
 import {
   ArrowLeft,
   Clock,
@@ -301,7 +302,13 @@ function EmptyStateA({ onScenarioClick }: { onScenarioClick: (hint: string) => v
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center py-8">
       <h2 className="mb-2 flex items-center gap-2 text-lg font-semibold text-gray-900">
-        <Sparkles className="h-5 w-5 text-[#1e40af]" />
+        <Image
+          src="/crab-logo.png"
+          alt="Logo"
+          width={24}
+          height={24}
+          className="h-6 w-6"
+        />
         有什么可以帮到你？
       </h2>
       <p className="text-center text-sm text-gray-500">
