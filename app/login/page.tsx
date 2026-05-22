@@ -1,234 +1,172 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, Phone, Lock, Eye, EyeOff, MessageSquare } from "lucide-react"
-import { cn } from "@/lib/utils"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { MessageCircle, Phone, CheckCircle2 } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export default function LoginPage() {
   const router = useRouter()
-  const [loginMethod, setLoginMethod] = useState<"phone" | "password">("phone")
-  const [phone, setPhone] = useState("")
-  const [code, setCode] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [countdown, setCountdown] = useState(0)
-  const [agreed, setAgreed] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [loginType, setLoginType] = useState<"wechat" | "phone" | null>(null)
+  const [loginSuccess, setLoginSuccess] = useState(false)
 
-  const handleSendCode = () => {
-    if (countdown > 0 || !phone) return
-    setCountdown(60)
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer)
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
-  }
+  // 模拟微信授权登录
+  const handleWechatLogin = async () => {
+    setLoginType("wechat")
+    setIsLoading(true)
 
-  const handleLogin = () => {
-    if (!agreed) return
-    // 模拟登录
+    // 模拟授权过程
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    setLoginSuccess(true)
+    await new Promise((resolve) => setTimeout(resolve, 800))
+
+    // 跳转到首页
     router.push("/")
   }
 
-  const isPhoneValid = phone.length === 11
-  const isCodeValid = code.length === 6
-  const isPasswordValid = password.length >= 6
-  const canLogin =
-    agreed &&
-    (loginMethod === "phone"
-      ? isPhoneValid && isCodeValid
-      : isPhoneValid && isPasswordValid)
+  // 模拟手机号授权登录
+  const handlePhoneLogin = async () => {
+    setLoginType("phone")
+    setIsLoading(true)
+
+    // 模拟授权过程
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    setLoginSuccess(true)
+    await new Promise((resolve) => setTimeout(resolve, 800))
+
+    // 跳转到首页
+    router.push("/")
+  }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      {/* 深蓝渐变头部 */}
-      <div className="bg-gradient-to-b from-[#1e3a8a] via-[#1e40af] to-[#2563eb] px-5 pt-12 pb-16">
-        <header className="mb-8 flex items-center">
-          <Link
-            href="/"
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20"
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
+      {/* 顶部品牌区域 */}
+      <div className="flex flex-1 flex-col items-center justify-center px-6 pb-8">
+        {/* Logo */}
+        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#3b82f6] shadow-lg">
+          <svg
+            viewBox="0 0 64 64"
+            className="h-12 w-12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <ArrowLeft className="h-5 w-5 text-white" />
-          </Link>
-        </header>
+            {/* 像素风格螃蟹 Logo */}
+            <rect x="20" y="24" width="24" height="16" fill="white" />
+            <rect x="16" y="28" width="4" height="8" fill="white" />
+            <rect x="44" y="28" width="4" height="8" fill="white" />
+            <rect x="24" y="20" width="4" height="4" fill="white" />
+            <rect x="36" y="20" width="4" height="4" fill="white" />
+            <rect x="25" y="21" width="2" height="2" fill="#1e40af" />
+            <rect x="37" y="21" width="2" height="2" fill="#1e40af" />
+            <rect x="8" y="24" width="8" height="4" fill="white" />
+            <rect x="8" y="28" width="4" height="8" fill="white" />
+            <rect x="48" y="24" width="8" height="4" fill="white" />
+            <rect x="52" y="28" width="4" height="8" fill="white" />
+            <rect x="22" y="40" width="4" height="6" fill="white" />
+            <rect x="30" y="40" width="4" height="8" fill="white" />
+            <rect x="38" y="40" width="4" height="6" fill="white" />
+          </svg>
+        </div>
 
-        {/* 品牌区域 */}
-        <div className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
-            <span className="text-2xl font-bold text-white">械</span>
-          </div>
-          <h1 className="mb-2 text-2xl font-bold text-white">欢迎使用械研</h1>
-          <p className="text-sm text-white/70">医疗器械注册，让每一步都有据可查</p>
+        {/* 品牌名 */}
+        <h1 className="mb-1 text-2xl font-bold text-gray-900">械研</h1>
+        <p className="mb-2 text-sm tracking-widest text-gray-500">VERIDATA</p>
+
+        {/* Slogan */}
+        <p className="text-sm text-gray-600">让 AI 有据而行</p>
+      </div>
+
+      {/* 登录按钮区域 */}
+      <div className="px-6 pb-8">
+        {/* 微信授权登录按钮 */}
+        <button
+          onClick={handleWechatLogin}
+          disabled={isLoading}
+          className={cn(
+            "mb-3 flex w-full items-center justify-center gap-2 rounded-xl py-4 text-base font-medium transition-all active:scale-[0.98]",
+            isLoading && loginType === "wechat"
+              ? "bg-[#07c160] text-white"
+              : "bg-[#07c160] text-white hover:bg-[#06ad56]"
+          )}
+        >
+          {isLoading && loginType === "wechat" ? (
+            loginSuccess ? (
+              <>
+                <CheckCircle2 className="h-5 w-5" />
+                授权成功
+              </>
+            ) : (
+              <>
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                正在授权...
+              </>
+            )
+          ) : (
+            <>
+              <MessageCircle className="h-5 w-5" />
+              微信一键登录
+            </>
+          )}
+        </button>
+
+        {/* 手机号授权登录按钮 */}
+        <button
+          onClick={handlePhoneLogin}
+          disabled={isLoading}
+          className={cn(
+            "mb-6 flex w-full items-center justify-center gap-2 rounded-xl border py-4 text-base font-medium transition-all active:scale-[0.98]",
+            isLoading && loginType === "phone"
+              ? "border-[#1e40af] bg-[#1e40af]/5 text-[#1e40af]"
+              : "border-gray-200 bg-white text-gray-700 hover:border-[#1e40af] hover:text-[#1e40af]"
+          )}
+        >
+          {isLoading && loginType === "phone" ? (
+            loginSuccess ? (
+              <>
+                <CheckCircle2 className="h-5 w-5 text-[#1e40af]" />
+                授权成功
+              </>
+            ) : (
+              <>
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#1e40af] border-t-transparent" />
+                正在授权...
+              </>
+            )
+          ) : (
+            <>
+              <Phone className="h-5 w-5" />
+              手机号一键登录
+            </>
+          )}
+        </button>
+
+        {/* 协议说明 */}
+        <p className="text-center text-xs leading-relaxed text-gray-400">
+          点击登录即表示您已阅读并同意
+        </p>
+        <div className="mt-1 flex items-center justify-center gap-1 text-xs">
+          <Link href="/terms" className="text-[#1e40af] hover:underline">
+            服务协议
+          </Link>
+          <span className="text-gray-300">|</span>
+          <Link href="/privacy" className="text-[#1e40af] hover:underline">
+            隐私政策
+          </Link>
+          <span className="text-gray-300">|</span>
+          <Link href="/disclaimer" className="text-[#1e40af] hover:underline">
+            免责声明
+          </Link>
         </div>
       </div>
 
-      {/* 白色内容区域 */}
-      <main className="-mt-6 flex-1 rounded-t-3xl bg-background px-5 py-8">
-        {/* 登录方式切换 */}
-        <div className="mb-6 flex rounded-xl bg-secondary p-1">
-          <button
-            onClick={() => setLoginMethod("phone")}
-            className={cn(
-              "flex-1 rounded-lg py-2.5 text-sm font-medium transition-all",
-              loginMethod === "phone"
-                ? "bg-white text-foreground shadow-sm"
-                : "text-muted-foreground"
-            )}
-          >
-            验证码登录
-          </button>
-          <button
-            onClick={() => setLoginMethod("password")}
-            className={cn(
-              "flex-1 rounded-lg py-2.5 text-sm font-medium transition-all",
-              loginMethod === "password"
-                ? "bg-white text-foreground shadow-sm"
-                : "text-muted-foreground"
-            )}
-          >
-            密码登录
-          </button>
-        </div>
-
-        {/* 表单 */}
-        <div className="space-y-4">
-          {/* 手机号输入 */}
-          <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3">
-            <Phone className="h-5 w-5 text-muted-foreground" />
-            <input
-              type="tel"
-              placeholder="请输入手机号"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value.slice(0, 11))}
-              className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
-            />
-          </div>
-
-          {loginMethod === "phone" ? (
-            /* 验证码输入 */
-            <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3">
-              <MessageSquare className="h-5 w-5 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="请输入验证码"
-                value={code}
-                onChange={(e) => setCode(e.target.value.slice(0, 6))}
-                className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
-              />
-              <button
-                onClick={handleSendCode}
-                disabled={!isPhoneValid || countdown > 0}
-                className={cn(
-                  "shrink-0 text-sm font-medium transition-colors",
-                  isPhoneValid && countdown === 0
-                    ? "text-[#1e40af]"
-                    : "text-muted-foreground"
-                )}
-              >
-                {countdown > 0 ? `${countdown}s` : "获取验证码"}
-              </button>
-            </div>
-          ) : (
-            /* 密码输入 */
-            <div className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3">
-              <Lock className="h-5 w-5 text-muted-foreground" />
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="请输入密码"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
-              />
-              <button
-                onClick={() => setShowPassword(!showPassword)}
-                className="shrink-0 text-muted-foreground"
-              >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5" />
-                ) : (
-                  <Eye className="h-5 w-5" />
-                )}
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* 忘记密码 */}
-        {loginMethod === "password" && (
-          <div className="mt-3 text-right">
-            <Link href="/forgot-password" className="text-sm text-[#1e40af]">
-              忘记密码？
-            </Link>
-          </div>
-        )}
-
-        {/* 用户协议 */}
-        <div className="mt-6 flex items-start gap-3">
-          <button
-            onClick={() => setAgreed(!agreed)}
-            className={cn(
-              "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors",
-              agreed
-                ? "border-[#1e40af] bg-[#1e40af]"
-                : "border-muted-foreground"
-            )}
-          >
-            {agreed && (
-              <svg
-                className="h-3 w-3 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={3}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            )}
-          </button>
-          <p className="text-xs leading-relaxed text-muted-foreground">
-            我已阅读并同意
-            <Link href="/terms" className="text-[#1e40af]">
-              《用户服务协议》
-            </Link>
-            和
-            <Link href="/privacy" className="text-[#1e40af]">
-              《隐私政策》
-            </Link>
-          </p>
-        </div>
-
-        {/* 登录按钮 */}
-        <button
-          onClick={handleLogin}
-          disabled={!canLogin}
-          className={cn(
-            "mt-8 w-full rounded-xl py-3.5 text-sm font-medium transition-all",
-            canLogin
-              ? "bg-gradient-to-r from-[#1e40af] to-[#2563eb] text-white active:scale-[0.98]"
-              : "bg-secondary text-muted-foreground"
-          )}
-        >
-          登录
-        </button>
-
-        {/* 注册入口 */}
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          还没有账号？
-          <Link href="/register" className="font-medium text-[#1e40af]">
-            立即注册
-          </Link>
-        </p>
-      </main>
+      {/* 底部装饰 */}
+      <div className="flex items-center justify-center pb-8">
+        <div className="h-1 w-32 rounded-full bg-gray-200" />
+      </div>
     </div>
   )
 }
