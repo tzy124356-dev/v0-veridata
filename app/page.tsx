@@ -392,7 +392,7 @@ function FeedbackButton({ onOpenFeedback }: { onOpenFeedback: () => void }) {
 function BottomNavigation({ activeTab }: { activeTab: TabType }) {
   const tabs = [
     { id: "chat" as const, icon: MessageSquare, label: "智能问答", href: "/" },
-    { id: "vault" as const, icon: FolderOpen, label: "我的档案库", href: "/vault" },
+    { id: "vault" as const, icon: FolderOpen, label: "我的知识库", href: "/vault" },
     { id: "profile" as const, icon: User, label: "我的", href: "/profile" },
   ]
 

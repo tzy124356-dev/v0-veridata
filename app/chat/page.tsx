@@ -519,7 +519,7 @@ function EmptyStateA({
           )}
         >
           <FolderOpen className="h-4 w-4" />
-          我的档案库
+          我的知识库
         </button>
       </div>
       

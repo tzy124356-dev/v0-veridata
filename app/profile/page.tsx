@@ -87,7 +87,7 @@ function ProfileContent({
   const menuItems = [
     { icon: Clock, label: "历史记录", href: "/history" },
     { icon: Bookmark, label: "我的收藏", href: "/favorites", badge: userStats.favorites },
-    { icon: FileText, label: "我的档案库", href: "/vault", badge: userStats.documents },
+    { icon: FileText, label: "我的知识库", href: "/vault", badge: userStats.documents },
   ]
 
   const settingsItems = [
@@ -321,7 +321,7 @@ type TabType = "chat" | "vault" | "profile"
 function BottomNavigation({ activeTab }: { activeTab: TabType }) {
   const tabs = [
     { id: "chat" as const, icon: MessageSquare, label: "智能问答", href: "/" },
-    { id: "vault" as const, icon: FolderOpen, label: "我的档案库", href: "/vault" },
+    { id: "vault" as const, icon: FolderOpen, label: "我的知识库", href: "/vault" },
     { id: "profile" as const, icon: User, label: "我的", href: "/profile" },
   ]
 

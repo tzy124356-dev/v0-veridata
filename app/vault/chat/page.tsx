@@ -106,7 +106,7 @@ export default function VaultChatPage() {
         </Link>
         <div className="text-center">
           <h1 className="text-base font-medium text-foreground">档案库问答</h1>
-          <p className="text-xs text-muted-foreground">仅检索我的档案库</p>
+          <p className="text-xs text-muted-foreground">仅检索我的知识库</p>
         </div>
         <div className="w-9" />
       </header>
