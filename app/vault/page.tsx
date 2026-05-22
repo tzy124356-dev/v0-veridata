@@ -247,7 +247,7 @@ function StorageCard({
         <div className="w-1 bg-gradient-to-b from-violet-400 to-purple-500" />
         <div className="flex-1 p-4">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-gray-600">存储空间</span>
+            <span className="font-medium text-gray-700">存储空间</span>
             <div className="flex items-center gap-1.5">
               <span className="font-semibold text-violet-600">
                 {usedStorage.toFixed(1)}G
