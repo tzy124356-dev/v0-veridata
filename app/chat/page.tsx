@@ -278,11 +278,11 @@ function ChatPageContent() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
-  // 用户消息气泡配色方案 - 丰富蓝色调
+  // 用户消息气泡配色方案
   const bubbleColors = {
-    A: "bg-gradient-to-r from-[#2563eb] to-[#3b82f6]", // 宝石蓝渐变 - 明亮有层次
-    B: "bg-gradient-to-br from-[#1e40af] via-[#3b82f6] to-[#60a5fa]", // 天空蓝渐变 - 通透清新
-    C: "bg-gradient-to-r from-[#1e3a8a] to-[#2563eb]", // 深海蓝渐变 - 沉稳专业
+    A: "bg-[#1883FF]", // 鲜明蓝
+    B: "bg-[#4284ff]", // 柔和蓝
+    C: "bg-[#8cb5ff]", // 淡雅蓝
   }
 
   // 处理URL中的预设问题、知识库来源、历史记录和收藏
@@ -369,7 +369,7 @@ function ChatPageContent() {
             )}
             style={{
               backgroundColor: bubbleColorVersion === v 
-                ? (v === "A" ? "#3b82f6" : v === "B" ? "#1e40af" : "#0f172a")
+                ? (v === "A" ? "#1883FF" : v === "B" ? "#4284ff" : "#8cb5ff")
                 : undefined
             }}
           >
@@ -798,7 +798,7 @@ function FeedbackModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <p className="mb-3 text-sm text-gray-500">请选择问题类型（可多选）</p>
+        <p className="mb-3 text-sm text-gray-500">请选择问题类型（可多���）</p>
         <div className="mb-4 flex flex-wrap gap-2">
           {feedbackReasons.map((reason) => (
             <button
