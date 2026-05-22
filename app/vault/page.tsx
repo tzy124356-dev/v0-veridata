@@ -191,7 +191,7 @@ export default function VaultPage() {
       </div>
 
       {/* 存储空间卡片 */}
-      <div className="mx-5 mb-4 rounded-xl bg-white p-4 shadow-sm">
+      <div className="mx-5 mt-4 mb-4 rounded-xl bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between text-xs">
           <span className="text-gray-500">存储空间</span>
           <span className="font-medium text-gray-700">
