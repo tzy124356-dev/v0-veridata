@@ -12,6 +12,7 @@ import {
   MessageSquare,
   FolderOpen,
   MessageCircle,
+  Crown,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -115,6 +116,25 @@ function ProfileContent({
             <p className="text-xs text-gray-500">登录后享受更多功能</p>
           </div>
           <ChevronRight className="h-5 w-5 text-gray-400" />
+        </Link>
+      )}
+
+      {/* 会员信息 */}
+      {isLoggedIn && (
+        <Link
+          href="/membership"
+          className="mb-3 flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm transition-colors hover:bg-gray-50"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
+              <Crown className="h-4 w-4 text-amber-500" />
+            </div>
+            <span className="text-sm text-gray-900">会员信息</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-amber-600">专业版</span>
+            <ChevronRight className="h-4 w-4 text-gray-300" />
+          </div>
         </Link>
       )}
 
