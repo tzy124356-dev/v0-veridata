@@ -255,9 +255,6 @@ function EmptyState({
   onDrop: (e: React.DragEvent) => void
   onUploadClick: () => void
 }) {
-  // 设计���本切换 - 选定后删除
-  const [version, setVersion] = useState<1 | 2 | 3>(1)
-
   return (
     <div
       className={cn("transition-all", isDragging && "opacity-80")}
@@ -265,69 +262,20 @@ function EmptyState({
       onDragLeave={onDragLeave}
       onDrop={onDrop}
     >
-      {/* 版本切换器 - 开发用 */}
-      <div className="mb-4 flex justify-center gap-2">
-        {([1, 2, 3] as const).map((v) => (
-          <button
-            key={v}
-            onClick={() => setVersion(v)}
-            className={cn(
-              "h-7 w-7 rounded-lg text-xs font-medium transition-all",
-              version === v
-                ? "bg-[#1e40af] text-white"
-                : "bg-gray-100 text-gray-500"
-            )}
-          >
-            {v}
-          </button>
-        ))}
-      </div>
-
       {/* 主卡片 */}
       <div className="rounded-2xl bg-white p-6 shadow-sm">
-        {/* 标题区域 - 版本1：简洁居中式 */}
-        {version === 1 && (
-          <div className="mb-6 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af]/10 to-[#3b82f6]/10">
-              <FolderOpen className="h-7 w-7 text-[#1e40af]" />
-            </div>
-            <h2 className="mb-2 text-xl font-bold text-gray-900">
-              专属知识库
-            </h2>
-            <p className="text-sm leading-relaxed text-gray-500">
-              上传文件，AI 帮你快速检索与问答
-            </p>
+        {/* 标题区域 - 简洁居中式 */}
+        <div className="mb-6 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af]/10 to-[#3b82f6]/10">
+            <FolderOpen className="h-7 w-7 text-[#1e40af]" />
           </div>
-        )}
-
-        {/* 标题区域 - 版本2：左对齐紧凑式 */}
-        {version === 2 && (
-          <div className="mb-6 flex items-start gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
-              <FolderOpen className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h2 className="mb-1 text-lg font-semibold text-gray-900">
-                专属知识库
-              </h2>
-              <p className="text-sm text-gray-500">
-                上传文件，AI 帮你快速检索与问答
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* 标题区域 - 版本3：纯文字极简式 */}
-        {version === 3 && (
-          <div className="mb-6">
-            <h2 className="mb-2 text-center text-xl font-bold text-gray-900">
-              构建你的专属知识库
-            </h2>
-            <p className="text-center text-sm text-gray-500">
-              上传文件，AI 帮你读透每一页
-            </p>
-          </div>
-        )}
+          <h2 className="mb-2 text-xl font-bold text-gray-900">
+            专属知识库
+          </h2>
+          <p className="text-sm leading-relaxed text-gray-500">
+            上传文件，AI 帮你快速检索与问答
+          </p>
+        </div>
 
         {/* 能力点 - 列表 */}
         <div className="mb-6 space-y-2.5">
