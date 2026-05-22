@@ -17,6 +17,11 @@ import {
   ExternalLink,
   Loader2,
   X,
+  Sparkles,
+  Lightbulb,
+  Home,
+  FolderOpen,
+  User,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -27,6 +32,13 @@ const scenarioTags = [
   { id: 2, label: "收到发补通知", hint: "收到发补通知了，怎么办" },
   { id: 3, label: "产品分类界定困惑", hint: "产品分类搞不清楚，帮我判断一下" },
   { id: 4, label: "技术指导原则查询", hint: "找不到对应的技术指导原则" },
+]
+
+// 推荐问题
+const suggestedQuestions = [
+  "注册申报流程是怎样的？",
+  "需要准备哪些检测报告？",
+  "临床试验周期一般多久？",
 ]
 
 // 模拟消息类型
@@ -94,6 +106,7 @@ function ChatPageLoading() {
 
 function ChatPageContent() {
   const searchParams = useSearchParams()
+  const [version, setVersion] = useState<"A" | "B" | "C">("A")
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -153,76 +166,67 @@ function ChatPageContent() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      {/* 顶部导航 */}
-      <header className="glass fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b border-border/50 px-4 py-3">
-        <Link
-          href="/"
-          className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-secondary"
-        >
-          <ArrowLeft className="h-5 w-5 text-foreground" />
-        </Link>
-        <h1 className="text-base font-medium text-foreground">智能问答</h1>
-        <div className="flex items-center gap-2">
-          <button className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-secondary">
-            <Clock className="h-5 w-5 text-muted-foreground" />
-          </button>
-          <button className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-secondary">
-            <MessageSquareText className="h-5 w-5 text-muted-foreground" />
-          </button>
-        </div>
-      </header>
-
-      {/* 消息区域 */}
-      <main className="flex-1 overflow-y-auto px-4 pt-16 pb-36">
-        {messages.length === 0 ? (
-          <EmptyState onScenarioClick={handleScenarioClick} />
-        ) : (
-          <div className="space-y-4 py-4">
-            {messages.map((message) => (
-              <MessageBubble key={message.id} message={message} />
-            ))}
-            {isLoading && <LoadingIndicator />}
-            <div ref={messagesEndRef} />
-          </div>
-        )}
-      </main>
-
-      {/* 底部输入区 */}
-      <div className="glass fixed inset-x-0 bottom-0 z-50 border-t border-border/50 px-4 pb-6 pt-3">
-        <div className="flex items-end gap-3">
-          <textarea
-            ref={inputRef}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault()
-                handleSend()
-              }
-            }}
-            placeholder="输入你的问题..."
-            className="flex-1 resize-none rounded-xl bg-input px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-            rows={1}
-            style={{ maxHeight: "120px" }}
-          />
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
+      {/* 版本切换器 - 选定后删除 */}
+      <div className="fixed top-14 left-2 z-50 flex items-center gap-2 rounded-lg bg-white/90 px-2 py-1 shadow-md backdrop-blur-sm">
+        <span className="text-[10px] text-gray-400">版本：</span>
+        {(["A", "B", "C"] as const).map((v) => (
           <button
-            onClick={handleSend}
-            disabled={!inputValue.trim() || isLoading}
+            key={v}
+            onClick={() => setVersion(v)}
             className={cn(
-              "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all",
-              inputValue.trim() && !isLoading
-                ? "gradient-accent text-primary-foreground"
-                : "bg-secondary text-muted-foreground"
+              "h-6 w-6 rounded text-[10px] font-medium transition-all",
+              version === v
+                ? "bg-[#1e40af] text-white"
+                : "bg-gray-100 text-gray-500"
             )}
           >
-            <Send className="h-5 w-5" />
+            {v}
           </button>
-        </div>
-        <p className="mt-2 text-center text-xs text-muted-foreground">
-          本内容由械研AI基于知识库生成，仅供专业参考
-        </p>
+        ))}
       </div>
+
+      {/* 版本A：结构化专业版 - 保持现有风格 */}
+      {version === "A" && (
+        <ChatVersionA
+          messages={messages}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          isLoading={isLoading}
+          handleSend={handleSend}
+          handleScenarioClick={handleScenarioClick}
+          inputRef={inputRef}
+          messagesEndRef={messagesEndRef}
+        />
+      )}
+
+      {/* 版本B：简洁对话版 - 类似微信聊天 */}
+      {version === "B" && (
+        <ChatVersionB
+          messages={messages}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          isLoading={isLoading}
+          handleSend={handleSend}
+          handleScenarioClick={handleScenarioClick}
+          inputRef={inputRef}
+          messagesEndRef={messagesEndRef}
+        />
+      )}
+
+      {/* 版本C：沉浸式品牌版 - 深色头部 */}
+      {version === "C" && (
+        <ChatVersionC
+          messages={messages}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          isLoading={isLoading}
+          handleSend={handleSend}
+          handleScenarioClick={handleScenarioClick}
+          inputRef={inputRef}
+          messagesEndRef={messagesEndRef}
+        />
+      )}
 
       {/* 知识库范围弹窗 */}
       {showKnowledgeModal && (
@@ -232,34 +236,145 @@ function ChatPageContent() {
   )
 }
 
-// 空状态
-function EmptyState({
-  onScenarioClick,
+// 版本A：结构化专业版 - 结论、法规依据、推理过程分层展示
+function ChatVersionA({
+  messages,
+  inputValue,
+  setInputValue,
+  isLoading,
+  handleSend,
+  handleScenarioClick,
+  inputRef,
+  messagesEndRef,
 }: {
-  onScenarioClick: (hint: string) => void
+  messages: Message[]
+  inputValue: string
+  setInputValue: (v: string) => void
+  isLoading: boolean
+  handleSend: () => void
+  handleScenarioClick: (hint: string) => void
+  inputRef: React.RefObject<HTMLTextAreaElement | null>
+  messagesEndRef: React.RefObject<HTMLDivElement | null>
 }) {
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center py-8">
-      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-primary/10">
-        <MessageSquareText className="h-10 w-10 text-primary" />
+    <>
+      {/* 顶部导航 */}
+      <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b border-gray-100 bg-white/80 px-4 backdrop-blur-md">
+        <Link
+          href="/"
+          className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-gray-100"
+        >
+          <ArrowLeft className="h-5 w-5 text-gray-600" />
+        </Link>
+        <div className="flex items-center gap-2">
+          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
+            <Sparkles className="h-3.5 w-3.5 text-white" />
+          </div>
+          <span className="text-sm font-semibold text-gray-900">智能问答</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <button className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-gray-100">
+            <Clock className="h-5 w-5 text-gray-400" />
+          </button>
+        </div>
+      </header>
+
+      {/* 消息区域 */}
+      <main className="flex-1 overflow-y-auto px-4 pb-44 pt-4">
+        {messages.length === 0 ? (
+          <EmptyStateA onScenarioClick={handleScenarioClick} />
+        ) : (
+          <div className="space-y-4">
+            {messages.map((message) => (
+              <MessageBubbleA key={message.id} message={message} />
+            ))}
+            {isLoading && <LoadingIndicatorA />}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
+      </main>
+
+      {/* 底部输入区 */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-gray-100 bg-white/95 backdrop-blur-md">
+        {/* 推荐问题 */}
+        {messages.length > 0 && (
+          <div className="border-b border-gray-50 px-4 py-2.5">
+            <div className="flex items-center gap-1.5 mb-2 text-xs text-gray-400">
+              <Lightbulb className="h-3.5 w-3.5" />
+              <span>相关问题</span>
+            </div>
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+              {suggestedQuestions.map((q, i) => (
+                <button
+                  key={i}
+                  onClick={() => setInputValue(q)}
+                  className="flex-shrink-0 rounded-full border border-[#1e40af]/20 bg-[#1e40af]/5 px-3 py-1.5 text-xs text-[#1e40af] transition-colors hover:bg-[#1e40af]/10"
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        <div className="px-4 pb-6 pt-3">
+          <div className="flex items-end gap-2 rounded-2xl border border-gray-200 bg-gray-50 p-2 focus-within:border-[#1e40af]/30 focus-within:ring-2 focus-within:ring-[#1e40af]/10">
+            <textarea
+              ref={inputRef}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault()
+                  handleSend()
+                }
+              }}
+              placeholder="输入您的问题..."
+              rows={1}
+              className="max-h-32 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
+            />
+            <button
+              onClick={handleSend}
+              disabled={!inputValue.trim() || isLoading}
+              className={cn(
+                "flex h-9 w-9 items-center justify-center rounded-xl transition-all",
+                inputValue.trim()
+                  ? "bg-gradient-to-r from-[#1e40af] to-[#3b82f6] text-white shadow-md"
+                  : "bg-gray-200 text-gray-400"
+              )}
+            >
+              <Send className="h-4 w-4" />
+            </button>
+          </div>
+          <p className="mt-2 text-center text-xs text-gray-400">
+            本内容由 Veridata AI 基于知识库生成，仅供专业参考
+          </p>
+        </div>
       </div>
-      <h2 className="mb-2 text-lg font-medium text-foreground">
-        有什么可以帮到你？
-      </h2>
-      <p className="mb-8 text-center text-sm text-muted-foreground">
+    </>
+  )
+}
+
+// 版本A - 空状态
+function EmptyStateA({ onScenarioClick }: { onScenarioClick: (hint: string) => void }) {
+  return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center py-8">
+      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af]/10 to-[#3b82f6]/10">
+        <Sparkles className="h-10 w-10 text-[#1e40af]" />
+      </div>
+      <h2 className="mb-2 text-lg font-semibold text-gray-900">有什么可以帮到你？</h2>
+      <p className="mb-8 text-center text-sm text-gray-500">
         基于行业官方数据库，每条回答有出处
       </p>
 
       <div className="w-full max-w-sm space-y-3">
-        <p className="text-center text-xs text-muted-foreground">
-          选择一个场景开始
-        </p>
+        <p className="text-center text-xs text-gray-400">选择一个场景开始</p>
         <div className="flex flex-wrap justify-center gap-2">
           {scenarioTags.map((tag) => (
             <button
               key={tag.id}
               onClick={() => onScenarioClick(tag.hint)}
-              className="glass-subtle rounded-full px-4 py-2 text-sm text-secondary-foreground transition-all hover:bg-secondary/60 active:scale-95"
+              className="rounded-full border border-[#1e40af]/15 bg-white px-4 py-2 text-sm text-gray-700 shadow-sm transition-all hover:border-[#1e40af]/30 hover:bg-[#1e40af]/5 active:scale-95"
             >
               {tag.label}
             </button>
@@ -270,8 +385,8 @@ function EmptyState({
   )
 }
 
-// 消息气泡
-function MessageBubble({ message }: { message: Message }) {
+// 版本A - 消息气泡（结构化）
+function MessageBubbleA({ message }: { message: Message }) {
   const [showReasoning, setShowReasoning] = useState(false)
   const [copied, setCopied] = useState(false)
 
@@ -281,15 +396,13 @@ function MessageBubble({ message }: { message: Message }) {
       await navigator.clipboard.writeText(text)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    } catch {
-      // Fallback for environments without clipboard API
-    }
+    } catch {}
   }
 
   if (message.type === "user") {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[85%] rounded-2xl rounded-br-md bg-primary px-4 py-3 text-sm text-primary-foreground">
+        <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-gradient-to-r from-[#1e40af] to-[#3b82f6] px-4 py-3 text-sm text-white shadow-md">
           {message.content}
         </div>
       </div>
@@ -298,124 +411,509 @@ function MessageBubble({ message }: { message: Message }) {
 
   return (
     <div className="space-y-3">
-      {/* 结论 - 第一层 */}
+      {/* 结论 */}
       {message.conclusion && (
-        <div className="glass rounded-2xl p-4">
+        <div className="rounded-2xl border border-[#1e40af]/10 bg-white p-4 shadow-sm">
           <div className="mb-2 flex items-center gap-2">
-            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-            <span className="text-xs font-medium text-primary">结论</span>
+            <div className="h-1.5 w-1.5 rounded-full bg-[#1e40af]" />
+            <span className="text-xs font-medium text-[#1e40af]">结论</span>
           </div>
-          <p className="text-sm leading-relaxed text-foreground">
-            {message.conclusion}
-          </p>
+          <p className="text-sm leading-relaxed text-gray-700">{message.conclusion}</p>
         </div>
       )}
 
-      {/* 法规依据 - 第二层 */}
+      {/* 法规依据 */}
       {message.legalBasis && message.legalBasis.length > 0 && (
-        <div className="glass rounded-2xl p-4">
+        <div className="rounded-2xl border border-[#1e40af]/10 bg-white p-4 shadow-sm">
           <div className="mb-3 flex items-center gap-2">
-            <FileText className="h-4 w-4 text-accent" />
-            <span className="text-xs font-medium text-accent">法规依据</span>
+            <FileText className="h-4 w-4 text-amber-500" />
+            <span className="text-xs font-medium text-amber-600">法规依据</span>
           </div>
           <div className="space-y-3">
             {message.legalBasis.map((basis, index) => (
-              <div
-                key={index}
-                className="rounded-xl bg-secondary/50 p-3"
-              >
+              <div key={index} className="rounded-xl bg-gray-50 p-3">
                 <div className="mb-1 flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">
-                    {basis.title}
-                  </span>
+                  <span className="text-sm font-medium text-gray-900">{basis.title}</span>
                   {basis.url && (
-                    <a
-                      href={basis.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:text-primary/80"
-                    >
+                    <a href={basis.url} target="_blank" rel="noopener noreferrer" className="text-[#1e40af] hover:text-[#1e40af]/80">
                       <ExternalLink className="h-3.5 w-3.5" />
                     </a>
                   )}
                 </div>
-                <p className="mb-1 text-xs text-muted-foreground">
-                  {basis.clause}
-                </p>
-                <p className="text-xs leading-relaxed text-secondary-foreground">
-                  {basis.content}
-                </p>
+                <p className="mb-1 text-xs text-gray-400">{basis.clause}</p>
+                <p className="text-xs leading-relaxed text-gray-600">{basis.content}</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* 推导逻辑 - 第三层（可折叠） */}
+      {/* 推导逻辑 */}
       {message.reasoning && (
-        <div className="glass rounded-2xl p-4">
-          <button
-            onClick={() => setShowReasoning(!showReasoning)}
-            className="flex w-full items-center justify-between"
-          >
+        <div className="rounded-2xl border border-[#1e40af]/10 bg-white p-4 shadow-sm">
+          <button onClick={() => setShowReasoning(!showReasoning)} className="flex w-full items-center justify-between">
             <div className="flex items-center gap-2">
-              {showReasoning ? (
-                <ChevronUp className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="h-4 w-4 text-muted-foreground" />
-              )}
-              <span className="text-xs font-medium text-muted-foreground">
-                {showReasoning ? "收起推理过程" : "展开推理过程"}
-              </span>
+              {showReasoning ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+              <span className="text-xs font-medium text-gray-400">{showReasoning ? "收起推理过程" : "展开推理过程"}</span>
             </div>
           </button>
           {showReasoning && (
-            <div className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-secondary-foreground">
-              {message.reasoning}
-            </div>
+            <div className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-gray-600">{message.reasoning}</div>
           )}
         </div>
       )}
 
       {/* 操作按钮 */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-1">
-          <button
-            onClick={handleCopy}
-            className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
+          <button onClick={handleCopy} className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
             <Copy className="h-3.5 w-3.5" />
             {copied ? "已复制" : "复制"}
           </button>
-          <button className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
+          <button className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
             <Bookmark className="h-3.5 w-3.5" />
             收藏
           </button>
         </div>
         <div className="flex items-center gap-1">
-          <button className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
+          <button className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-[#1e40af]/10 hover:text-[#1e40af]">
             <ThumbsUp className="h-3.5 w-3.5" />
           </button>
-          <button className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
+          <button className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500">
             <ThumbsDown className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
-
-      {/* 免责声明 */}
-      <p className="text-center text-xs text-muted-foreground/70">
-        本内容由械研AI基于知识库生成，仅供专业参考
-      </p>
     </div>
   )
 }
 
-// 加载指示器
-function LoadingIndicator() {
+// 版本A - 加载指示器
+function LoadingIndicatorA() {
   return (
-    <div className="glass flex items-center gap-3 rounded-2xl p-4">
-      <Loader2 className="h-5 w-5 animate-spin text-primary" />
-      <span className="text-sm text-muted-foreground">正在检索知识库…</span>
+    <div className="flex items-center gap-3 rounded-2xl border border-[#1e40af]/10 bg-white p-4 shadow-sm">
+      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
+        <Loader2 className="h-4 w-4 animate-spin text-white" />
+      </div>
+      <span className="text-sm text-gray-500">正在检索知识库...</span>
+    </div>
+  )
+}
+
+// 版本B：简洁对话版 - 类似微信聊天风格
+function ChatVersionB({
+  messages,
+  inputValue,
+  setInputValue,
+  isLoading,
+  handleSend,
+  handleScenarioClick,
+  inputRef,
+  messagesEndRef,
+}: {
+  messages: Message[]
+  inputValue: string
+  setInputValue: (v: string) => void
+  isLoading: boolean
+  handleSend: () => void
+  handleScenarioClick: (hint: string) => void
+  inputRef: React.RefObject<HTMLTextAreaElement | null>
+  messagesEndRef: React.RefObject<HTMLDivElement | null>
+}) {
+  return (
+    <>
+      {/* 微信小程序导航栏 */}
+      <div className="sticky top-0 z-40 relative flex h-11 items-center justify-center bg-[#f0f7ff]">
+        <Link href="/" className="absolute left-3 flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-black/5">
+          <ArrowLeft className="h-5 w-5 text-gray-600" />
+        </Link>
+        <span className="text-[17px] font-semibold tracking-wide text-gray-900">智能问答</span>
+
+        {/* 微信胶囊按钮 */}
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-[87px] items-center rounded-full border border-black/5 bg-black/[0.04]">
+          <div className="flex flex-1 items-center justify-center text-gray-900">
+            <svg width="18" height="4" viewBox="0 0 18 4">
+              <circle cx="2" cy="2" r="1.5" fill="currentColor" />
+              <circle cx="9" cy="2" r="1.5" fill="currentColor" />
+              <circle cx="16" cy="2" r="1.5" fill="currentColor" />
+            </svg>
+          </div>
+          <div className="h-4 w-px bg-black/15" />
+          <div className="flex flex-1 items-center justify-center text-gray-900">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.2" />
+              <circle cx="8" cy="8" r="1.6" fill="currentColor" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* 对话区域 */}
+      <main className="flex-1 overflow-y-auto px-4 py-4 pb-44">
+        {messages.length === 0 ? (
+          <EmptyStateB onScenarioClick={handleScenarioClick} />
+        ) : (
+          <div className="space-y-4">
+            {messages.map((message) => (
+              <MessageBubbleB key={message.id} message={message} />
+            ))}
+            {isLoading && <LoadingIndicatorB />}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
+      </main>
+
+      {/* 底部输入区域 */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-gray-100 bg-white/95 backdrop-blur-md">
+        {/* 推荐问题 */}
+        <div className="border-b border-gray-50 px-4 py-2.5">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+            {suggestedQuestions.map((q, i) => (
+              <button
+                key={i}
+                onClick={() => setInputValue(q)}
+                className="flex-shrink-0 rounded-full border border-[#1e40af]/15 bg-white px-3 py-1.5 text-xs text-[#1e40af] transition-colors hover:bg-[#1e40af]/5"
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        {/* 输入框 */}
+        <div className="px-4 pb-6 pt-3">
+          <div className="flex items-center gap-2">
+            <div className="flex flex-1 items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5">
+              <MessageSquareText className="h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSend()
+                }}
+                placeholder="输入您的问题..."
+                className="flex-1 bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
+              />
+            </div>
+            <button
+              onClick={handleSend}
+              disabled={!inputValue.trim() || isLoading}
+              className={cn(
+                "flex h-10 w-10 items-center justify-center rounded-full transition-all",
+                inputValue.trim()
+                  ? "bg-gradient-to-r from-[#1e40af] to-[#3b82f6] text-white shadow-lg"
+                  : "bg-gray-100 text-gray-400"
+              )}
+            >
+              <Send className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+// 版本B - 空状态
+function EmptyStateB({ onScenarioClick }: { onScenarioClick: (hint: string) => void }) {
+  return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center py-8">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
+        <Sparkles className="h-8 w-8 text-white" />
+      </div>
+      <h2 className="mb-1 text-lg font-bold text-gray-900">Veridata AI</h2>
+      <p className="mb-6 text-sm text-gray-500">医疗器械注册智能助手</p>
+
+      <div className="w-full space-y-2 px-4">
+        {scenarioTags.map((tag) => (
+          <button
+            key={tag.id}
+            onClick={() => onScenarioClick(tag.hint)}
+            className="w-full rounded-xl bg-white p-4 text-left shadow-sm transition-all hover:shadow-md active:scale-[0.99]"
+          >
+            <p className="text-sm font-medium text-gray-900">{tag.label}</p>
+            <p className="mt-1 text-xs text-gray-400">{tag.hint}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// 版本B - 消息气泡（简洁）
+function MessageBubbleB({ message }: { message: Message }) {
+  if (message.type === "user") {
+    return (
+      <div className="flex justify-end">
+        <div className="max-w-[80%] rounded-2xl rounded-tr-md bg-gradient-to-r from-[#1e40af] to-[#3b82f6] px-4 py-3 text-sm text-white shadow-md">
+          {message.content}
+        </div>
+      </div>
+    )
+  }
+
+  const fullContent = message.conclusion || message.content
+
+  return (
+    <div className="flex gap-2">
+      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
+        <Sparkles className="h-4 w-4 text-white" />
+      </div>
+      <div className="max-w-[85%] space-y-2">
+        <div className="rounded-2xl rounded-tl-md bg-white p-4 shadow-sm">
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-700">{fullContent}</p>
+          
+          {/* 来源引用 */}
+          {message.legalBasis && message.legalBasis.length > 0 && (
+            <div className="mt-3 border-t border-gray-100 pt-3">
+              <p className="mb-2 text-xs text-gray-400">参考来源</p>
+              <div className="flex flex-wrap gap-1.5">
+                {message.legalBasis.map((source, i) => (
+                  <span key={i} className="inline-flex items-center gap-1 rounded-full bg-[#1e40af]/5 px-2.5 py-1 text-xs text-[#1e40af]">
+                    <FileText className="h-3 w-3" />
+                    {source.title}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* 操作按钮 */}
+        <div className="flex items-center gap-2 px-1">
+          <button className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
+            <Copy className="h-4 w-4" />
+          </button>
+          <button className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-amber-500">
+            <Bookmark className="h-4 w-4" />
+          </button>
+          <button className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-[#1e40af]/10 hover:text-[#1e40af]">
+            <ThumbsUp className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// 版本B - 加载指示器
+function LoadingIndicatorB() {
+  return (
+    <div className="flex gap-2">
+      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
+        <Loader2 className="h-4 w-4 animate-spin text-white" />
+      </div>
+      <div className="flex items-center gap-1 rounded-2xl rounded-tl-md bg-white px-4 py-3 shadow-sm">
+        <span className="h-2 w-2 animate-bounce rounded-full bg-[#1e40af]/60" style={{ animationDelay: "0ms" }} />
+        <span className="h-2 w-2 animate-bounce rounded-full bg-[#1e40af]/60" style={{ animationDelay: "150ms" }} />
+        <span className="h-2 w-2 animate-bounce rounded-full bg-[#1e40af]/60" style={{ animationDelay: "300ms" }} />
+      </div>
+    </div>
+  )
+}
+
+// 版本C：沉浸式品牌版 - 深色头部
+function ChatVersionC({
+  messages,
+  inputValue,
+  setInputValue,
+  isLoading,
+  handleSend,
+  handleScenarioClick,
+  inputRef,
+  messagesEndRef,
+}: {
+  messages: Message[]
+  inputValue: string
+  setInputValue: (v: string) => void
+  isLoading: boolean
+  handleSend: () => void
+  handleScenarioClick: (hint: string) => void
+  inputRef: React.RefObject<HTMLTextAreaElement | null>
+  messagesEndRef: React.RefObject<HTMLDivElement | null>
+}) {
+  return (
+    <div className="flex min-h-screen flex-col bg-white">
+      {/* 深色渐变头部 */}
+      <header className="relative overflow-hidden bg-gradient-to-br from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb] px-4 pb-6 pt-3">
+        {/* 背景光晕 */}
+        <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-blue-400/20 blur-3xl" />
+        <div className="absolute -left-10 bottom-0 h-24 w-24 rounded-full bg-cyan-400/15 blur-2xl" />
+        
+        <div className="relative">
+          {/* 导航栏 */}
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 transition-colors hover:bg-white/20">
+              <ArrowLeft className="h-5 w-5 text-white" />
+            </Link>
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-white/80" />
+              <span className="text-sm font-medium text-white">智能问答</span>
+            </div>
+            <button className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 transition-colors hover:bg-white/20">
+              <Clock className="h-5 w-5 text-white" />
+            </button>
+          </div>
+          
+          {/* 品牌信息 */}
+          <div className="mt-4 text-center">
+            <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
+              <Sparkles className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-lg font-bold text-white">Veridata AI</h1>
+            <p className="text-xs text-white/60">医疗器械注册智能助手</p>
+          </div>
+        </div>
+      </header>
+
+      {/* 对话区域 */}
+      <main className="flex-1 overflow-y-auto px-4 py-4 pb-44">
+        {messages.length === 0 ? (
+          <EmptyStateC onScenarioClick={handleScenarioClick} />
+        ) : (
+          <div className="space-y-4">
+            {messages.map((message) => (
+              <MessageBubbleC key={message.id} message={message} />
+            ))}
+            {isLoading && <LoadingIndicatorC />}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
+      </main>
+
+      {/* 底部区域 */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        {/* 快捷问题 */}
+        <div className="overflow-x-auto border-b border-gray-100 px-4 py-2.5 scrollbar-hide">
+          <div className="flex gap-2">
+            {suggestedQuestions.map((q, i) => (
+              <button
+                key={i}
+                onClick={() => setInputValue(q)}
+                className="flex-shrink-0 rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-600 transition-colors hover:bg-[#1e40af]/5 hover:text-[#1e40af]"
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        {/* 输入框 */}
+        <div className="px-4 pb-6 pt-3">
+          <div className="flex items-center gap-3 rounded-2xl bg-gray-100 p-1.5 pl-4">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSend()
+              }}
+              placeholder="问我任何关于医疗器械注册的问题..."
+              className="flex-1 bg-transparent py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
+            />
+            <button
+              onClick={handleSend}
+              disabled={!inputValue.trim() || isLoading}
+              className={cn(
+                "flex h-9 w-9 items-center justify-center rounded-xl transition-all",
+                inputValue.trim()
+                  ? "bg-gradient-to-r from-[#1e40af] to-[#3b82f6] text-white"
+                  : "bg-gray-200 text-gray-400"
+              )}
+            >
+              <Send className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// 版本C - 空状态
+function EmptyStateC({ onScenarioClick }: { onScenarioClick: (hint: string) => void }) {
+  return (
+    <div className="py-6">
+      <p className="mb-4 text-center text-sm text-gray-500">选择一个场景快速开始</p>
+      <div className="grid grid-cols-2 gap-3">
+        {scenarioTags.map((tag) => (
+          <button
+            key={tag.id}
+            onClick={() => onScenarioClick(tag.hint)}
+            className="rounded-xl border border-gray-100 bg-white p-4 text-left shadow-sm transition-all hover:border-[#1e40af]/20 hover:shadow-md active:scale-[0.98]"
+          >
+            <p className="text-sm font-medium text-gray-900">{tag.label}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// 版本C - 消息气泡
+function MessageBubbleC({ message }: { message: Message }) {
+  if (message.type === "user") {
+    return (
+      <div className="flex justify-end">
+        <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-gradient-to-r from-[#1e40af] to-[#3b82f6] px-4 py-3 text-sm text-white shadow-md">
+          {message.content}
+        </div>
+      </div>
+    )
+  }
+
+  const fullContent = message.conclusion || message.content
+
+  return (
+    <div className="space-y-2">
+      <div className="rounded-2xl bg-gray-50 p-4">
+        <div className="mb-2 flex items-center gap-1.5">
+          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
+            <Sparkles className="h-3 w-3 text-white" />
+          </div>
+          <span className="text-[10px] font-medium text-[#1e40af]">AI 回复</span>
+        </div>
+        
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-700">{fullContent}</p>
+        
+        {/* 来源 */}
+        {message.legalBasis && message.legalBasis.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {message.legalBasis.map((source, i) => (
+              <span key={i} className="inline-flex items-center gap-1 rounded-md bg-white px-2 py-1 text-[10px] text-gray-500 shadow-sm">
+                <FileText className="h-3 w-3" />
+                {source.title}
+              </span>
+            ))}
+          </div>
+        )}
+        
+        {/* 操作 */}
+        <div className="mt-3 flex items-center gap-2">
+          <button className="text-gray-400 transition-colors hover:text-[#1e40af]">
+            <Copy className="h-3.5 w-3.5" />
+          </button>
+          <button className="text-gray-400 transition-colors hover:text-amber-500">
+            <Bookmark className="h-3.5 w-3.5" />
+          </button>
+          <button className="text-gray-400 transition-colors hover:text-[#1e40af]">
+            <ThumbsUp className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// 版本C - 加载指示器
+function LoadingIndicatorC() {
+  return (
+    <div className="rounded-2xl bg-gray-50 px-4 py-3">
+      <div className="flex items-center gap-2">
+        <Loader2 className="h-4 w-4 animate-spin text-[#1e40af]" />
+        <span className="text-sm text-gray-500">思考中...</span>
+      </div>
     </div>
   )
 }
@@ -424,55 +922,47 @@ function LoadingIndicator() {
 function KnowledgeModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50">
-      <div
-        className="glass w-full max-w-lg animate-in slide-in-from-bottom duration-300 rounded-t-3xl p-6"
-        style={{ maxHeight: "70vh" }}
-      >
+      <div className="w-full max-w-lg animate-in slide-in-from-bottom duration-300 rounded-t-3xl bg-white p-6" style={{ maxHeight: "70vh" }}>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">
-            当前械研知识库覆盖范围
-          </h2>
-          <button
-            onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-secondary"
-          >
-            <X className="h-5 w-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold text-gray-900">当前械研知识库覆盖范围</h2>
+          <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-gray-100">
+            <X className="h-5 w-5 text-gray-400" />
           </button>
         </div>
 
         <div className="mb-4 space-y-2">
-          <p className="text-sm text-foreground">
-            当前聚焦<span className="font-medium text-primary">医美针剂注册</span>领域
+          <p className="text-sm text-gray-700">
+            当前聚焦<span className="font-medium text-[#1e40af]">医美针剂注册</span>领域
           </p>
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded-xl bg-secondary/50 p-3">
-              <p className="text-lg font-semibold text-foreground">22大类</p>
-              <p className="text-xs text-muted-foreground">医疗器械分类</p>
+            <div className="rounded-xl bg-gray-50 p-3">
+              <p className="text-lg font-semibold text-gray-900">22大类</p>
+              <p className="text-xs text-gray-400">医疗器械分类</p>
             </div>
-            <div className="rounded-xl bg-secondary/50 p-3">
-              <p className="text-lg font-semibold text-foreground">IVD</p>
-              <p className="text-xs text-muted-foreground">体外诊断试剂</p>
+            <div className="rounded-xl bg-gray-50 p-3">
+              <p className="text-lg font-semibold text-gray-900">IVD</p>
+              <p className="text-xs text-gray-400">体外诊断试剂</p>
             </div>
-            <div className="rounded-xl bg-secondary/50 p-3">
-              <p className="text-lg font-semibold text-foreground">XX份</p>
-              <p className="text-xs text-muted-foreground">法规规章</p>
+            <div className="rounded-xl bg-gray-50 p-3">
+              <p className="text-lg font-semibold text-gray-900">XX份</p>
+              <p className="text-xs text-gray-400">法规规章</p>
             </div>
-            <div className="rounded-xl bg-secondary/50 p-3">
-              <p className="text-lg font-semibold text-foreground">XX份</p>
-              <p className="text-xs text-muted-foreground">技术指导原则</p>
+            <div className="rounded-xl bg-gray-50 p-3">
+              <p className="text-lg font-semibold text-gray-900">XX份</p>
+              <p className="text-xs text-gray-400">技术指导原则</p>
             </div>
           </div>
         </div>
 
-        <div className="mb-6 rounded-xl bg-primary/10 p-3">
-          <p className="text-xs leading-relaxed text-secondary-foreground">
+        <div className="mb-6 rounded-xl bg-[#1e40af]/5 p-3">
+          <p className="text-xs leading-relaxed text-gray-600">
             知识库持续扩充中，暂未覆盖的类目我们正在收录。如果找不到你需要的内容，欢迎通过反馈告诉我们，我们会优先补充。
           </p>
         </div>
 
         <button
           onClick={onClose}
-          className="gradient-accent w-full rounded-xl py-3 text-sm font-medium text-primary-foreground transition-all hover:opacity-90 active:scale-[0.98]"
+          className="w-full rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]"
         >
           我知道了，开始提问
         </button>
