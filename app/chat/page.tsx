@@ -442,7 +442,7 @@ function ChatVersionA({
                   handleSend()
                 }
               }}
-              placeholder="输入您��问题..."
+              placeholder="输入您的问题..."
               rows={1}
               className="max-h-32 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
             />
@@ -619,7 +619,7 @@ function MessageBubbleA({ message }: { message: Message }) {
           <button onClick={() => setShowReasoning(!showReasoning)} className="flex w-full items-center justify-between">
             <div className="flex items-center gap-2">
               {showReasoning ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
-              <span className="text-xs font-medium text-gray-400">{showReasoning ? "收��推理过程" : "展开推理过程"}</span>
+              <span className="text-xs font-medium text-gray-400">{showReasoning ? "收起推理过程" : "展开推理过程"}</span>
             </div>
           </button>
           {showReasoning && (
