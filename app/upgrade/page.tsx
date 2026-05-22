@@ -159,7 +159,7 @@ function UpgradeVersionA() {
 
             <div className="mt-3 flex flex-wrap gap-2">
               <span className="inline-flex items-center gap-1 rounded-lg bg-gray-50 px-2.5 py-1 text-xs text-gray-600">
-                <MessageSquare className="h-3.5 w-3.5" />
+                <MessageSquare className="h-3.5 w-3.5 -scale-x-100" />
                 {plan.questions}
               </span>
               <span className="inline-flex items-center gap-1 rounded-lg bg-gray-50 px-2.5 py-1 text-xs text-gray-600">
