@@ -68,7 +68,7 @@ export function IdentityModal({
             <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
           </div>
 
-          <div className="px-6 pb-8">
+          <div className="px-6 pb-24">
             {/* 头部 */}
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">
