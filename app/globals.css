@@ -3,6 +3,16 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* 全局隐藏滚动条 */
+html, body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
 :root {
   /* 械研 VERIDATA - 蓝白医疗风 简约高级 */
   --background: oklch(0.985 0.005 250);
