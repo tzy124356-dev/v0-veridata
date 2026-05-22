@@ -199,7 +199,7 @@ export default function VaultPage() {
       </div>
 
       {/* 内容区域 */}
-      <main className="flex-1 overflow-y-auto px-5 pb-24">
+      <main className="flex-1 overflow-y-auto px-5 pb-20">
         {isEmpty ? (
           <EmptyState
             isDragging={isDragging}
@@ -487,7 +487,7 @@ function formatFileSize(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i]
 }
 
-// 可拖动的悬浮反馈按钮
+// 可拖动的悬浮反馈按钮 - 与首页完全一致
 function FeedbackButton() {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
@@ -537,11 +537,14 @@ function FeedbackButton() {
   return (
     <div
       className={cn(
-        "fixed right-4 bottom-28 z-40 flex h-12 w-12 cursor-grab flex-col items-center justify-center rounded-full border-2 border-white bg-[#1e40af] text-white shadow-lg transition-shadow",
-        isDragging ? "cursor-grabbing shadow-xl scale-110" : "active:scale-95"
+        "fixed right-4 bottom-[100px] z-40 flex h-[52px] w-[52px] cursor-grab flex-col items-center justify-center rounded-full border-[3px] border-white text-white shadow-xl select-none",
+        isDragging ? "cursor-grabbing" : ""
       )}
       style={{
+        background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+        boxShadow: '0 6px 18px rgba(37, 99, 235, 0.35), 0 2px 6px rgba(0,0,0,0.12)',
         transform: `translate(${position.x}px, ${position.y}px)`,
+        transition: isDragging ? 'none' : 'transform 200ms',
       }}
       onMouseDown={(e) => {
         e.preventDefault()
