@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { ErrorProvider } from '@/components/error-states'
 import './globals.css'
 
 const inter = Inter({ 
@@ -52,7 +53,9 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className="bg-background">
       <body className={`${inter.variable} ${geistMono.variable} font-sans antialiased`}>
-        {children}
+        <ErrorProvider>
+          {children}
+        </ErrorProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

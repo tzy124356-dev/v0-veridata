@@ -10,13 +10,12 @@ import {
   Bell,
   HelpCircle,
   Search,
-  MessageCircle,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import Image from "next/image"
 import { IdentityModal } from "@/components/identity-modal"
-import { FeedbackModal } from "@/components/feedback-modal"
+import { FeedbackFab } from "@/components/feedback-fab"
 import { writeUserIdentity } from "@/lib/identity-options"
 
 // 底部导航Tab类型
@@ -52,7 +51,6 @@ const scenarioGuides = [
 
 export default function HomePage() {
   const [showIdentityModal, setShowIdentityModal] = useState(false)
-  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
   // 首次访问自动弹出身份选择（仅弹一次）
   useEffect(() => {
@@ -77,10 +75,6 @@ export default function HomePage() {
     }
   }
 
-  const handleFeedbackSubmit = (data: { type: string; content: string }) => {
-    // TODO: 提交反馈到后端
-  }
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <main className="flex-1 overflow-y-auto pb-20 scrollbar-hide">
@@ -88,7 +82,7 @@ export default function HomePage() {
       </main>
 
       {/* 悬浮反馈按钮 */}
-      <FeedbackButton onOpenFeedback={() => setShowFeedbackModal(true)} />
+      <FeedbackFab />
 
       {/* 底部导航 */}
       <BottomNavigation activeTab="chat" />
@@ -101,13 +95,6 @@ export default function HomePage() {
           handleIdentitySubmit(data)
           setShowIdentityModal(false)
         }}
-      />
-
-      {/* 反馈弹窗 */}
-      <FeedbackModal
-        isOpen={showFeedbackModal}
-        onClose={() => setShowFeedbackModal(false)}
-        onSubmit={handleFeedbackSubmit}
       />
     </div>
   )
@@ -306,102 +293,6 @@ function ScenarioGuideSection() {
         ))}
       </div>
     </section>
-  )
-}
-
-// 可拖动的悬浮反馈按钮
-function FeedbackButton({ onOpenFeedback }: { onOpenFeedback: () => void }) {
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [isDragging, setIsDragging] = useState(false)
-  const [hasMoved, setHasMoved] = useState(false)
-  const startPos = useRef({ x: 0, y: 0 })
-  const startOffset = useRef({ x: 0, y: 0 })
-
-  const handleStart = (clientX: number, clientY: number) => {
-    setIsDragging(true)
-    setHasMoved(false)
-    startPos.current = { x: clientX, y: clientY }
-    startOffset.current = { x: position.x, y: position.y }
-  }
-
-  const handleMove = (clientX: number, clientY: number) => {
-    if (!isDragging) return
-    
-    const deltaX = clientX - startPos.current.x
-    const deltaY = clientY - startPos.current.y
-    
-    if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
-      setHasMoved(true)
-    }
-    
-    const newX = startOffset.current.x + deltaX
-    const newY = startOffset.current.y + deltaY
-    
-    const maxX = window.innerWidth - 60
-    const maxY = window.innerHeight - 180
-    
-    setPosition({
-      x: Math.max(-maxX + 60, Math.min(0, newX)),
-      y: Math.max(-maxY + 60, Math.min(0, newY)),
-    })
-  }
-
-  const handleEnd = () => {
-    setIsDragging(false)
-  }
-
-  const handleClick = () => {
-    if (!hasMoved) {
-      onOpenFeedback()
-    }
-  }
-
-  // 监听全局鼠标事件
-  useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => handleMove(e.clientX, e.clientY)
-    const onMouseUp = () => handleEnd()
-    
-    if (isDragging) {
-      window.addEventListener('mousemove', onMouseMove)
-      window.addEventListener('mouseup', onMouseUp)
-    }
-    
-    return () => {
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseup', onMouseUp)
-    }
-  }, [isDragging])
-
-  return (
-    <div
-      className={cn(
-        "fixed right-4 bottom-[100px] z-40 flex h-[52px] w-[52px] cursor-grab flex-col items-center justify-center rounded-full border-[3px] border-white text-white shadow-xl select-none",
-        isDragging ? "cursor-grabbing" : ""
-      )}
-      style={{
-        background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-        boxShadow: '0 6px 18px rgba(37, 99, 235, 0.35), 0 2px 6px rgba(0,0,0,0.12)',
-        transform: `translate(${position.x}px, ${position.y}px)`,
-        transition: isDragging ? 'none' : 'transform 200ms',
-      }}
-      onMouseDown={(e) => {
-        e.preventDefault()
-        handleStart(e.clientX, e.clientY)
-      }}
-      onTouchStart={(e) => {
-        const touch = e.touches[0]
-        handleStart(touch.clientX, touch.clientY)
-      }}
-      onTouchMove={(e) => {
-        const touch = e.touches[0]
-        handleMove(touch.clientX, touch.clientY)
-      }}
-      onTouchEnd={handleEnd}
-      onClick={handleClick}
-    >
-      <MessageCircle className="h-5 w-5 -scale-x-100" />
-      <span className="mt-0.5 text-[10px] font-medium leading-none">反馈</span>
-    </div>
   )
 }
 

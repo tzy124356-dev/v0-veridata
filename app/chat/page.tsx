@@ -24,7 +24,9 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { ShareCardModal } from "@/components/share-card-modal"
+import { useError } from "@/components/error-states"
 
 // 场景标签数据
 const scenarioTags = [
@@ -400,16 +402,32 @@ function ChatVersionA({
   setKnowledgeSource: (source: "official" | "myVault") => void
   bubbleColor: string
 }) {
+  const searchParams = useSearchParams()
+  const { showError } = useError()
+  const router = useRouter()
+  const [showFirstFeedback, setShowFirstFeedback] = useState(false)
+
+  const handleBackClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const hasAnswer = messages.some(m => m.type === "ai")
+    const done = typeof window !== "undefined" && localStorage.getItem("first_feedback_done") === "true"
+    if (hasAnswer && !done) {
+      setShowFirstFeedback(true)
+    } else {
+      router.back()
+    }
+  }
+
   return (
     <>
       {/* 顶部导航 */}
       <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b border-gray-100 bg-white/80 px-4 backdrop-blur-md">
-        <Link
-          href="/"
+        <button
+          onClick={handleBackClick}
           className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-gray-100"
         >
           <ArrowLeft className="h-5 w-5 text-gray-600" />
-        </Link>
+        </button>
         <div className="w-9" /> {/* 占位，保持布局平衡 */}
         <div className="flex items-center gap-1">
           <button className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-gray-100">
@@ -417,6 +435,19 @@ function ChatVersionA({
           </button>
         </div>
       </header>
+
+      {/* Debug 模式入口 */}
+      {searchParams.get("debug") === "1" && (
+        <div className="border-b border-dashed border-gray-200 bg-yellow-50 px-4 py-2">
+          <p className="mb-1 text-[10px] text-gray-500">错误状态预览（debug 模式）</p>
+          <div className="flex flex-wrap gap-1.5">
+            <button onClick={() => showError({ type: "network" })} className="rounded-md bg-white px-2 py-1 text-[10px] text-gray-700 ring-1 ring-gray-200">网络断开</button>
+            <button onClick={() => showError({ type: "serverError" })} className="rounded-md bg-white px-2 py-1 text-[10px] text-gray-700 ring-1 ring-gray-200">AI 超时</button>
+            <button onClick={() => showError({ type: "loadFailed" })} className="rounded-md bg-white px-2 py-1 text-[10px] text-gray-700 ring-1 ring-gray-200">上传失败</button>
+            <button onClick={() => showError({ type: "empty" })} className="rounded-md bg-white px-2 py-1 text-[10px] text-gray-700 ring-1 ring-gray-200">知识库无答案</button>
+          </div>
+        </div>
+      )}
 
       {/* 消息区域 */}
       <main className="flex-1 overflow-y-auto px-4 pb-44 pt-4">
@@ -427,9 +458,14 @@ function ChatVersionA({
           />
         ) : (
           <div className="space-y-4">
-            {messages.map((message) => (
-                <MessageBubbleA key={message.id} message={message} bubbleColor={bubbleColor} />
-            ))}
+            {messages.map((message, index) => {
+              const relatedQuestion = message.type === "user"
+                ? undefined
+                : messages.slice(0, index).reverse().find(m => m.type === "user")?.content
+              return (
+                <MessageBubbleA key={message.id} message={message} bubbleColor={bubbleColor} relatedQuestion={relatedQuestion} />
+              )
+            })}
             {isLoading && <LoadingIndicatorA />}
             <div ref={messagesEndRef} />
           </div>
@@ -472,6 +508,22 @@ function ChatVersionA({
           </p>
         </div>
       </div>
+
+      {/* 首次反馈弹窗 */}
+      {showFirstFeedback && (
+        <FirstFeedbackModal
+          onClose={(feedback) => {
+            if (typeof window !== "undefined") {
+              localStorage.setItem("first_feedback_done", "true")
+              if (feedback) {
+                localStorage.setItem("first_feedback_value", feedback)
+              }
+            }
+            setShowFirstFeedback(false)
+            router.back()
+          }}
+        />
+      )}
     </>
   )
 }
@@ -535,7 +587,7 @@ function EmptyStateA({
 }
 
 // 版本A - 消息气泡（结构化）
-function MessageBubbleA({ message, bubbleColor }: { message: Message; bubbleColor: string }) {
+function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Message; bubbleColor: string; relatedQuestion?: string }) {
   const [showReasoning, setShowReasoning] = useState(false)
   const [copied, setCopied] = useState(false)
   const [bookmarked, setBookmarked] = useState(false)
@@ -708,7 +760,7 @@ function MessageBubbleA({ message, bubbleColor }: { message: Message; bubbleColo
       <ShareCardModal
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
-        question="医美针剂注册申报需要准备哪些材料？"
+        question={relatedQuestion ?? message.conclusion ?? "深度问答 by 械研"}
         answer={message.conclusion ?? message.content ?? ""}
         inviteCode={
           typeof window !== "undefined"
@@ -848,7 +900,7 @@ function KnowledgeModal({ onClose }: { onClose: () => void }) {
           </p>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="rounded-xl bg-gray-50 p-3">
-              <p className="text-lg font-semibold text-gray-900">22大类</p>
+              <p className="text-lg font-semibold text-gray-900">13大类</p>
               <p className="text-xs text-gray-400">医疗器械分类</p>
             </div>
             <div className="rounded-xl bg-gray-50 p-3">
@@ -856,11 +908,11 @@ function KnowledgeModal({ onClose }: { onClose: () => void }) {
               <p className="text-xs text-gray-400">体外诊断试剂</p>
             </div>
             <div className="rounded-xl bg-gray-50 p-3">
-              <p className="text-lg font-semibold text-gray-900">XX份</p>
+              <p className="text-lg font-semibold text-gray-900">128 份</p>
               <p className="text-xs text-gray-400">法规规章</p>
             </div>
             <div className="rounded-xl bg-gray-50 p-3">
-              <p className="text-lg font-semibold text-gray-900">XX份</p>
+              <p className="text-lg font-semibold text-gray-900">45 份</p>
               <p className="text-xs text-gray-400">技术指导原则</p>
             </div>
           </div>
@@ -877,6 +929,45 @@ function KnowledgeModal({ onClose }: { onClose: () => void }) {
           className="w-full rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]"
         >
           我知道了，开始提问
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// 首次反馈弹窗
+function FirstFeedbackModal({ onClose }: { onClose: (feedback?: "good" | "bad") => void }) {
+  return (
+    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50">
+      <div className="w-full max-w-lg animate-in slide-in-from-bottom duration-300 rounded-t-3xl bg-white p-6">
+        <div className="mb-2 text-center">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#1e40af]/10">
+            <ThumbsUp className="h-6 w-6 text-[#1e40af]" />
+          </div>
+          <h3 className="text-base font-semibold text-gray-900">今天的回答对您有帮助吗？</h3>
+          <p className="mt-1 text-xs text-gray-400">你的反馈将帮助我们持续优化械研知识库</p>
+        </div>
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <button
+            onClick={() => onClose("bad")}
+            className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white py-3 text-sm text-gray-600 hover:bg-gray-50"
+          >
+            <ThumbsDown className="h-4 w-4" />
+            还需改进
+          </button>
+          <button
+            onClick={() => onClose("good")}
+            className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3 text-sm font-medium text-white"
+          >
+            <ThumbsUp className="h-4 w-4" />
+            很有帮助
+          </button>
+        </div>
+        <button
+          onClick={() => onClose()}
+          className="mt-3 w-full py-2 text-center text-xs text-gray-400"
+        >
+          暂不评价
         </button>
       </div>
     </div>

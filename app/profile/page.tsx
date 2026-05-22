@@ -11,16 +11,16 @@ import {
   Settings,
   MessageSquare,
   FolderOpen,
-  MessageCircle,
   Crown,
   Coins,
   Pencil,
   Copy,
   Sparkles,
+  Bell,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
-import { FeedbackModal } from "@/components/feedback-modal"
+import { FeedbackFab } from "@/components/feedback-fab"
 import { IdentityModal } from "@/components/identity-modal"
 import {
   readUserIdentity,
@@ -39,7 +39,6 @@ const userStats = {
 
 export default function ProfilePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(true)
-  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
@@ -74,13 +73,7 @@ export default function ProfilePage() {
       </main>
 
       {/* 悬浮反馈按钮 */}
-      <FeedbackButton onOpenFeedback={() => setShowFeedbackModal(true)} />
-
-      {/* 反馈弹窗 */}
-      <FeedbackModal 
-        isOpen={showFeedbackModal} 
-        onClose={() => setShowFeedbackModal(false)} 
-      />
+      <FeedbackFab />
 
       {/* 底部导航 */}
       <BottomNavigation activeTab="profile" />
@@ -103,15 +96,26 @@ function ProfileContent({
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("user_points")
-      if (stored) {
-        const points = JSON.parse(stored)
-        setTotalPoints(points.free + points.gift + points.member)
+    const refreshAll = () => {
+      if (typeof window !== "undefined") {
+        const stored = localStorage.getItem("user_points")
+        if (stored) {
+          const points = JSON.parse(stored)
+          setTotalPoints(points.free + points.gift + points.member)
+        }
+        setInviteCode(localStorage.getItem("user_invite_code") ?? "")
+        setIdentity(readUserIdentity())
       }
-      setInviteCode(localStorage.getItem("user_invite_code") ?? "")
     }
-    setIdentity(readUserIdentity())
+    refreshAll()
+    // 页面切回前台时刷新（覆盖从其它页跳回的场景）
+    document.addEventListener("visibilitychange", refreshAll)
+    // 监听跨标签页的 storage 变化
+    window.addEventListener("storage", refreshAll)
+    return () => {
+      document.removeEventListener("visibilitychange", refreshAll)
+      window.removeEventListener("storage", refreshAll)
+    }
   }, [])
 
   const handleCopyInviteCode = async () => {
@@ -173,15 +177,25 @@ function ProfileContent({
                 </button>
               )}
             </div>
-            {identity && (
-              <button
-                onClick={() => setShowIdentityModal(true)}
-                className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-50 hover:text-[#1e40af]"
-                aria-label="修改身份"
+            <div className="flex items-center gap-1">
+              <Link
+                href="/notifications"
+                className="relative flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-50 hover:text-[#1e40af]"
+                aria-label="通知中心"
               >
-                <Pencil className="h-3.5 w-3.5" />
-              </button>
-            )}
+                <Bell className="h-4 w-4" />
+                <span className="absolute -right-0.5 -top-0.5 flex h-2 w-2 rounded-full bg-red-500" />
+              </Link>
+              {identity && (
+                <button
+                  onClick={() => setShowIdentityModal(true)}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-50 hover:text-[#1e40af]"
+                  aria-label="修改身份"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* 邀请码展示区 */}
@@ -349,89 +363,6 @@ function ProfileContent({
         initialFields={identity?.fields}
       />
     </>
-  )
-}
-
-// 可拖动的悬浮反馈按钮 - 与首页完全一致
-function FeedbackButton({ onOpenFeedback }: { onOpenFeedback: () => void }) {
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [isDragging, setIsDragging] = useState(false)
-  const [hasMoved, setHasMoved] = useState(false)
-  const startPos = useRef({ x: 0, y: 0 })
-  const startOffset = useRef({ x: 0, y: 0 })
-
-  const handleStart = (clientX: number, clientY: number) => {
-    setIsDragging(true)
-    setHasMoved(false)
-    startPos.current = { x: clientX, y: clientY }
-    startOffset.current = { x: position.x, y: position.y }
-  }
-
-  const handleMove = (clientX: number, clientY: number) => {
-    if (!isDragging) return
-    
-    const deltaX = clientX - startPos.current.x
-    const deltaY = clientY - startPos.current.y
-    
-    if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
-      setHasMoved(true)
-    }
-    
-    const newX = startOffset.current.x + deltaX
-    const newY = startOffset.current.y + deltaY
-    
-    const maxX = window.innerWidth - 60
-    const maxY = window.innerHeight - 180
-    
-    setPosition({
-      x: Math.max(-maxX + 60, Math.min(0, newX)),
-      y: Math.max(-maxY + 60, Math.min(0, newY)),
-    })
-  }
-
-  const handleEnd = () => {
-    setIsDragging(false)
-  }
-
-  const handleClick = () => {
-    if (!hasMoved) {
-      onOpenFeedback()
-    }
-  }
-
-  return (
-    <div
-      className={cn(
-        "fixed right-4 bottom-[100px] z-40 flex h-[52px] w-[52px] cursor-grab flex-col items-center justify-center rounded-full border-[3px] border-white text-white shadow-xl select-none",
-        isDragging ? "cursor-grabbing" : ""
-      )}
-      style={{
-        background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-        boxShadow: '0 6px 18px rgba(37, 99, 235, 0.35), 0 2px 6px rgba(0,0,0,0.12)',
-        transform: `translate(${position.x}px, ${position.y}px)`,
-        transition: isDragging ? 'none' : 'transform 200ms',
-      }}
-      onMouseDown={(e) => {
-        e.preventDefault()
-        handleStart(e.clientX, e.clientY)
-      }}
-      onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
-      onMouseUp={handleEnd}
-      onMouseLeave={handleEnd}
-      onTouchStart={(e) => {
-        const touch = e.touches[0]
-        handleStart(touch.clientX, touch.clientY)
-      }}
-      onTouchMove={(e) => {
-        const touch = e.touches[0]
-        handleMove(touch.clientX, touch.clientY)
-      }}
-      onTouchEnd={handleEnd}
-      onClick={handleClick}
-    >
-      <MessageCircle className="h-5 w-5" />
-      <span className="mt-0.5 text-[9px] leading-none">反馈</span>
-    </div>
   )
 }
 
