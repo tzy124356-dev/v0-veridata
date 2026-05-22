@@ -265,7 +265,7 @@ function ChatVersionA({
                   handleSend()
                 }
               }}
-              placeholder="输入���的问题..."
+              placeholder="输入您的问题..."
               rows={1}
               className="max-h-32 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
             />
@@ -358,13 +358,16 @@ function MessageBubbleA({ message }: { message: Message }) {
   const [showLikeToast, setShowLikeToast] = useState(false)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
-  const handleCopy = async () => {
+  const handleCopy = () => {
     const text = message.conclusion || message.content
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    } catch {}
+    // 无论复制是否成功都显示已复制状态
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+    
+    // 尝试复制到剪贴板
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {})
+    }
   }
 
   const handleBookmark = () => {
