@@ -595,6 +595,13 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
   const [showLikeToast, setShowLikeToast] = useState(false)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
+  const [inviteCode, setInviteCode] = useState("")
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setInviteCode(localStorage.getItem("user_invite_code") ?? "")
+    }
+  }, [])
 
   const handleCopy = () => {
     const text = message.conclusion || message.content
@@ -762,11 +769,7 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
         onClose={() => setShowShareModal(false)}
         question={relatedQuestion ?? message.conclusion ?? "深度问答 by 械研"}
         answer={message.conclusion ?? message.content ?? ""}
-        inviteCode={
-          typeof window !== "undefined"
-            ? (localStorage.getItem("user_invite_code") ?? "YJ00000")
-            : "YJ00000"
-        }
+        inviteCode={inviteCode || "YJ00000"}
       />
     </div>
   )

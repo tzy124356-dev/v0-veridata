@@ -109,11 +109,14 @@ function ProfileContent({
     }
     refreshAll()
     // 页面切回前台时刷新（覆盖从其它页跳回的场景）
-    document.addEventListener("visibilitychange", refreshAll)
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") refreshAll()
+    }
+    document.addEventListener("visibilitychange", handleVisibility)
     // 监听跨标签页的 storage 变化
     window.addEventListener("storage", refreshAll)
     return () => {
-      document.removeEventListener("visibilitychange", refreshAll)
+      document.removeEventListener("visibilitychange", handleVisibility)
       window.removeEventListener("storage", refreshAll)
     }
   }, [])

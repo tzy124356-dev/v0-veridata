@@ -83,12 +83,16 @@ export default function VaultPage() {
     const selectedFiles = e.target.files
     if (selectedFiles) {
       const allFiles = Array.from(selectedFiles)
-      if (allFiles.length > 5) {
-        alert(`单次最多上传 5 个文件，已自动选择前 5 个（共 ${allFiles.length} 个）`)
-      }
       const wordFiles = allFiles.filter(f => /\.(doc|docx)$/i.test(f.name))
+      const warnings: string[] = []
       if (wordFiles.length < allFiles.length) {
-        alert("当前仅支持 Word 文档（.doc/.docx），其它格式即将上线")
+        warnings.push("当前仅支持 Word 文档（.doc/.docx），其它格式即将上线")
+      }
+      if (allFiles.length > 5) {
+        warnings.push(`单次最多上传 5 个文件，已自动选择前 5 个`)
+      }
+      if (warnings.length > 0) {
+        alert(warnings.join("\n"))
       }
       const newFiles: VaultFile[] = wordFiles
         .slice(0, 5)
@@ -101,8 +105,10 @@ export default function VaultPage() {
           progress: 0,
         }))
 
-      setFiles((prev) => [...prev, ...newFiles])
-      newFiles.forEach((file) => simulateUpload(file.id))
+      if (newFiles.length > 0) {
+        setFiles((prev) => [...prev, ...newFiles])
+        newFiles.forEach((file) => simulateUpload(file.id))
+      }
     }
   }
 
@@ -152,12 +158,16 @@ export default function VaultPage() {
     const droppedFiles = e.dataTransfer.files
     if (droppedFiles.length > 0) {
       const allFiles = Array.from(droppedFiles)
-      if (allFiles.length > 5) {
-        alert(`单次最多上传 5 个文件，已自动选择前 5 个（共 ${allFiles.length} 个）`)
-      }
       const wordFiles = allFiles.filter(f => /\.(doc|docx)$/i.test(f.name))
+      const warnings: string[] = []
       if (wordFiles.length < allFiles.length) {
-        alert("当前仅支持 Word 文档（.doc/.docx），其它格式即将上线")
+        warnings.push("当前仅支持 Word 文档（.doc/.docx），其它格式即将上线")
+      }
+      if (allFiles.length > 5) {
+        warnings.push(`单次最多上传 5 个文件，已自动选择前 5 个`)
+      }
+      if (warnings.length > 0) {
+        alert(warnings.join("\n"))
       }
       const newFiles: VaultFile[] = wordFiles
         .slice(0, 5)
@@ -170,8 +180,10 @@ export default function VaultPage() {
           progress: 0,
         }))
 
-      setFiles((prev) => [...prev, ...newFiles])
-      newFiles.forEach((file) => simulateUpload(file.id))
+      if (newFiles.length > 0) {
+        setFiles((prev) => [...prev, ...newFiles])
+        newFiles.forEach((file) => simulateUpload(file.id))
+      }
     }
   }
 
