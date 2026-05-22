@@ -304,7 +304,7 @@ function EmptyState({
         <div className="mb-6 space-y-2.5">
           {[
             "统一管理，告别文件散落",
-            "智能解��，快速定位关键信息",
+            "智能解析，快速定位关键信息",
             "随时提问，知识一问即得",
           ].map((text, index) => (
             <div
