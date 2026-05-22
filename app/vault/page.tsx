@@ -260,7 +260,7 @@ function EmptyState({
 }) {
   return (
     <div
-      className={cn("transition-all", isDragging && "opacity-80")}
+      className={cn("mt-6 transition-all", isDragging && "opacity-80")}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
