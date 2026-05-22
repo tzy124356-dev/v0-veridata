@@ -231,25 +231,25 @@ function MainFeatureCard() {
 
         {/* 白色渐变分割线 */}
         <div 
-          className="my-[22px] h-px w-full"
-          style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%)' }}
+          className="mt-5 mb-6 h-px w-3/4"
+          style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 60%, rgba(255,255,255,0) 100%)' }}
         />
 
-        {/* 主描述 */}
-        <p className="mt-12 mb-2.5 text-[15px] font-medium leading-normal text-white/95">
-          注册问题的深层问答
-        </p>
-
-        {/* 次要描述 */}
-        <p className="mb-8 text-xs leading-relaxed text-white/55">
-          基于行业数据库，每条回答有出处
-        </p>
+        {/* 描述区域 */}
+        <div className="mb-6">
+          <p className="mb-1.5 text-[15px] font-medium leading-normal text-white/95">
+            注册问题的深层问答
+          </p>
+          <p className="text-[13px] leading-relaxed text-white/60">
+            基于行业数据库，每条回答有出处
+          </p>
+        </div>
 
         {/* 全宽按钮 */}
         <Link
           href="/chat"
-          className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-white px-6 py-3.5 text-[15px] font-semibold tracking-wide text-[#1e40af] shadow-lg transition-all active:scale-[0.99]"
-          style={{ boxShadow: '0 4px 14px rgba(8, 20, 60, 0.18)' }}
+          className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-white px-6 py-4 text-[15px] font-semibold tracking-wide text-[#1e40af] shadow-lg transition-all hover:shadow-xl active:scale-[0.98]"
+          style={{ boxShadow: '0 4px 16px rgba(8, 20, 60, 0.15)' }}
         >
           立即提问
           <ChevronRight className="h-4 w-4" />
