@@ -19,6 +19,7 @@ import {
   X,
   Sparkles,
   Lightbulb,
+  FolderOpen,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -108,6 +109,7 @@ function ChatPageContent() {
   const [isLoading, setIsLoading] = useState(false)
   const [showKnowledgeModal, setShowKnowledgeModal] = useState(true)
   const [hasInitialized, setHasInitialized] = useState(false)
+  const [knowledgeSource, setKnowledgeSource] = useState<"official" | "myVault">("official")
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -224,7 +226,10 @@ function ChatVersionA({
       {/* 消息区域 */}
       <main className="flex-1 overflow-y-auto px-4 pb-44 pt-4">
         {messages.length === 0 ? (
-          <EmptyStateA onScenarioClick={handleScenarioClick} />
+          <EmptyStateA 
+            knowledgeSource={knowledgeSource}
+            setKnowledgeSource={setKnowledgeSource}
+          />
         ) : (
           <div className="space-y-4">
             {messages.map((message) => (
@@ -298,10 +303,16 @@ function ChatVersionA({
 }
 
 // 版本A - 空状态
-function EmptyStateA({ onScenarioClick }: { onScenarioClick: (hint: string) => void }) {
+function EmptyStateA({ 
+  knowledgeSource, 
+  setKnowledgeSource 
+}: { 
+  knowledgeSource: "official" | "myVault"
+  setKnowledgeSource: (source: "official" | "myVault") => void 
+}) {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center py-8">
-      <h2 className="mb-2 flex items-center gap-3 text-lg font-semibold text-gray-900">
+      <h2 className="mb-4 flex items-center gap-3 text-lg font-semibold text-gray-900">
         <Image
           src="/crab-logo.png"
           alt="Logo"
@@ -311,8 +322,39 @@ function EmptyStateA({ onScenarioClick }: { onScenarioClick: (hint: string) => v
         />
         有什么可以帮到你？
       </h2>
+      
+      {/* 知识库选择器 */}
+      <div className="mb-3 flex items-center rounded-full border border-gray-200 bg-gray-50 p-1">
+        <button
+          onClick={() => setKnowledgeSource("official")}
+          className={cn(
+            "flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all",
+            knowledgeSource === "official"
+              ? "bg-white text-[#1e40af] shadow-sm"
+              : "text-gray-500 hover:text-gray-700"
+          )}
+        >
+          <FileText className="h-4 w-4" />
+          官方知识库
+        </button>
+        <button
+          onClick={() => setKnowledgeSource("myVault")}
+          className={cn(
+            "flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all",
+            knowledgeSource === "myVault"
+              ? "bg-white text-[#1e40af] shadow-sm"
+              : "text-gray-500 hover:text-gray-700"
+          )}
+        >
+          <FolderOpen className="h-4 w-4" />
+          我的档案库
+        </button>
+      </div>
+      
       <p className="text-center text-sm text-gray-500">
-        基于行业官方数据库，每条回答有出处
+        {knowledgeSource === "official" 
+          ? "基于行业官方数据库，每条回答有出处" 
+          : "基于您上传的档案文件生成回答"}
       </p>
     </div>
   )
