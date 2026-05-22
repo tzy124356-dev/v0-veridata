@@ -351,7 +351,7 @@ function FileListView({
     <div className="space-y-4">
       {/* 顶部操作区 - 提问按钮 + 上传按钮 */}
       <div className="flex items-center gap-3">
-        {/* 向知识库提问按钮 */}
+        {/* 向档案库提问按钮 */}
         <Link
           href="/"
           className={cn(
@@ -362,7 +362,7 @@ function FileListView({
           )}
         >
           <MessageSquare className="h-4 w-4 -scale-x-100" />
-          向知识库提问
+          向档案库提问
         </Link>
 
         {/* 上传文件按钮 */}
