@@ -253,27 +253,6 @@ function ChatVersionA({
 
       {/* 底部输入区 */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-gray-100 bg-white/95 backdrop-blur-md">
-        {/* 推荐问题 */}
-        {messages.length > 0 && (
-          <div className="border-b border-gray-50 px-4 py-2.5">
-            <div className="flex items-center gap-1.5 mb-2 text-xs text-gray-400">
-              <Lightbulb className="h-3.5 w-3.5" />
-              <span>相关问题</span>
-            </div>
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-              {suggestedQuestions.map((q, i) => (
-                <button
-                  key={i}
-                  onClick={() => setInputValue(q)}
-                  className="flex-shrink-0 rounded-full border border-[#1e40af]/20 bg-[#1e40af]/5 px-3 py-1.5 text-xs text-[#1e40af] transition-colors hover:bg-[#1e40af]/10"
-                >
-                  {q}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-        
         <div className="px-4 pb-6 pt-3">
           <div className="flex items-end gap-2 rounded-2xl border border-gray-200 bg-gray-50 p-2 focus-within:border-[#1e40af]/30 focus-within:ring-2 focus-within:ring-[#1e40af]/10">
             <textarea
