@@ -102,6 +102,69 @@ function ChatPageLoading() {
   )
 }
 
+// 模拟收藏对话数据（与收藏页面对应）
+const mockFavoriteMessages: Record<string, Message[]> = {
+  "1": [
+    {
+      id: "f1-1",
+      type: "user",
+      content: "医美针剂注册申报需要准备哪些材料？",
+      timestamp: new Date("2024-01-15T14:30:00"),
+    },
+    {
+      id: "f1-2",
+      type: "assistant",
+      content: "根据《医疗器械注册与备案管理办法》，医美针剂作为第三类医疗器械，注册申报需要准备以下材料...",
+      conclusion: "医美针剂注册申报需准备：1) 注册申请表；2) 证明性文件；3) 产品技术要求；4) 产品检验报告；5) 临床评价资料；6) 说明书和标签样稿；7) 质量管理体系文件。",
+      legalBasis: [
+        { title: "医疗器械注册与备案管理办法", clause: "第十五条", content: "申请医疗器械注册，应当按照规定提交相关资料。", url: "#" },
+        { title: "医疗器械注册申报资料要求", clause: "附件一", content: "注册申报资料包括产品技术要求、检验报告、临床评价资料等。", url: "#" },
+      ],
+      reasoning: "医美针剂通常属于第三类医疗器械，需要进行严格的注册审批流程。根据现行法规，申报材料需涵盖产品安全性、有效性的全部证明文件。",
+      timestamp: new Date("2024-01-15T14:30:30"),
+    },
+  ],
+  "2": [
+    {
+      id: "f2-1",
+      type: "user",
+      content: "透明质酸类产品的分类界定标准是什么？",
+      timestamp: new Date("2024-01-14T16:42:00"),
+    },
+    {
+      id: "f2-2",
+      type: "assistant",
+      content: "透明质酸类产品的分类主要依据其预期用途和作用机理...",
+      conclusion: "透明质酸类产品分类标准：1) 用于填充增容的属于第三类；2) 用于保湿护理的可能属于化妆品；3) 具有治疗作用的需按药品管理。具体分类需根据产品预期用途、作用部位和作用机理综合判定。",
+      legalBasis: [
+        { title: "医疗器械分类目录", clause: "13-09-02", content: "注射用交联透明质酸钠凝胶属于III类医疗器械。", url: "#" },
+        { title: "医疗器械分类规则", clause: "第六条", content: "医疗器械分类应当根据其预期目的和作用机理进行判定。", url: "#" },
+      ],
+      reasoning: "透明质酸类产品的监管类别取决于其预期用途，同一成分可能因用途不同而归入不同监管类别。",
+      timestamp: new Date("2024-01-14T16:42:30"),
+    },
+  ],
+  "3": [
+    {
+      id: "f3-1",
+      type: "user",
+      content: "注射用透明质酸钠的有效期验证方法？",
+      timestamp: new Date("2024-01-12T15:00:00"),
+    },
+    {
+      id: "f3-2",
+      type: "assistant",
+      content: "有效期验证应按照《医疗器械稳定性研究技术审查指导原则》...",
+      conclusion: "有效期验证方法：1) 加速稳定性试验；2) 长期稳定性试验；3) 运输稳定性试验。需检测物理、化学、生物学等关键质量指标随时间变化情况。",
+      legalBasis: [
+        { title: "医疗器械稳定性研究技术审查指导原则", clause: "第三章", content: "稳定性研究应包括加速试验和长期试验。", url: "#" },
+      ],
+      reasoning: "稳定性研究是确定产品有效期的科学依据，需综合考虑产品特性和储存条件。",
+      timestamp: new Date("2024-01-12T15:00:30"),
+    },
+  ],
+}
+
 // 模拟历史对话数据（与历史记录页面对应）
 const mockHistoryMessages: Record<string, Message[]> = {
   "1": [
@@ -214,12 +277,13 @@ function ChatPageContent() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
-  // 处理URL中的预设问题、知识库来源和历史记录
+  // 处理URL中的预设问题、知识库来源、历史记录和收藏
   useEffect(() => {
     if (hasInitialized) return
     const presetQuestion = searchParams.get("q")
     const source = searchParams.get("source")
     const historyId = searchParams.get("history")
+    const favoriteId = searchParams.get("favorite")
     
     if (presetQuestion) {
       setInputValue(presetQuestion)
@@ -231,6 +295,11 @@ function ChatPageContent() {
     // 加载历史对话
     if (historyId && mockHistoryMessages[historyId]) {
       setMessages(mockHistoryMessages[historyId])
+      setShowKnowledgeModal(false)
+    }
+    // 加载收藏对话
+    if (favoriteId && mockFavoriteMessages[favoriteId]) {
+      setMessages(mockFavoriteMessages[favoriteId])
       setShowKnowledgeModal(false)
     }
     setHasInitialized(true)
@@ -550,7 +619,7 @@ function MessageBubbleA({ message }: { message: Message }) {
           <button onClick={() => setShowReasoning(!showReasoning)} className="flex w-full items-center justify-between">
             <div className="flex items-center gap-2">
               {showReasoning ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
-              <span className="text-xs font-medium text-gray-400">{showReasoning ? "收起推理过程" : "展开推理过程"}</span>
+              <span className="text-xs font-medium text-gray-400">{showReasoning ? "收��推理过程" : "展开推理过程"}</span>
             </div>
           </button>
           {showReasoning && (
