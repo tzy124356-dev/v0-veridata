@@ -190,8 +190,8 @@ export default function VaultPage() {
         </div>
       </div>
 
-      {/* 存储空间卡片 - 三版设计 */}
-      <StorageCard usedStorage={usedStorage} totalStorage={totalStorage} />
+      {/* 存储空间卡片 - 三版设计可选 */}
+      <StorageCard usedStorage={usedStorage} totalStorage={totalStorage} version="A" />
 
       {/* 内容区域 */}
       <main className="flex-1 overflow-y-auto px-5 pb-20 scrollbar-hide">
@@ -231,25 +231,51 @@ export default function VaultPage() {
   )
 }
 
-// 存储空间卡片 - 左侧紫色边框装饰
+// 存储空间卡片 - 三版设计
+// 版本A：蓝色渐变（与首页主题一致）
+// 版本B：青色渐变（清新风格）
+// 版本C：深蓝纯色（简约风格）
 function StorageCard({
   usedStorage,
   totalStorage,
+  version = "A",
 }: {
   usedStorage: number
   totalStorage: number
+  version?: "A" | "B" | "C"
 }) {
   const percentage = Math.min((usedStorage / totalStorage) * 100, 100)
+
+  // 版本配色方案
+  const colorSchemes = {
+    A: {
+      border: "bg-gradient-to-b from-[#1e40af] to-[#3b82f6]",
+      text: "text-[#1e40af]",
+      progress: "bg-gradient-to-r from-[#1e40af] to-[#3b82f6]",
+    },
+    B: {
+      border: "bg-gradient-to-b from-[#0891b2] to-[#06b6d4]",
+      text: "text-[#0891b2]",
+      progress: "bg-gradient-to-r from-[#0891b2] to-[#06b6d4]",
+    },
+    C: {
+      border: "bg-[#1e3a5f]",
+      text: "text-[#1e3a5f]",
+      progress: "bg-[#1e3a5f]",
+    },
+  }
+
+  const colors = colorSchemes[version]
 
   return (
     <div className="mx-5 mt-4 mb-4">
       <div className="flex overflow-hidden rounded-xl bg-white shadow-sm">
-        <div className="w-1 bg-gradient-to-b from-violet-400 to-purple-500" />
+        <div className={`w-1 ${colors.border}`} />
         <div className="flex-1 p-4">
           <div className="flex items-center justify-between text-xs">
             <span className="font-medium text-gray-700">存储空间</span>
             <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-violet-600">
+              <span className={`font-semibold ${colors.text}`}>
                 {usedStorage.toFixed(1)}G
               </span>
               <span className="text-gray-400">/ {totalStorage}G</span>
@@ -257,7 +283,7 @@ function StorageCard({
           </div>
           <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-100">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-violet-400 to-purple-500 transition-all"
+              className={`h-full rounded-full ${colors.progress} transition-all`}
               style={{ width: `${percentage}%` }}
             />
           </div>
