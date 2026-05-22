@@ -1,20 +1,19 @@
 "use client"
 
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { MessageCircle, Gift, Sparkles, CheckCircle2, UserPlus } from "lucide-react"
 
 export default function InvitePage() {
   const params = useParams()
-  const router = useRouter()
   const code = params.code as string
 
   const handleRegister = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("invited_by", code)
+      window.location.href = "/login"
     }
-    router.push("/login")
   }
 
   return (
