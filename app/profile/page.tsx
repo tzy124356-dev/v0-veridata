@@ -1,8 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import {
-  ArrowLeft,
   User,
   ChevronRight,
   Clock,
@@ -15,6 +14,9 @@ import {
   LogOut,
   Shield,
   Smartphone,
+  MessageSquare,
+  FolderOpen,
+  MessageCircle,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -88,83 +90,74 @@ export default function ProfilePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(true)
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      {/* 深蓝渐变头部 */}
-      <div className="bg-gradient-to-b from-[#1e3a8a] via-[#1e40af] to-[#2563eb] px-5 pt-12 pb-8">
-        <header className="mb-6 flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20"
-          >
-            <ArrowLeft className="h-5 w-5 text-white" />
-          </Link>
-          <h1 className="text-lg font-semibold text-white">个人中心</h1>
-          <div className="w-9" />
-        </header>
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
+      {/* 顶部头部区域 */}
+      <header className="px-5 pt-12 pb-4">
+        <h1 className="text-center text-lg font-semibold text-gray-900">我的</h1>
+      </header>
 
+      {/* 内容区域 */}
+      <main className="flex-1 overflow-y-auto px-5 pb-20 scrollbar-hide">
         {/* 用户信息卡片 */}
         {isLoggedIn ? (
-          <div className="rounded-xl bg-white/10 p-4 backdrop-blur-sm">
+          <div className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
             <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
-                <User className="h-8 w-8 text-white" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af]/10 to-[#3b82f6]/10">
+                <User className="h-8 w-8 text-[#1e40af]" />
               </div>
               <div className="flex-1">
                 <div className="mb-1 flex items-center gap-2">
-                  <h2 className="text-lg font-semibold text-white">张工程师</h2>
-                  <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-xs font-medium text-amber-300">
+                  <h2 className="text-lg font-semibold text-gray-900">张工程师</h2>
+                  <span className="rounded-full bg-gradient-to-r from-amber-400 to-orange-400 px-2 py-0.5 text-xs font-medium text-white">
                     专业版
                   </span>
                 </div>
-                <p className="text-sm text-white/70">注册专员 · 医美针剂方向</p>
+                <p className="text-sm text-gray-500">注册专员 · 医美针剂方向</p>
               </div>
               <Link
                 href="/profile/edit"
-                className="flex h-8 items-center rounded-lg bg-white/20 px-3 text-xs font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/30"
+                className="flex h-8 items-center rounded-lg border border-gray-200 bg-white px-3 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
               >
                 编辑
               </Link>
             </div>
 
             {/* 数据统计 */}
-            <div className="mt-4 grid grid-cols-3 gap-4 border-t border-white/10 pt-4">
+            <div className="mt-4 grid grid-cols-3 gap-4 border-t border-gray-100 pt-4">
               <div className="text-center">
-                <p className="text-xl font-bold text-white">{userStats.questions}</p>
-                <p className="text-xs text-white/60">累计提问</p>
+                <p className="text-xl font-bold text-[#1e40af]">{userStats.questions}</p>
+                <p className="text-xs text-gray-400">累计提问</p>
               </div>
               <div className="text-center">
-                <p className="text-xl font-bold text-white">{userStats.favorites}</p>
-                <p className="text-xs text-white/60">收藏回答</p>
+                <p className="text-xl font-bold text-[#1e40af]">{userStats.favorites}</p>
+                <p className="text-xs text-gray-400">收藏回答</p>
               </div>
               <div className="text-center">
-                <p className="text-xl font-bold text-white">{userStats.documents}</p>
-                <p className="text-xs text-white/60">档案文件</p>
+                <p className="text-xl font-bold text-[#1e40af]">{userStats.documents}</p>
+                <p className="text-xs text-gray-400">档案文件</p>
               </div>
             </div>
           </div>
         ) : (
           <Link
             href="/login"
-            className="flex items-center gap-4 rounded-xl bg-white/10 p-4 backdrop-blur-sm transition-colors hover:bg-white/15"
+            className="mb-4 flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm transition-colors hover:bg-gray-50"
           >
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
-              <User className="h-8 w-8 text-white/60" />
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+              <User className="h-8 w-8 text-gray-400" />
             </div>
             <div className="flex-1">
-              <h2 className="mb-1 text-lg font-semibold text-white">点击登录</h2>
-              <p className="text-sm text-white/70">登录后享受更多功能</p>
+              <h2 className="mb-1 text-lg font-semibold text-gray-900">点击登录</h2>
+              <p className="text-sm text-gray-500">登录后享受更多功能</p>
             </div>
-            <ChevronRight className="h-5 w-5 text-white/60" />
+            <ChevronRight className="h-5 w-5 text-gray-400" />
           </Link>
         )}
-      </div>
 
-      {/* 白色内容区域 */}
-      <main className="flex-1 bg-background px-5 py-6">
         {/* 会员升级入口 */}
         <Link
           href="/pricing"
-          className="mb-6 flex items-center justify-between rounded-xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-4 transition-all hover:from-amber-100 hover:to-orange-100 active:scale-[0.99]"
+          className="mb-4 flex items-center justify-between rounded-2xl border border-amber-200/50 bg-gradient-to-r from-amber-50 to-orange-50 p-4 transition-all hover:from-amber-100 hover:to-orange-100 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-400">
@@ -172,57 +165,61 @@ export default function ProfilePage() {
             </div>
             <div>
               <p className="text-sm font-semibold text-amber-900">
-                升级专业版，解锁更多功能
+                升级专业版
               </p>
-              <p className="text-xs text-amber-700/70">无限提问 · 更大档案库 · 优先支持</p>
+              <p className="text-xs text-amber-700/70">无限提问 · 更大档案库</p>
             </div>
           </div>
           <ChevronRight className="h-5 w-5 text-amber-600" />
         </Link>
 
         {/* 功能菜单 */}
-        <div className="mb-6 rounded-xl border border-border bg-card">
+        <div className="mb-4 overflow-hidden rounded-2xl bg-white shadow-sm">
           {menuItems.map((item, index) => (
             <Link
               key={item.id}
               href={item.href}
               className={cn(
-                "flex items-center justify-between px-4 py-3.5 transition-colors hover:bg-secondary/50",
-                index !== menuItems.length - 1 && "border-b border-border"
+                "flex items-center justify-between px-4 py-3.5 transition-colors hover:bg-gray-50",
+                index !== menuItems.length - 1 && "border-b border-gray-100"
               )}
             >
               <div className="flex items-center gap-3">
-                <item.icon className="h-5 w-5 text-[#1e40af]" />
-                <span className="text-sm text-foreground">{item.label}</span>
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1e40af]/5">
+                  <item.icon className="h-4 w-4 text-[#1e40af]" />
+                </div>
+                <span className="text-sm text-gray-900">{item.label}</span>
               </div>
               <div className="flex items-center gap-2">
                 {item.badge !== null && (
-                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                  <span className="rounded-full bg-[#1e40af]/10 px-2 py-0.5 text-xs font-medium text-[#1e40af]">
                     {item.badge}
                   </span>
                 )}
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                <ChevronRight className="h-4 w-4 text-gray-300" />
               </div>
             </Link>
           ))}
         </div>
 
         {/* 设置菜单 */}
-        <div className="mb-6 rounded-xl border border-border bg-card">
+        <div className="mb-4 overflow-hidden rounded-2xl bg-white shadow-sm">
           {settingsItems.map((item, index) => (
             <Link
               key={item.id}
               href={item.href}
               className={cn(
-                "flex items-center justify-between px-4 py-3.5 transition-colors hover:bg-secondary/50",
-                index !== settingsItems.length - 1 && "border-b border-border"
+                "flex items-center justify-between px-4 py-3.5 transition-colors hover:bg-gray-50",
+                index !== settingsItems.length - 1 && "border-b border-gray-100"
               )}
             >
               <div className="flex items-center gap-3">
-                <item.icon className="h-5 w-5 text-muted-foreground" />
-                <span className="text-sm text-foreground">{item.label}</span>
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50">
+                  <item.icon className="h-4 w-4 text-gray-500" />
+                </div>
+                <span className="text-sm text-gray-900">{item.label}</span>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <ChevronRight className="h-4 w-4 text-gray-300" />
             </Link>
           ))}
         </div>
@@ -231,7 +228,7 @@ export default function ProfilePage() {
         {isLoggedIn && (
           <button
             onClick={() => setIsLoggedIn(false)}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card py-3.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/5"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-3.5 text-sm font-medium text-red-500 shadow-sm transition-colors hover:bg-red-50"
           >
             <LogOut className="h-4 w-4" />
             退出登录
@@ -239,10 +236,132 @@ export default function ProfilePage() {
         )}
 
         {/* 版本信息 */}
-        <p className="mt-8 text-center text-xs text-muted-foreground">
+        <p className="mt-6 text-center text-xs text-gray-400">
           械研 VERIDATA v1.0.0
         </p>
       </main>
+
+      {/* 悬浮反馈按钮 */}
+      <FeedbackButton />
+
+      {/* 底部导航 */}
+      <BottomNavigation activeTab="profile" />
     </div>
+  )
+}
+
+// 可拖动的悬浮反馈按钮 - 与首页完全一致
+function FeedbackButton() {
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [hasMoved, setHasMoved] = useState(false)
+  const startPos = useRef({ x: 0, y: 0 })
+  const startOffset = useRef({ x: 0, y: 0 })
+
+  const handleStart = (clientX: number, clientY: number) => {
+    setIsDragging(true)
+    setHasMoved(false)
+    startPos.current = { x: clientX, y: clientY }
+    startOffset.current = { x: position.x, y: position.y }
+  }
+
+  const handleMove = (clientX: number, clientY: number) => {
+    if (!isDragging) return
+    
+    const deltaX = clientX - startPos.current.x
+    const deltaY = clientY - startPos.current.y
+    
+    if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+      setHasMoved(true)
+    }
+    
+    const newX = startOffset.current.x + deltaX
+    const newY = startOffset.current.y + deltaY
+    
+    const maxX = window.innerWidth - 60
+    const maxY = window.innerHeight - 180
+    
+    setPosition({
+      x: Math.max(-maxX + 60, Math.min(0, newX)),
+      y: Math.max(-maxY + 60, Math.min(0, newY)),
+    })
+  }
+
+  const handleEnd = () => {
+    setIsDragging(false)
+  }
+
+  const handleClick = () => {
+    if (!hasMoved) {
+      // TODO: 打开反馈弹窗
+    }
+  }
+
+  return (
+    <div
+      className={cn(
+        "fixed right-4 bottom-[100px] z-40 flex h-[52px] w-[52px] cursor-grab flex-col items-center justify-center rounded-full border-[3px] border-white text-white shadow-xl select-none",
+        isDragging ? "cursor-grabbing" : ""
+      )}
+      style={{
+        background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+        boxShadow: '0 6px 18px rgba(37, 99, 235, 0.35), 0 2px 6px rgba(0,0,0,0.12)',
+        transform: `translate(${position.x}px, ${position.y}px)`,
+        transition: isDragging ? 'none' : 'transform 200ms',
+      }}
+      onMouseDown={(e) => {
+        e.preventDefault()
+        handleStart(e.clientX, e.clientY)
+      }}
+      onMouseMove={(e) => handleMove(e.clientX, e.clientY)}
+      onMouseUp={handleEnd}
+      onMouseLeave={handleEnd}
+      onTouchStart={(e) => {
+        const touch = e.touches[0]
+        handleStart(touch.clientX, touch.clientY)
+      }}
+      onTouchMove={(e) => {
+        const touch = e.touches[0]
+        handleMove(touch.clientX, touch.clientY)
+      }}
+      onTouchEnd={handleEnd}
+      onClick={handleClick}
+    >
+      <MessageCircle className="h-5 w-5" />
+      <span className="mt-0.5 text-[9px] leading-none">反馈</span>
+    </div>
+  )
+}
+
+// 底部导航 - 与首页完全一致
+type TabType = "chat" | "vault" | "profile"
+
+function BottomNavigation({ activeTab }: { activeTab: TabType }) {
+  const tabs = [
+    { id: "chat" as const, icon: MessageSquare, label: "智能问答", href: "/" },
+    { id: "vault" as const, icon: FolderOpen, label: "我的档案库", href: "/vault" },
+    { id: "profile" as const, icon: User, label: "我的", href: "/profile" },
+  ]
+
+  return (
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background pb-7">
+      <div className="flex items-center justify-around py-2">
+        {tabs.map((tab) => (
+          <Link
+            key={tab.id}
+            href={tab.href}
+            className={cn(
+              "flex flex-col items-center gap-1 px-6 py-1.5 transition-colors",
+              activeTab === tab.id
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <tab.icon className={cn("h-5 w-5", tab.id === "chat" && "-scale-x-100")} />
+            <span className="text-xs">{tab.label}</span>
+          </Link>
+        ))}
+      </div>
+    </nav>
   )
 }
