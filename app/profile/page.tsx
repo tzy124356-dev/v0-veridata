@@ -14,10 +14,19 @@ import {
   MessageCircle,
   Crown,
   Coins,
+  Pencil,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { FeedbackModal } from "@/components/feedback-modal"
+import { IdentityModal } from "@/components/identity-modal"
+import {
+  readUserIdentity,
+  writeUserIdentity,
+  getPositionLabel,
+  getFieldLabels,
+  UserIdentity,
+} from "@/lib/identity-options"
 
 // 用户数据统计
 const userStats = {
@@ -86,6 +95,8 @@ function ProfileContent({
   onLogout: () => void
 }) {
   const [totalPoints, setTotalPoints] = useState(95)
+  const [identity, setIdentity] = useState<UserIdentity | null>(null)
+  const [showIdentityModal, setShowIdentityModal] = useState(false)
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -95,7 +106,14 @@ function ProfileContent({
         setTotalPoints(points.free + points.gift + points.member)
       }
     }
+    setIdentity(readUserIdentity())
   }, [])
+
+  const handleIdentityUpdate = (data: UserIdentity) => {
+    writeUserIdentity(data)
+    setIdentity(data)
+    setShowIdentityModal(false)
+  }
 
   const menuItems = [
     { icon: Clock, label: "历史记录", href: "/history" },
@@ -117,15 +135,37 @@ function ProfileContent({
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
               <User className="h-7 w-7 text-white" />
             </div>
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-center gap-2">
                 <h2 className="text-base font-semibold text-gray-900">张工程师</h2>
                 <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
                   轻度版
                 </span>
               </div>
-              <p className="text-xs text-gray-500">注册专员 · 医美针剂方向</p>
+              {identity ? (
+                <p className="truncate text-xs text-gray-500">
+                  {getPositionLabel(identity.position)}
+                  {identity.fields.length > 0 && ` · ${getFieldLabels(identity.fields).join("、")}`}
+                </p>
+              ) : (
+                <button
+                  onClick={() => setShowIdentityModal(true)}
+                  className="flex items-center gap-1 text-xs text-gray-400 hover:text-[#1e40af]"
+                >
+                  点击设置身份偏好
+                  <ChevronRight className="h-3 w-3" />
+                </button>
+              )}
             </div>
+            {identity && (
+              <button
+                onClick={() => setShowIdentityModal(true)}
+                className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-50 hover:text-[#1e40af]"
+                aria-label="修改身份"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
 
           {/* 数据统计 */}
@@ -261,6 +301,15 @@ function ProfileContent({
       )}
 
       <p className="mt-6 text-center text-xs text-gray-300">v1.0.0</p>
+
+      {/* 身份编辑弹窗 */}
+      <IdentityModal
+        isOpen={showIdentityModal}
+        onClose={() => setShowIdentityModal(false)}
+        onSubmit={handleIdentityUpdate}
+        initialPosition={identity?.position}
+        initialFields={identity?.fields}
+      />
     </>
   )
 }

@@ -17,6 +17,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { IdentityModal } from "@/components/identity-modal"
 import { FeedbackModal } from "@/components/feedback-modal"
+import { writeUserIdentity } from "@/lib/identity-options"
 
 // 底部导航Tab类型
 type TabType = "chat" | "vault" | "profile"
@@ -53,14 +54,27 @@ export default function HomePage() {
   const [showIdentityModal, setShowIdentityModal] = useState(false)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
-  // 首次访问自动弹出身份选择
+  // 首次访问自动弹出身份选择（仅弹一次）
   useEffect(() => {
+    if (typeof window === "undefined") return
+    const shown = localStorage.getItem("identity_modal_shown")
+    if (shown === "true") return
     const timer = setTimeout(() => setShowIdentityModal(true), 900)
     return () => clearTimeout(timer)
   }, [])
 
   const handleIdentitySubmit = (data: { position: string; fields: string[] }) => {
-    // TODO: 保存身份信息到后端
+    writeUserIdentity(data)
+    if (typeof window !== "undefined") {
+      localStorage.setItem("identity_modal_shown", "true")
+    }
+  }
+
+  const handleIdentityClose = () => {
+    setShowIdentityModal(false)
+    if (typeof window !== "undefined") {
+      localStorage.setItem("identity_modal_shown", "true")
+    }
   }
 
   const handleFeedbackSubmit = (data: { type: string; content: string }) => {
@@ -82,8 +96,11 @@ export default function HomePage() {
       {/* 身份选择弹窗 */}
       <IdentityModal
         isOpen={showIdentityModal}
-        onClose={() => setShowIdentityModal(false)}
-        onSubmit={handleIdentitySubmit}
+        onClose={handleIdentityClose}
+        onSubmit={(data) => {
+          handleIdentitySubmit(data)
+          setShowIdentityModal(false)
+        }}
       />
 
       {/* 反馈弹窗 */}

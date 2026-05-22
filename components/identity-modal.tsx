@@ -1,35 +1,37 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { X, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-// 职位方向选项
-const positionOptions = [
-  { id: "engineer", label: "注册工程师" },
-  { id: "specialist", label: "注册专员" },
-  { id: "regulatory", label: "法规事务" },
-  { id: "entrepreneur", label: "企业主/创业者" },
-  { id: "other", label: "其他" },
-]
-
-// 关注领域选项
-const fieldOptions = [
-  { id: "aesthetics", label: "医美针剂" },
-  { id: "device", label: "医疗器械（其他品类）" },
-  { id: "ivd", label: "体外诊断试剂" },
-  { id: "other", label: "其他" },
-]
+import { positionOptions, fieldOptions } from "@/lib/identity-options"
 
 interface IdentityModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: (data: { position: string; fields: string[] }) => void
+  initialPosition?: string
+  initialFields?: string[]
 }
 
-export function IdentityModal({ isOpen, onClose, onSubmit }: IdentityModalProps) {
-  const [position, setPosition] = useState<string>("")
-  const [selectedFields, setSelectedFields] = useState<string[]>([])
+export function IdentityModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialPosition,
+  initialFields,
+}: IdentityModalProps) {
+  const [position, setPosition] = useState<string>(initialPosition ?? "")
+  const [selectedFields, setSelectedFields] = useState<string[]>(initialFields ?? [])
+
+  // 弹窗打开时重置为最新 initial 值
+  useEffect(() => {
+    if (isOpen) {
+      setPosition(initialPosition ?? "")
+      setSelectedFields(initialFields ?? [])
+    }
+  }, [isOpen, initialPosition, initialFields])
+
+  const isEditMode = !!initialPosition
 
   const handleFieldToggle = (fieldId: string) => {
     setSelectedFields((prev) =>
@@ -70,7 +72,7 @@ export function IdentityModal({ isOpen, onClose, onSubmit }: IdentityModalProps)
             {/* 头部 */}
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">
-                完善你的身份信息
+                {isEditMode ? "修改身份信息" : "完善你的身份信息"}
               </h2>
               <button
                 onClick={onClose}
