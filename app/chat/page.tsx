@@ -274,8 +274,16 @@ function ChatPageContent() {
   const [showKnowledgeModal, setShowKnowledgeModal] = useState(true)
   const [hasInitialized, setHasInitialized] = useState(false)
   const [knowledgeSource, setKnowledgeSource] = useState<"official" | "myVault">("official")
+  const [bubbleColorVersion, setBubbleColorVersion] = useState<"A" | "B" | "C">("A")
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+
+  // 用户消息气泡配色方案
+  const bubbleColors = {
+    A: "bg-[#3b82f6]", // 明亮蓝 - 活力清新
+    B: "bg-[#1e40af]", // 深蓝色 - 沉稳专业
+    C: "bg-[#0f172a]", // 深墨蓝 - 简约高级
+  }
 
   // 处理URL中的预设问题、知识库来源、历史记录和收藏
   useEffect(() => {
@@ -346,6 +354,30 @@ function ChatPageContent() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
+      {/* 气泡颜色版本切换器 */}
+      <div className="fixed top-3 left-3 z-50 flex items-center gap-2 rounded-lg bg-white/90 px-2 py-1 shadow-md backdrop-blur-sm">
+        <span className="text-[10px] text-gray-400">气泡：</span>
+        {(["A", "B", "C"] as const).map((v) => (
+          <button
+            key={v}
+            onClick={() => setBubbleColorVersion(v)}
+            className={cn(
+              "h-6 w-6 rounded text-[10px] font-medium transition-all",
+              bubbleColorVersion === v
+                ? "text-white shadow-sm"
+                : "bg-gray-100 text-gray-500"
+            )}
+            style={{
+              backgroundColor: bubbleColorVersion === v 
+                ? (v === "A" ? "#3b82f6" : v === "B" ? "#1e40af" : "#0f172a")
+                : undefined
+            }}
+          >
+            {v}
+          </button>
+        ))}
+      </div>
+
       {/* 版本A：结构化专业版 */}
       <ChatVersionA
         messages={messages}
@@ -358,6 +390,9 @@ function ChatPageContent() {
         messagesEndRef={messagesEndRef}
         knowledgeSource={knowledgeSource}
         setKnowledgeSource={setKnowledgeSource}
+        bubbleColors={bubbleColors}
+        bubbleColorVersion={bubbleColorVersion}
+        setBubbleColorVersion={setBubbleColorVersion}
       />
 
       {/* 知识库范围弹窗 */}
@@ -380,6 +415,9 @@ function ChatVersionA({
   messagesEndRef,
   knowledgeSource,
   setKnowledgeSource,
+  bubbleColors,
+  bubbleColorVersion,
+  setBubbleColorVersion,
 }: {
   messages: Message[]
   inputValue: string
@@ -391,6 +429,9 @@ function ChatVersionA({
   messagesEndRef: React.RefObject<HTMLDivElement | null>
   knowledgeSource: "official" | "myVault"
   setKnowledgeSource: (source: "official" | "myVault") => void
+  bubbleColors: Record<"A" | "B" | "C", string>
+  bubbleColorVersion: "A" | "B" | "C"
+  setBubbleColorVersion: (v: "A" | "B" | "C") => void
 }) {
   return (
     <>
@@ -420,7 +461,7 @@ function ChatVersionA({
         ) : (
           <div className="space-y-4">
             {messages.map((message) => (
-              <MessageBubbleA key={message.id} message={message} />
+                <MessageBubbleA key={message.id} message={message} bubbleColor={bubbleColors[bubbleColorVersion]} />
             ))}
             {isLoading && <LoadingIndicatorA />}
             <div ref={messagesEndRef} />
@@ -527,7 +568,7 @@ function EmptyStateA({
 }
 
 // 版本A - 消息气泡（结构化）
-function MessageBubbleA({ message }: { message: Message }) {
+function MessageBubbleA({ message, bubbleColor }: { message: Message; bubbleColor: string }) {
   const [showReasoning, setShowReasoning] = useState(false)
   const [copied, setCopied] = useState(false)
   const [bookmarked, setBookmarked] = useState(false)
@@ -567,7 +608,7 @@ function MessageBubbleA({ message }: { message: Message }) {
   if (message.type === "user") {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[85%] rounded-2xl rounded-tr-md bg-[#3b82f6] px-4 py-3 text-sm text-white shadow-md">
+        <div className={`max-w-[85%] rounded-2xl rounded-tr-md ${bubbleColor} px-4 py-3 text-sm text-white shadow-md`}>
           {message.content}
         </div>
       </div>
