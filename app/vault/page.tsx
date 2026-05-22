@@ -312,8 +312,54 @@ function EmptyState({
   )
 }
 
-// 文件列表视图
+// 文件列表视图 - 包含3个设计版本
 function FileListView({
+  files,
+  onDelete,
+  hasReadyFiles,
+}: {
+  files: VaultFile[]
+  onDelete: (id: string) => void
+  hasReadyFiles: boolean
+}) {
+  const [version, setVersion] = useState<"A" | "B" | "C">("A")
+
+  return (
+    <div>
+      {/* 版本切换器 - 选定后删除 */}
+      <div className="mb-4 flex items-center justify-center gap-2">
+        <span className="text-xs text-gray-400">版本：</span>
+        {(["A", "B", "C"] as const).map((v) => (
+          <button
+            key={v}
+            onClick={() => setVersion(v)}
+            className={cn(
+              "h-7 w-7 rounded-lg text-xs font-medium transition-all",
+              version === v
+                ? "bg-[#1e40af] text-white"
+                : "bg-gray-100 text-gray-500"
+            )}
+          >
+            {v}
+          </button>
+        ))}
+      </div>
+
+      {version === "A" && (
+        <FileListVersionA files={files} onDelete={onDelete} hasReadyFiles={hasReadyFiles} />
+      )}
+      {version === "B" && (
+        <FileListVersionB files={files} onDelete={onDelete} hasReadyFiles={hasReadyFiles} />
+      )}
+      {version === "C" && (
+        <FileListVersionC files={files} onDelete={onDelete} hasReadyFiles={hasReadyFiles} />
+      )}
+    </div>
+  )
+}
+
+// 版本A：简约卡片式 - 更大的文件图标，清晰的状态标签，操作按钮底部排列
+function FileListVersionA({
   files,
   onDelete,
   hasReadyFiles,
@@ -324,60 +370,87 @@ function FileListView({
 }) {
   return (
     <div className="space-y-3">
-      {/* 提示 - 有就绪文件时显示 */}
+      {/* 顶部提示 */}
       {hasReadyFiles && (
-        <div className="rounded-xl bg-[#1e40af]/5 px-4 py-3">
-          <p className="text-xs text-[#1e40af]">
-            文件已就绪，前往智能问答开始提问
-          </p>
-        </div>
+        <Link
+          href="/"
+          className="flex items-center justify-between rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] px-4 py-3"
+        >
+          <span className="text-sm font-medium text-white">
+            文件已就绪，开始提问
+          </span>
+          <MessageSquare className="h-4 w-4 text-white/80" />
+        </Link>
       )}
+
+      {/* 文件数量 */}
+      <div className="flex items-center justify-between">
+        <span className="text-xs text-gray-400">共 {files.length} 个文件</span>
+      </div>
 
       {/* 文件列表 */}
       {files.map((file) => (
-        <FileCard key={file.id} file={file} onDelete={() => onDelete(file.id)} />
-      ))}
-    </div>
-  )
-}
+        <div key={file.id} className="rounded-xl bg-white p-4 shadow-sm">
+          <div className="flex items-center gap-4">
+            {/* 大文件图标 */}
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e40af]/10 to-[#3b82f6]/5">
+              <FileText className="h-6 w-6 text-[#1e40af]" />
+            </div>
 
-// 文件卡片
-function FileCard({
-  file,
-  onDelete,
-}: {
-  file: VaultFile
-  onDelete: () => void
-}) {
-  return (
-    <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
-      <div className="flex items-start gap-3">
-        {/* 文件图标 */}
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#1e40af]/5">
-          <FileText className="h-5 w-5 text-[#1e40af]" />
-        </div>
-
-        {/* 文件信息 */}
-        <div className="min-w-0 flex-1">
-          <p className="mb-1 truncate text-sm font-medium text-gray-900">
-            {file.name}
-          </p>
-          <div className="flex items-center gap-2 text-xs text-gray-400">
-            <span>{file.size}</span>
-            <span>·</span>
-            <span>{file.uploadTime}</span>
+            {/* 文件信息 */}
+            <div className="min-w-0 flex-1">
+              <p className="mb-1 truncate text-sm font-medium text-gray-900">
+                {file.name}
+              </p>
+              <div className="flex items-center gap-3 text-xs text-gray-400">
+                <span>{file.size}</span>
+                <span>{file.uploadTime}</span>
+                {/* 状态标签 */}
+                {file.status === "ready" && (
+                  <span className="flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-green-600">
+                    <CheckCircle className="h-3 w-3" />
+                    就绪
+                  </span>
+                )}
+                {file.status === "processing" && (
+                  <span className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-amber-600">
+                    <Clock className="h-3 w-3" />
+                    解析中
+                  </span>
+                )}
+                {file.status === "uploading" && (
+                  <span className="flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-blue-600">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    {Math.round(file.progress || 0)}%
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* 状态和进度 */}
+          {/* 操作按钮 - 底部 */}
+          {file.status === "ready" && (
+            <div className="mt-3 flex items-center gap-2 border-t border-gray-50 pt-3">
+              <Link
+                href={`/chat?file=${file.id}`}
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#1e40af]/5 py-2 text-xs font-medium text-[#1e40af] transition-colors hover:bg-[#1e40af]/10"
+              >
+                <MessageSquare className="h-3.5 w-3.5" />
+                向此文档提问
+              </Link>
+              <button
+                onClick={() => onDelete(file.id)}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-300 transition-colors hover:bg-red-50 hover:text-red-500"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
+          {/* 上传进度 */}
           {file.status === "uploading" && (
-            <div className="mt-2">
-              <div className="flex items-center gap-2">
-                <Loader2 className="h-3 w-3 animate-spin text-[#1e40af]" />
-                <span className="text-xs text-[#1e40af]">
-                  上传中 {Math.round(file.progress || 0)}%
-                </span>
-              </div>
-              <div className="mt-1 h-1 overflow-hidden rounded-full bg-gray-100">
+            <div className="mt-3">
+              <div className="h-1 overflow-hidden rounded-full bg-gray-100">
                 <div
                   className="h-full rounded-full bg-[#1e40af] transition-all"
                   style={{ width: `${file.progress || 0}%` }}
@@ -385,40 +458,219 @@ function FileCard({
               </div>
             </div>
           )}
-
-          {file.status === "processing" && (
-            <div className="mt-2 flex items-center gap-2">
-              <Clock className="h-3 w-3 text-amber-500" />
-              <span className="text-xs text-amber-600">AI 解析中...</span>
-            </div>
-          )}
-
-          {file.status === "ready" && (
-            <div className="mt-2 flex items-center gap-2">
-              <CheckCircle className="h-3 w-3 text-green-500" />
-              <span className="text-xs text-green-600">已就绪</span>
-            </div>
-          )}
         </div>
+      ))}
+    </div>
+  )
+}
 
-        {/* 操作按钮 */}
-        <div className="flex items-center gap-1">
-          {file.status === "ready" && (
-            <Link
-              href={`/chat?file=${file.id}`}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-[#1e40af]/5 hover:text-[#1e40af]"
-            >
-              <MessageSquare className="h-4 w-4" />
-            </Link>
-          )}
-          <button
-            onClick={onDelete}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+// 版本B：紧凑列表式 - 无边框卡片，左侧彩色状态条，右滑操作
+function FileListVersionB({
+  files,
+  onDelete,
+  hasReadyFiles,
+}: {
+  files: VaultFile[]
+  onDelete: (id: string) => void
+  hasReadyFiles: boolean
+}) {
+  return (
+    <div>
+      {/* 顶部提示 */}
+      {hasReadyFiles && (
+        <div className="mb-4 rounded-lg border border-[#1e40af]/20 bg-[#1e40af]/5 px-4 py-2.5">
+          <p className="text-xs text-[#1e40af]">
+            <span className="font-medium">{files.filter(f => f.status === "ready").length} 个文件</span>已就绪，可前往智能问答提问
+          </p>
+        </div>
+      )}
+
+      {/* 文件列表 - 紧凑无边框 */}
+      <div className="overflow-hidden rounded-xl bg-white shadow-sm">
+        {files.map((file, index) => (
+          <div
+            key={file.id}
+            className={cn(
+              "flex items-center gap-3 px-4 py-3",
+              index !== files.length - 1 && "border-b border-gray-50"
+            )}
           >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
+            {/* 左侧状态条 */}
+            <div
+              className={cn(
+                "h-10 w-1 shrink-0 rounded-full",
+                file.status === "ready" && "bg-green-500",
+                file.status === "processing" && "bg-amber-500",
+                file.status === "uploading" && "bg-blue-500"
+              )}
+            />
+
+            {/* 文件图标 */}
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-50">
+              <FileText className="h-4 w-4 text-gray-500" />
+            </div>
+
+            {/* 文件信息 */}
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-gray-900">
+                {file.name}
+              </p>
+              <div className="flex items-center gap-2 text-xs text-gray-400">
+                <span>{file.size}</span>
+                <span>·</span>
+                <span>{file.uploadTime}</span>
+                {file.status === "uploading" && (
+                  <span className="text-blue-500">{Math.round(file.progress || 0)}%</span>
+                )}
+              </div>
+            </div>
+
+            {/* 操作按钮 */}
+            <div className="flex items-center gap-1">
+              {file.status === "ready" && (
+                <Link
+                  href={`/chat?file=${file.id}`}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-[#1e40af] transition-colors hover:bg-[#1e40af]/5"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                </Link>
+              )}
+              <button
+                onClick={() => onDelete(file.id)}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-300 transition-colors hover:bg-red-50 hover:text-red-500"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
+
+      {/* 底部统计 */}
+      <p className="mt-3 text-center text-xs text-gray-400">
+        共 {files.length} 个文件
+      </p>
+    </div>
+  )
+}
+
+// 版本C：信息丰富式 - 显示更多文件信息，带预览缩略图占位
+function FileListVersionC({
+  files,
+  onDelete,
+  hasReadyFiles,
+}: {
+  files: VaultFile[]
+  onDelete: (id: string) => void
+  hasReadyFiles: boolean
+}) {
+  return (
+    <div className="space-y-4">
+      {/* 顶部操作栏 */}
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-gray-700">
+          文件列表 ({files.length})
+        </span>
+        {hasReadyFiles && (
+          <Link
+            href="/"
+            className="text-xs font-medium text-[#1e40af]"
+          >
+            去提问 →
+          </Link>
+        )}
+      </div>
+
+      {/* 文件列表 */}
+      {files.map((file) => (
+        <div key={file.id} className="overflow-hidden rounded-xl border border-gray-100 bg-white">
+          {/* 文件头部 - 带背景色 */}
+          <div className="flex items-center gap-3 bg-gray-50/80 px-4 py-3">
+            <div
+              className={cn(
+                "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
+                file.status === "ready" && "bg-green-100",
+                file.status === "processing" && "bg-amber-100",
+                file.status === "uploading" && "bg-blue-100"
+              )}
+            >
+              <FileText
+                className={cn(
+                  "h-5 w-5",
+                  file.status === "ready" && "text-green-600",
+                  file.status === "processing" && "text-amber-600",
+                  file.status === "uploading" && "text-blue-600"
+                )}
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-gray-900">
+                {file.name}
+              </p>
+            </div>
+            {/* 状态徽章 */}
+            <div
+              className={cn(
+                "shrink-0 rounded-full px-2.5 py-1 text-xs font-medium",
+                file.status === "ready" && "bg-green-500 text-white",
+                file.status === "processing" && "bg-amber-500 text-white",
+                file.status === "uploading" && "bg-blue-500 text-white"
+              )}
+            >
+              {file.status === "ready" && "已就绪"}
+              {file.status === "processing" && "解析中"}
+              {file.status === "uploading" && `${Math.round(file.progress || 0)}%`}
+            </div>
+          </div>
+
+          {/* 文件详情 */}
+          <div className="px-4 py-3">
+            <div className="grid grid-cols-2 gap-y-2 text-xs">
+              <div>
+                <span className="text-gray-400">大小</span>
+                <p className="font-medium text-gray-700">{file.size}</p>
+              </div>
+              <div>
+                <span className="text-gray-400">上传时间</span>
+                <p className="font-medium text-gray-700">{file.uploadTime}</p>
+              </div>
+            </div>
+
+            {/* 上传进度 */}
+            {file.status === "uploading" && (
+              <div className="mt-3">
+                <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
+                  <div
+                    className="h-full rounded-full bg-blue-500 transition-all"
+                    style={{ width: `${file.progress || 0}%` }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 操作栏 */}
+          <div className="flex border-t border-gray-100">
+            {file.status === "ready" && (
+              <Link
+                href={`/chat?file=${file.id}`}
+                className="flex flex-1 items-center justify-center gap-2 py-2.5 text-xs font-medium text-[#1e40af] transition-colors hover:bg-[#1e40af]/5"
+              >
+                <MessageSquare className="h-3.5 w-3.5" />
+                提问
+              </Link>
+            )}
+            {file.status !== "ready" && <div className="flex-1" />}
+            <button
+              onClick={() => onDelete(file.id)}
+              className="flex items-center justify-center gap-2 border-l border-gray-100 px-4 py-2.5 text-xs text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              删除
+            </button>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -515,7 +767,7 @@ function FeedbackButton() {
   )
 }
 
-// 底部导航 - 与首页完全一致
+// 底部导航 - 与首���完全一致
 type TabType = "chat" | "vault" | "profile"
 
 function BottomNavigation({ activeTab }: { activeTab: TabType }) {
