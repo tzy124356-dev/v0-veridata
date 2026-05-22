@@ -274,15 +274,11 @@ function ChatPageContent() {
   const [showKnowledgeModal, setShowKnowledgeModal] = useState(true)
   const [hasInitialized, setHasInitialized] = useState(false)
   const [knowledgeSource, setKnowledgeSource] = useState<"official" | "myVault">("official")
-  const [bubbleColorVersion, setBubbleColorVersion] = useState<"A" | "B">("A")
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
-  // 用户消息气泡配色方案
-  const bubbleColors = {
-    A: "bg-[#4284ff]", // 柔和蓝（当前）
-    B: "bg-[#0b74ff]", // 鲜亮蓝
-  }
+  // 用户消息气泡颜色
+  const bubbleColor = "bg-[#4284ff]"
 
   // 处理URL中的预设问题、知识库来源、历史记录和收藏
   useEffect(() => {
@@ -353,30 +349,6 @@ function ChatPageContent() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
-      {/* 气泡颜色版本切换器 */}
-      <div className="fixed top-3 left-3 z-50 flex items-center gap-2 rounded-lg bg-white/90 px-2 py-1 shadow-md backdrop-blur-sm">
-        <span className="text-[10px] text-gray-400">气泡：</span>
-        {(["A", "B"] as const).map((v) => (
-          <button
-            key={v}
-            onClick={() => setBubbleColorVersion(v)}
-            className={cn(
-              "h-6 w-6 rounded text-[10px] font-medium transition-all",
-              bubbleColorVersion === v
-                ? "text-white shadow-sm"
-                : "bg-gray-100 text-gray-500"
-            )}
-            style={{
-              backgroundColor: bubbleColorVersion === v 
-                ? (v === "A" ? "#4284ff" : "#0b74ff")
-                : undefined
-            }}
-          >
-            {v}
-          </button>
-        ))}
-      </div>
-
       {/* 版本A：结构化专业版 */}
       <ChatVersionA
         messages={messages}
@@ -389,7 +361,7 @@ function ChatPageContent() {
         messagesEndRef={messagesEndRef}
         knowledgeSource={knowledgeSource}
         setKnowledgeSource={setKnowledgeSource}
-        bubbleColor={bubbleColors[bubbleColorVersion]}
+        bubbleColor={bubbleColor}
       />
 
       {/* 知识库范围弹窗 */}
