@@ -364,7 +364,7 @@ function FileListView({
             <div
               className={cn(
                 "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
-                file.status === "ready" && "bg-green-100",
+                file.status === "ready" && "bg-blue-100",
                 file.status === "processing" && "bg-amber-100",
                 file.status === "uploading" && "bg-blue-100"
               )}
@@ -372,7 +372,7 @@ function FileListView({
               <FileText
                 className={cn(
                   "h-5 w-5",
-                  file.status === "ready" && "text-green-600",
+                  file.status === "ready" && "text-blue-600",
                   file.status === "processing" && "text-amber-600",
                   file.status === "uploading" && "text-blue-600"
                 )}
@@ -387,7 +387,7 @@ function FileListView({
             <div
               className={cn(
                 "shrink-0 rounded-full px-2.5 py-1 text-xs font-medium",
-                file.status === "ready" && "bg-green-500 text-white",
+                file.status === "ready" && "bg-blue-500 text-white",
                 file.status === "processing" && "bg-amber-500 text-white",
                 file.status === "uploading" && "bg-blue-500 text-white"
               )}
