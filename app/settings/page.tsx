@@ -5,47 +5,21 @@ import Link from "next/link"
 import {
   ArrowLeft,
   ChevronRight,
-  Bell,
-  Moon,
-  Globe,
   Shield,
   Trash2,
   LogOut,
   Info,
   FileText,
-  Lock,
   Database,
-  Volume2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export default function SettingsPage() {
-  const [notifications, setNotifications] = useState(true)
-  const [soundEnabled, setSoundEnabled] = useState(true)
   const [showClearCacheModal, setShowClearCacheModal] = useState(false)
   const [showLogoutModal, setShowLogoutModal] = useState(false)
   const [cacheCleared, setCacheCleared] = useState(false)
 
   const settingGroups = [
-    {
-      title: "通用设置",
-      items: [
-        {
-          icon: Bell,
-          label: "消息通知",
-          type: "toggle" as const,
-          value: notifications,
-          onChange: () => setNotifications(!notifications),
-        },
-        {
-          icon: Volume2,
-          label: "提示音",
-          type: "toggle" as const,
-          value: soundEnabled,
-          onChange: () => setSoundEnabled(!soundEnabled),
-        },
-      ],
-    },
     {
       title: "数据与存储",
       items: [
@@ -145,22 +119,6 @@ export default function SettingsPage() {
                         )}
                       </div>
                     </div>
-                    {item.type === "toggle" && (
-                      <button
-                        onClick={item.onChange}
-                        className={cn(
-                          "relative h-7 w-12 rounded-full transition-colors",
-                          item.value ? "bg-[#1e40af]" : "bg-gray-200"
-                        )}
-                      >
-                        <span
-                          className={cn(
-                            "absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform",
-                            item.value ? "translate-x-5" : "translate-x-0.5"
-                          )}
-                        />
-                      </button>
-                    )}
                     {item.type === "link" && (
                       <Link
                         href={item.href || "#"}
