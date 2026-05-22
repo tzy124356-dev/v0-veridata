@@ -225,9 +225,15 @@ function MainFeatureCard() {
       {/* 内容 */}
       <div className="relative z-10">
         {/* 标题 */}
-        <h2 className="text-[32px] font-bold leading-tight tracking-wide text-white mb-[22px]">
+        <h2 className="text-[32px] font-bold leading-tight tracking-wide text-white">
           智能问答
         </h2>
+
+        {/* 白色渐变分割线 */}
+        <div 
+          className="my-[22px] h-px w-24"
+          style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%)' }}
+        />
 
         {/* 主描述 */}
         <p className="mb-2.5 text-[15px] font-medium leading-normal text-white/95">
