@@ -305,9 +305,6 @@ function ChatVersionA({
 function EmptyStateA({ onScenarioClick }: { onScenarioClick: (hint: string) => void }) {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center py-8">
-      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af]/10 to-[#3b82f6]/10">
-        <Sparkles className="h-10 w-10 text-[#1e40af]" />
-      </div>
       <h2 className="mb-2 text-lg font-semibold text-gray-900">有什么可以帮到你？</h2>
       <p className="text-center text-sm text-gray-500">
         基于行业官方数据库，每条回答有出处
