@@ -278,11 +278,11 @@ function ChatPageContent() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
-  // 用户消息气泡配色方案
+  // 用户消息气泡配色方案 - 丰富蓝色调
   const bubbleColors = {
-    A: "bg-[#3b82f6]", // 明亮蓝 - 活力清新
-    B: "bg-[#1e40af]", // 深蓝色 - 沉稳专业
-    C: "bg-[#0f172a]", // 深墨蓝 - 简约高级
+    A: "bg-gradient-to-r from-[#2563eb] to-[#3b82f6]", // 宝石蓝渐变 - 明亮有层次
+    B: "bg-gradient-to-br from-[#1e40af] via-[#3b82f6] to-[#60a5fa]", // 天空蓝渐变 - 通透清新
+    C: "bg-gradient-to-r from-[#1e3a8a] to-[#2563eb]", // 深海蓝渐变 - 沉稳专业
   }
 
   // 处理URL中的预设问题、知识库来源、历史记录和收藏
@@ -816,7 +816,7 @@ function FeedbackModal({ onClose }: { onClose: () => void }) {
           ))}
         </div>
 
-        <p className="mb-2 text-sm text-gray-500">补充说明（可选）</p>
+        <p className="mb-2 text-sm text-gray-500">补��说明（可选）</p>
         <textarea
           value={feedbackText}
           onChange={(e) => setFeedbackText(e.target.value)}
