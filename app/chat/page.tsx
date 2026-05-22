@@ -763,7 +763,7 @@ function FeedbackModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        <p className="mb-3 text-sm text-gray-500">请选择问题类型（可多���）</p>
+        <p className="mb-3 text-sm text-gray-500">请选择问题类型（可多选）</p>
         <div className="mb-4 flex flex-wrap gap-2">
           {feedbackReasons.map((reason) => (
             <button
@@ -772,7 +772,7 @@ function FeedbackModal({ onClose }: { onClose: () => void }) {
               className={cn(
                 "rounded-full px-3 py-1.5 text-sm transition-all",
                 selectedReasons.includes(reason)
-                  ? "bg-[#1e40af] text-white"
+                  ? "bg-[#2d61d3] text-white"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               )}
             >
@@ -781,7 +781,7 @@ function FeedbackModal({ onClose }: { onClose: () => void }) {
           ))}
         </div>
 
-        <p className="mb-2 text-sm text-gray-500">补��说明（可选）</p>
+        <p className="mb-2 text-sm text-gray-500">补充说明（可选）</p>
         <textarea
           value={feedbackText}
           onChange={(e) => setFeedbackText(e.target.value)}
