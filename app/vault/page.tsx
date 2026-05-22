@@ -207,7 +207,6 @@ export default function VaultPage() {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onUploadClick={() => fileInputRef.current?.click()}
-            onLoadDemo={loadDemoData}
           />
         ) : (
           <FileListView files={files} onDelete={handleDelete} hasReadyFiles={hasReadyFiles} />
@@ -249,16 +248,14 @@ function EmptyState({
   onDragLeave,
   onDrop,
   onUploadClick,
-  onLoadDemo,
 }: {
   isDragging: boolean
   onDragOver: (e: React.DragEvent) => void
   onDragLeave: () => void
   onDrop: (e: React.DragEvent) => void
   onUploadClick: () => void
-  onLoadDemo: () => void
 }) {
-  // 设计版本切换 - 选定后删除
+  // 设计���本切换 - 选定后删除
   const [version, setVersion] = useState<1 | 2 | 3>(1)
 
   return (
@@ -359,14 +356,6 @@ function EmptyState({
         >
           <Upload className="h-4 w-4" />
           上传文件
-        </button>
-
-        {/* 查看示例 */}
-        <button
-          onClick={onLoadDemo}
-          className="mt-3 w-full py-2.5 text-sm text-gray-500 transition-colors hover:text-[#1e40af]"
-        >
-          查看示例
         </button>
       </div>
 
@@ -578,36 +567,35 @@ function FeedbackButton() {
   )
 }
 
-// 底部导航
-function BottomNavigation({ activeTab }: { activeTab: "chat" | "vault" | "profile" }) {
-  const navItems = [
-    { id: "chat" as const, label: "智能问答", icon: MessageSquare, href: "/" },
-    { id: "vault" as const, label: "我的档案库", icon: FolderOpen, href: "/vault" },
-    { id: "profile" as const, label: "我的", icon: User, href: "/profile" },
+// 底部导航 - 与首页完全一致
+type TabType = "chat" | "vault" | "profile"
+
+function BottomNavigation({ activeTab }: { activeTab: TabType }) {
+  const tabs = [
+    { id: "chat" as const, icon: MessageSquare, label: "智能问答", href: "/" },
+    { id: "vault" as const, icon: FolderOpen, label: "我的档案库", href: "/vault" },
+    { id: "profile" as const, icon: User, label: "我的", href: "/profile" },
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-gray-100 bg-white/95 backdrop-blur-sm">
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background pb-7">
       <div className="flex items-center justify-around py-2">
-        {navItems.map((item) => {
-          const isActive = activeTab === item.id
-          return (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={cn(
-                "flex flex-col items-center gap-1 px-4 py-1 transition-colors",
-                isActive ? "text-[#1e40af]" : "text-gray-400"
-              )}
-            >
-              <item.icon className={cn("h-5 w-5", isActive && "text-[#1e40af]")} />
-              <span className="text-[10px]">{item.label}</span>
-            </Link>
-          )
-        })}
+        {tabs.map((tab) => (
+          <Link
+            key={tab.id}
+            href={tab.href}
+            className={cn(
+              "flex flex-col items-center gap-1 px-6 py-1.5 transition-colors",
+              activeTab === tab.id
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <tab.icon className={cn("h-5 w-5", tab.id === "chat" && "-scale-x-100")} />
+            <span className="text-xs">{tab.label}</span>
+          </Link>
+        ))}
       </div>
-      {/* iPhone 底部安全区域 */}
-      <div className="h-safe-bottom bg-white" />
     </nav>
   )
 }
