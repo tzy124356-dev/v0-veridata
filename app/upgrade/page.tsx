@@ -66,7 +66,7 @@ function UpgradeVersionA() {
   return (
     <div className="flex flex-col pb-8">
       {/* 顶部导航 */}
-      <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b border-gray-100 bg-white/80 px-4 backdrop-blur-md">
+      <header className="sticky top-0 z-40 flex h-12 items-center justify-between bg-white/80 px-4 backdrop-blur-md">
         <Link href="/" className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-gray-100">
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </Link>
