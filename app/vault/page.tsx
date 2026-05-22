@@ -231,7 +231,7 @@ export default function VaultPage() {
   )
 }
 
-// 存储空间卡片 - 三版设计供选择
+// 存储空间卡片 - 左侧紫色边框装饰
 function StorageCard({
   usedStorage,
   totalStorage,
@@ -239,99 +239,30 @@ function StorageCard({
   usedStorage: number
   totalStorage: number
 }) {
-  const [version, setVersion] = useState<"A" | "B" | "C">("A")
   const percentage = Math.min((usedStorage / totalStorage) * 100, 100)
 
   return (
     <div className="mx-5 mt-4 mb-4">
-      {/* 版本切换器 - 选定后删除 */}
-      <div className="mb-2 flex items-center justify-center gap-2">
-        <span className="text-[10px] text-gray-400">存储卡片版本：</span>
-        {(["A", "B", "C"] as const).map((v) => (
-          <button
-            key={v}
-            onClick={() => setVersion(v)}
-            className={cn(
-              "h-6 w-6 rounded text-[10px] font-medium transition-all",
-              version === v
-                ? "bg-[#1e40af] text-white"
-                : "bg-gray-100 text-gray-500"
-            )}
-          >
-            {v}
-          </button>
-        ))}
-      </div>
-
-      {/* 版本A：紫色渐变背景 - 轻微突出但不抢眼 */}
-      {version === "A" && (
-        <div className="rounded-xl bg-gradient-to-r from-violet-50 to-purple-50 p-4">
+      <div className="flex overflow-hidden rounded-xl bg-white shadow-sm">
+        <div className="w-1 bg-gradient-to-b from-violet-400 to-purple-500" />
+        <div className="flex-1 p-4">
           <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-violet-100">
-                <HardDrive className="h-3.5 w-3.5 text-violet-600" />
-              </div>
-              <span className="text-violet-700">存储空间</span>
+            <span className="text-gray-600">存储空间</span>
+            <div className="flex items-center gap-1.5">
+              <span className="font-semibold text-violet-600">
+                {usedStorage.toFixed(1)}G
+              </span>
+              <span className="text-gray-400">/ {totalStorage}G</span>
             </div>
-            <span className="font-medium text-violet-900">
-              {usedStorage.toFixed(1)}G / {totalStorage}G
-            </span>
           </div>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-violet-100">
+          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-100">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-violet-500 to-purple-500 transition-all"
+              className="h-full rounded-full bg-gradient-to-r from-violet-400 to-purple-500 transition-all"
               style={{ width: `${percentage}%` }}
             />
           </div>
         </div>
-      )}
-
-      {/* 版本B：左侧紫色边框装饰 - 简约但有辨识度 */}
-      {version === "B" && (
-        <div className="flex overflow-hidden rounded-xl bg-white shadow-sm">
-          <div className="w-1 bg-gradient-to-b from-violet-400 to-purple-500" />
-          <div className="flex-1 p-4">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-gray-600">存储空间</span>
-              <div className="flex items-center gap-1.5">
-                <span className="font-semibold text-violet-600">
-                  {usedStorage.toFixed(1)}G
-                </span>
-                <span className="text-gray-400">/ {totalStorage}G</span>
-              </div>
-            </div>
-            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-gray-100">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-violet-400 to-purple-500 transition-all"
-                style={{ width: `${percentage}%` }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 版本C：紧凑单行式 - 最小化占用空间 */}
-      {version === "C" && (
-        <div className="flex items-center gap-3 rounded-xl bg-white px-4 py-3 shadow-sm">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-purple-600">
-            <HardDrive className="h-4 w-4 text-white" />
-          </div>
-          <div className="flex-1">
-            <div className="mb-1 flex items-center justify-between">
-              <span className="text-xs text-gray-600">存储空间</span>
-              <span className="text-xs font-medium text-gray-900">
-                {usedStorage.toFixed(1)}G / {totalStorage}G
-              </span>
-            </div>
-            <div className="h-1 overflow-hidden rounded-full bg-violet-100">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-violet-500 to-purple-500 transition-all"
-                style={{ width: `${percentage}%` }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -373,7 +304,7 @@ function EmptyState({
         <div className="mb-6 space-y-2.5">
           {[
             "统一管理，告别文件散落",
-            "智能解析，快速定位关键信息",
+            "智能解��，快速定位关键信息",
             "随时提问，知识一问即得",
           ].map((text, index) => (
             <div
