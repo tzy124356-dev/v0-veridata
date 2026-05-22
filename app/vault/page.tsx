@@ -13,6 +13,7 @@ import {
   MessageCircle,
   FolderOpen as FolderIcon,
   HardDrive,
+  User,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -732,7 +733,7 @@ function FileListVersionB({
   )
 }
 
-// 版本C：信息丰富式 - 显示更多文件信息，带预览缩略图占位
+// ���本C：信息丰富式 - 显示更多文件信息，带预览缩略图占位
 function FileListVersionC({
   files,
   onDelete,
