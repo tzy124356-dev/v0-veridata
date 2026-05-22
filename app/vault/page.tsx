@@ -265,16 +265,13 @@ function EmptyState({
       {/* 主卡片 */}
       <div className="rounded-2xl bg-white p-6 shadow-sm">
         {/* 标题区域 - 简洁居中式 */}
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af]/10 to-[#3b82f6]/10">
+        <div className="mb-5 text-center">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af]/10 to-[#3b82f6]/10">
             <FolderOpen className="h-7 w-7 text-[#1e40af]" />
           </div>
-          <h2 className="mb-2 text-xl font-bold text-gray-900">
+          <h2 className="text-xl font-bold text-gray-900">
             专属知识库
           </h2>
-          <p className="text-sm leading-relaxed text-gray-500">
-            上传文件，AI 帮你快速检索与问答
-          </p>
         </div>
 
         {/* 能力点 - 列表 */}
