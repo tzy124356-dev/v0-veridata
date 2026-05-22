@@ -102,6 +102,107 @@ function ChatPageLoading() {
   )
 }
 
+// 模拟历史对话数据（与历史记录页面对应）
+const mockHistoryMessages: Record<string, Message[]> = {
+  "1": [
+    {
+      id: "h1-1",
+      type: "user",
+      content: "医美针剂注册申报需要准备哪些材料？",
+      timestamp: new Date("2024-01-15T14:30:00"),
+    },
+    {
+      id: "h1-2",
+      type: "ai",
+      content: "根据《医疗器械注册与备案管理办法》，医美针剂作为第三类医疗器械，注册申报需要准备以下材料...",
+      conclusion: "医美针剂注册申报需准备：1) 注册申请表；2) 证明性文件；3) 产品技术要求；4) 产品检验报告；5) 临床评价资料；6) 说明书和标签样稿；7) 质量管理体系文件。",
+      legalBasis: [
+        { title: "医疗器械注册与备案管理办法", url: "#" },
+        { title: "医疗器械注册申报资料要求", url: "#" },
+      ],
+      reasoning: "医美针剂通常属于第三类医疗器械，需要进行严格的注册审批流程。根据现行法规，申报材料需涵盖产品安全性、有效性的全部证明文件。",
+      timestamp: new Date("2024-01-15T14:30:30"),
+    },
+  ],
+  "2": [
+    {
+      id: "h2-1",
+      type: "user",
+      content: "收到发补通知后应该如何处理？",
+      timestamp: new Date("2024-01-15T10:15:00"),
+    },
+    {
+      id: "h2-2",
+      type: "ai",
+      content: "收到发补通知后，建议按以下步骤处理...",
+      conclusion: "收到发补通知后应：1) 仔细阅读发补意见；2) 组织团队逐条分析；3) 制定补充资料计划；4) 在规定时限内提交补充材料；5) 必要时申请延期或沟通。",
+      legalBasis: [
+        { title: "医疗器械注册审查程序", url: "#" },
+      ],
+      reasoning: "发补是注册审评过程中的常见环节，及时、准确地响应发补意见对于顺利获批至关重要。",
+      timestamp: new Date("2024-01-15T10:15:30"),
+    },
+  ],
+  "3": [
+    {
+      id: "h3-1",
+      type: "user",
+      content: "透明质酸类产品的分类界定标准是什么？",
+      timestamp: new Date("2024-01-14T16:42:00"),
+    },
+    {
+      id: "h3-2",
+      type: "ai",
+      content: "透明质酸类产品的分类主要依据其预期用途和作用机理...",
+      conclusion: "透明质酸类产品分类标准：1) 用于填充增容的属于第三类；2) 用于保湿护理的可能属于化妆品；3) 具有治疗作用的需按药品管理。具体分类需根据产品预期用途、作用部位和作用机理综合判定。",
+      legalBasis: [
+        { title: "医疗器械分类目录", url: "#" },
+        { title: "医疗器械分类规则", url: "#" },
+      ],
+      reasoning: "透明质酸类产品的监管类别取决于其预期用途，同一成分可能因用途不同而归入不同监管类别。",
+      timestamp: new Date("2024-01-14T16:42:30"),
+    },
+  ],
+  "4": [
+    {
+      id: "h4-1",
+      type: "user",
+      content: "技术指导原则中关于临床评价的要求有哪些？",
+      timestamp: new Date("2024-01-14T09:20:00"),
+    },
+    {
+      id: "h4-2",
+      type: "ai",
+      content: "根据《医疗器械临床评价技术指导原则》，临床评价应包括...",
+      conclusion: "临床评价要求包括：1) 临床评价路径选择；2) 同品种医疗器械临床数据分析；3) 临床文献数据分析；4) 临床试验数据（如需）；5) 临床评价报告编写。",
+      legalBasis: [
+        { title: "医疗器械临床评价技术指导原则", url: "#" },
+      ],
+      reasoning: "临床评价是证明医疗器械安全性和有效性的关键环节，评价方式和深度需与产品风险程度相匹配。",
+      timestamp: new Date("2024-01-14T09:20:30"),
+    },
+  ],
+  "5": [
+    {
+      id: "h5-1",
+      type: "user",
+      content: "注射用透明质酸钠的有效期验证方法？",
+      timestamp: new Date("2024-01-12T15:00:00"),
+    },
+    {
+      id: "h5-2",
+      type: "ai",
+      content: "有效期验证应按照《医疗器械稳定性研究技术审查指导原则》...",
+      conclusion: "有效期验证方法：1) 加速稳定性试验；2) 长期稳定性试验；3) 运输稳定性试验。需检测物理、化学、生物学等关键质量指标随时间变化情况。",
+      legalBasis: [
+        { title: "医疗器械稳定性研究技术审查指导原则", url: "#" },
+      ],
+      reasoning: "稳定性研究是确定产品有效期的科学依据，需综合考虑产品特性和储存条件。",
+      timestamp: new Date("2024-01-12T15:00:30"),
+    },
+  ],
+}
+
 function ChatPageContent() {
   const searchParams = useSearchParams()
   const [messages, setMessages] = useState<Message[]>([])
@@ -113,17 +214,24 @@ function ChatPageContent() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
-  // 处理URL中的预设问题和知识库来源
+  // 处理URL中的预设问题、知识库来源和历史记录
   useEffect(() => {
     if (hasInitialized) return
     const presetQuestion = searchParams.get("q")
     const source = searchParams.get("source")
+    const historyId = searchParams.get("history")
+    
     if (presetQuestion) {
       setInputValue(presetQuestion)
       inputRef.current?.focus()
     }
     if (source === "myVault") {
       setKnowledgeSource("myVault")
+    }
+    // 加载历史对话
+    if (historyId && mockHistoryMessages[historyId]) {
+      setMessages(mockHistoryMessages[historyId])
+      setShowKnowledgeModal(false)
     }
     setHasInitialized(true)
   }, [searchParams, hasInitialized])
@@ -265,7 +373,7 @@ function ChatVersionA({
                   handleSend()
                 }
               }}
-              placeholder="输入您的问题..."
+              placeholder="输入您��问题..."
               rows={1}
               className="max-h-32 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
             />
