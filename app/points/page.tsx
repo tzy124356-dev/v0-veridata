@@ -158,9 +158,21 @@ export default function PointsPage() {
         <button
           onClick={() => {
             if (myInviteCode) {
-              navigator.clipboard.writeText(myInviteCode)
-              setShowCopied(true)
-              setTimeout(() => setShowCopied(false), 1500)
+              // 使用 fallback 方式复制，避免 Clipboard API 权限问题
+              const textArea = document.createElement("textarea")
+              textArea.value = myInviteCode
+              textArea.style.position = "fixed"
+              textArea.style.left = "-9999px"
+              document.body.appendChild(textArea)
+              textArea.select()
+              try {
+                document.execCommand("copy")
+                setShowCopied(true)
+                setTimeout(() => setShowCopied(false), 1500)
+              } catch {
+                // 静默失败
+              }
+              document.body.removeChild(textArea)
             }
           }}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1e40af]/10 py-3 text-sm font-medium text-[#1e40af] transition-all hover:bg-[#1e40af]/15 active:scale-[0.98]"
