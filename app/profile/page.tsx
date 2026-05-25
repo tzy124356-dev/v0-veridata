@@ -325,7 +325,6 @@ function ProfileContent({
             <ChevronRight className="h-4 w-4 text-gray-300" />
           </div>
         </Link>
-      )}
 
       {/* 功能菜单 */}
       <div className="mb-3 overflow-hidden rounded-2xl bg-white shadow-sm">
