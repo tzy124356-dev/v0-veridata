@@ -4,16 +4,12 @@ import { useState } from "react"
 import Link from "next/link"
 import {
   ArrowLeft,
+  ChevronDown,
   ChevronRight,
   MessageSquare,
-  FileText,
-  HelpCircle,
   Mail,
-  Phone,
-  Clock,
-  Send,
-  X,
-  CheckCircle,
+  HelpCircle,
+  Sparkles,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { HelpFeedbackModal } from "@/components/help-feedback-modal"
@@ -110,15 +106,15 @@ export default function HelpPage() {
             </div>
             <span className="text-sm font-medium text-gray-700">问题反馈</span>
           </button>
-          <a
-            href="mailto:support@veridata.com"
+          <button
+            onClick={handleContactService}
             className="flex flex-col items-center gap-2 rounded-2xl bg-white p-4 shadow-sm transition-all active:scale-[0.98]"
           >
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
               <Mail className="h-6 w-6 text-white" />
             </div>
             <span className="text-sm font-medium text-gray-700">联系客服</span>
-          </a>
+          </button>
         </div>
 
         {/* 常见问题 */}
