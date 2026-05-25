@@ -368,7 +368,7 @@ function ChatPageContent() {
         bubbleColor={bubbleColor}
       />
 
-      {/* 知识库范围���窗 */}
+      {/* 知识库范围�����窗 */}
       {showKnowledgeModal && (
         <KnowledgeModal onClose={() => setShowKnowledgeModal(false)} />
       )}
@@ -665,15 +665,20 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
           <div className="space-y-3">
             {message.legalBasis.map((basis, index) => (
               <div key={index} className="rounded-xl bg-gray-50 p-3">
-                <div className="mb-1 flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-900">{basis.title}</span>
+                <div className="mb-1 flex items-start justify-between gap-2">
+                  <span className="flex-1 text-sm font-medium text-gray-900">《{basis.title.replace(/^《|》$/g, '')}》</span>
                   {basis.url && (
-                    <a href={basis.url} target="_blank" rel="noopener noreferrer" className="text-[#1e40af] hover:text-[#1e40af]/80">
+                    <a 
+                      href={basis.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-white text-[#1e40af] shadow-sm transition-colors hover:bg-[#1e40af]/10"
+                    >
                       <ExternalLink className="h-3.5 w-3.5" />
                     </a>
                   )}
                 </div>
-                <p className="mb-1 text-xs text-gray-400">{basis.clause}</p>
+                <p className="mb-1 text-xs text-[#1e40af]">{basis.clause}</p>
                 <p className="text-xs leading-relaxed text-gray-600">{basis.content}</p>
               </div>
             ))}
