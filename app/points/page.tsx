@@ -141,24 +141,20 @@ export default function PointsPage() {
         </div>
       </div>
 
-      {/* 我的兑换码卡片 */}
-      <div className="mx-4 mt-4 rounded-2xl bg-white p-5 shadow-sm">
-        <div className="mb-3 flex items-center gap-2">
-          <Gift className="h-4 w-4 text-[#1e40af]" />
-          <span className="font-semibold text-gray-900">我的兑换码</span>
+      {/* 我的邀请码卡片 - 单行布局 */}
+      <div className="mx-4 mt-4 flex items-center justify-between rounded-2xl bg-white px-4 py-3 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-50">
+            <Sparkles className="h-4 w-4 text-amber-500" />
+          </div>
+          <div>
+            <p className="text-xs text-gray-400">我的邀请码</p>
+            <p className="text-base font-bold text-[#1e40af]">{myInviteCode || "------"}</p>
+          </div>
         </div>
-        <div className="mb-3 text-center">
-          <p className="text-3xl font-bold tracking-[0.2em] text-[#1e40af]">
-            {myInviteCode || "------"}
-          </p>
-        </div>
-        <p className="mb-4 text-center text-xs text-gray-400">
-          把兑换码分享给朋友，对方兑换后你将获得 100 积分
-        </p>
         <button
           onClick={() => {
             if (myInviteCode) {
-              // 使用 fallback 方式复制，避免 Clipboard API 权限问题
               const textArea = document.createElement("textarea")
               textArea.value = myInviteCode
               textArea.style.position = "fixed"
@@ -175,17 +171,17 @@ export default function PointsPage() {
               document.body.removeChild(textArea)
             }
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1e40af]/10 py-3 text-sm font-medium text-[#1e40af] transition-all hover:bg-[#1e40af]/15 active:scale-[0.98]"
+          className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-gray-500 transition-colors hover:bg-gray-100"
         >
           {showCopied ? (
             <>
-              <Check className="h-4 w-4" />
-              已复制
+              <Check className="h-4 w-4 text-green-500" />
+              <span className="text-green-500">已复制</span>
             </>
           ) : (
             <>
               <Copy className="h-4 w-4" />
-              复制兑换码
+              <span>复制</span>
             </>
           )}
         </button>
