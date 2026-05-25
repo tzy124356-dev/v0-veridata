@@ -184,7 +184,7 @@ function ChatPageContent() {
             type: "assistant", 
             content: favoriteItem.answer,
             conclusion: favoriteItem.answer,
-            reasoning: favoriteItem.reasoning ? [favoriteItem.reasoning] : undefined,
+            reasoning: favoriteItem.reasoning,
             legalBasis: favoriteItem.source ? [{ title: favoriteItem.source, clause: "", content: "", url: "https://www.nmpa.gov.cn" }] : undefined,
           }
         ]
@@ -678,7 +678,7 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
         question: relatedQuestion || "未知问题",
         answer: message.conclusion || message.content,
         source: message.legalBasis?.[0]?.title,
-        reasoning: message.reasoning?.[0],
+        reasoning: message.reasoning,
         savedTime: new Date().toISOString(),
       })
     } else {
