@@ -495,16 +495,9 @@ function ChatVersionA({
               <Send className="h-4 w-4" />
             </button>
           </div>
-          <div className="mt-2 flex items-center justify-center gap-2">
-            <p className="text-center text-xs text-gray-400">
-              本内容由 Veridata AI 基于知识库生成，仅供专业参考
-            </p>
-            {lastDeductResult && (
-              <span className="text-xs text-amber-500">
-                · 剩余 {lastDeductResult.remaining} 积分
-              </span>
-            )}
-          </div>
+          <p className="mt-2 text-center text-xs text-gray-400">
+            本内容由 Veridata AI 基于知识库生成，仅供专业参考
+          </p>
         </div>
       </div>
 
