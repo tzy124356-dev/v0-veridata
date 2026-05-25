@@ -195,7 +195,10 @@ export default function DevModalsPage() {
       return
     }
     if (errorType) {
-      showError(errorType as "network" | "serverError" | "loadFailed" | "empty", "演示错误提示")
+      showError({ 
+        type: errorType as "network" | "serverError" | "loadFailed" | "empty",
+        message: "这是调试预览的错误消息"
+      })
       return
     }
     setActiveModal(modalId)
