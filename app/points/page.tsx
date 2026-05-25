@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, HelpCircle, ChevronRight, CreditCard, Gift, BookOpen, MessageSquare, X, Loader2 } from "lucide-react"
+import { ArrowLeft, HelpCircle, ChevronRight, CreditCard, Gift, BookOpen, MessageSquare, X, Loader2, Sparkles, Copy, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuthGuard } from "@/hooks/use-auth-guard"
-import { getPoints, getPointRecords, type PointsData, type PointRecord } from "@/lib/storage"
+import { getPoints, getPointRecords, getUserInviteCode, redeemCode, type PointsData, type PointRecord } from "@/lib/storage"
 import { PointsRulesModal } from "@/components/points-rules-modal"
 
 export default function PointsPage() {
@@ -14,11 +14,19 @@ export default function PointsPage() {
   const [points, setPoints] = useState<PointsData>({ free: 0, gift: 0, member: 0 })
   const [records, setRecords] = useState<PointRecord[]>([])
   const [showRulesModal, setShowRulesModal] = useState(false)
+  
+  // 兑换码相关状态
+  const [myInviteCode, setMyInviteCode] = useState("")
+  const [redeemInput, setRedeemInput] = useState("")
+  const [redeemError, setRedeemError] = useState("")
+  const [showCopied, setShowCopied] = useState(false)
+  const [showRedeemSuccess, setShowRedeemSuccess] = useState(false)
 
   const refreshData = () => {
     if (typeof window !== "undefined") {
       setPoints(getPoints())
       setRecords(getPointRecords())
+      setMyInviteCode(getUserInviteCode())
     }
   }
 
@@ -133,6 +141,85 @@ export default function PointsPage() {
         </div>
       </div>
 
+      {/* 我的兑换码卡片 */}
+      <div className="mx-4 mt-4 rounded-2xl bg-white p-5 shadow-sm">
+        <div className="mb-3 flex items-center gap-2">
+          <Gift className="h-4 w-4 text-[#1e40af]" />
+          <span className="font-semibold text-gray-900">我的兑换码</span>
+        </div>
+        <div className="mb-3 text-center">
+          <p className="text-3xl font-bold tracking-[0.2em] text-[#1e40af]">
+            {myInviteCode || "------"}
+          </p>
+        </div>
+        <p className="mb-4 text-center text-xs text-gray-400">
+          把兑换码分享给朋友，对方兑换后你将获得 100 积分
+        </p>
+        <button
+          onClick={() => {
+            if (myInviteCode) {
+              navigator.clipboard.writeText(myInviteCode)
+              setShowCopied(true)
+              setTimeout(() => setShowCopied(false), 1500)
+            }
+          }}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1e40af]/10 py-3 text-sm font-medium text-[#1e40af] transition-all hover:bg-[#1e40af]/15 active:scale-[0.98]"
+        >
+          {showCopied ? (
+            <>
+              <Check className="h-4 w-4" />
+              已复制
+            </>
+          ) : (
+            <>
+              <Copy className="h-4 w-4" />
+              复制兑换码
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* 兑换好友的码卡片 */}
+      <div className="mx-4 mt-4 rounded-2xl bg-white p-5 shadow-sm">
+        <div className="mb-3 flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-[#1e40af]" />
+          <span className="font-semibold text-gray-900">兑换好友的码</span>
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={redeemInput}
+            onChange={(e) => {
+              setRedeemInput(e.target.value.toUpperCase())
+              setRedeemError("")
+            }}
+            placeholder="输入兑换码（YJ + 5 位数字）"
+            className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm placeholder:text-gray-400 focus:border-[#1e40af]/50 focus:outline-none focus:ring-2 focus:ring-[#1e40af]/10"
+          />
+          <button
+            onClick={() => {
+              const result = redeemCode(redeemInput)
+              if (result.success) {
+                setRedeemInput("")
+                setRedeemError("")
+                setShowRedeemSuccess(true)
+                refreshData()
+                setTimeout(() => setShowRedeemSuccess(false), 2000)
+              } else {
+                setRedeemError(result.message)
+                setTimeout(() => setRedeemError(""), 3000)
+              }
+            }}
+            className="shrink-0 rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] px-5 py-3 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]"
+          >
+            兑换
+          </button>
+        </div>
+        {redeemError && (
+          <p className="mt-2 text-xs text-red-500">{redeemError}</p>
+        )}
+      </div>
+
       {/* 积分记录卡片 */}
       <div className="mx-4 mt-4 overflow-hidden rounded-2xl bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-gray-50 px-5 py-4">
@@ -197,6 +284,20 @@ export default function PointsPage() {
       {/* 规则说明弹窗 */}
       {showRulesModal && (
         <PointsRulesModal onClose={() => setShowRulesModal(false)} />
+      )}
+
+      {/* 兑换成功弹窗 */}
+      {showRedeemSuccess && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50">
+          <div className="mx-4 w-full max-w-sm rounded-2xl bg-white p-6 text-center">
+            <div className="mb-3 text-4xl">🎉</div>
+            <h3 className="text-lg font-semibold text-gray-900">兑换成功！</h3>
+            <p className="mt-2 text-sm text-gray-500">
+              获得 30 积分，对方将获得 100 积分
+            </p>
+            <p className="mt-1 text-xs text-gray-400">（演示版未模拟对方积分）</p>
+          </div>
+        </div>
       )}
     </div>
   )

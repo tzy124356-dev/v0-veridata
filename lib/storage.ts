@@ -54,11 +54,19 @@ export interface PointRecord {
   createdAt: string
 }
 
+export interface RedeemedCode {
+  code: string
+  redeemedAt: string
+  pointsGained: number
+}
+
 const FAVORITES_KEY = "veridata_favorites"
 const HISTORY_KEY = "veridata_history"
 const FEEDBACKS_KEY = "veridata_feedbacks"
 const POINTS_KEY = "user_points"
 const POINTS_RECORDS_KEY = "veridata_point_records"
+const REDEEMED_CODES_KEY = "redeemed_codes"
+const USER_INVITE_CODE_KEY = "user_invite_code"
 
 // ============ Favorites ============
 
@@ -400,4 +408,71 @@ export function addPointRecord(record: PointRecord): void {
 export function clearPointRecords(): void {
   if (typeof window === "undefined") return
   localStorage.removeItem(POINTS_RECORDS_KEY)
+}
+
+// ============ Redeem Codes ============
+
+export function getUserInviteCode(): string {
+  if (typeof window === "undefined") return ""
+  return localStorage.getItem(USER_INVITE_CODE_KEY) || ""
+}
+
+export function getRedeemedCodes(): RedeemedCode[] {
+  if (typeof window === "undefined") return []
+  try {
+    const data = localStorage.getItem(REDEEMED_CODES_KEY)
+    if (data) {
+      return JSON.parse(data)
+    }
+  } catch {}
+  return []
+}
+
+export function hasRedeemed(code: string): boolean {
+  const codes = getRedeemedCodes()
+  return codes.some(c => c.code.toUpperCase() === code.toUpperCase())
+}
+
+export function redeemCode(code: string): { success: boolean; message: string; pointsGained?: number } {
+  if (typeof window === "undefined") {
+    return { success: false, message: "浏览器环境不可用" }
+  }
+  
+  const trimmedCode = code.trim().toUpperCase()
+  
+  // 校验 1: 输入为空
+  if (!trimmedCode) {
+    return { success: false, message: "请输入兑换码" }
+  }
+  
+  // 校验 2: 格式不符 YJ+5位数字
+  const codePattern = /^YJ\d{5}$/
+  if (!codePattern.test(trimmedCode)) {
+    return { success: false, message: "兑换码格式错误" }
+  }
+  
+  // 校验 3: 不能兑换自己的码
+  const myCode = getUserInviteCode()
+  if (myCode && trimmedCode === myCode.toUpperCase()) {
+    return { success: false, message: "不能兑换自己的兑换码" }
+  }
+  
+  // 校验 4: 已经兑换过
+  if (hasRedeemed(trimmedCode)) {
+    return { success: false, message: "你已经兑换过这个兑换码了" }
+  }
+  
+  // 全部通过，执行兑换
+  const redeemedCodes = getRedeemedCodes()
+  redeemedCodes.push({
+    code: trimmedCode,
+    redeemedAt: new Date().toISOString(),
+    pointsGained: 30,
+  })
+  localStorage.setItem(REDEEMED_CODES_KEY, JSON.stringify(redeemedCodes))
+  
+  // 添加积分
+  addPoints(30, "gift", `兑换好友码 ${trimmedCode}`)
+  
+  return { success: true, message: "兑换成功", pointsGained: 30 }
 }
