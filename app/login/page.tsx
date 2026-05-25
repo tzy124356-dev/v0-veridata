@@ -30,7 +30,7 @@ export default function LoginPage() {
       
       // 初始化积分（未购买会员）
       if (!localStorage.getItem("user_points")) {
-        localStorage.setItem("user_points", JSON.stringify({ free: 40, gift: 5, member: 0 }))
+        localStorage.setItem("user_points", JSON.stringify({ free: 5, gift: 0, member: 0 }))
       }
       
       // 生成邀请码
@@ -79,7 +79,7 @@ export default function LoginPage() {
       
       // 初始化积分（未购买会员）
       if (!localStorage.getItem("user_points")) {
-        localStorage.setItem("user_points", JSON.stringify({ free: 40, gift: 5, member: 0 }))
+        localStorage.setItem("user_points", JSON.stringify({ free: 5, gift: 0, member: 0 }))
       }
       
       // 生成邀请码

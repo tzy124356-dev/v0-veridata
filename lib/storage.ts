@@ -39,9 +39,26 @@ export interface FeedbackItem {
   createdAt: string
 }
 
+export interface PointsData {
+  free: number
+  gift: number
+  member: number
+}
+
+export interface PointRecord {
+  id: string
+  type: "add" | "deduct"
+  category: "free" | "gift" | "member"
+  title: string
+  amount: number
+  createdAt: string
+}
+
 const FAVORITES_KEY = "veridata_favorites"
 const HISTORY_KEY = "veridata_history"
 const FEEDBACKS_KEY = "veridata_feedbacks"
+const POINTS_KEY = "user_points"
+const POINTS_RECORDS_KEY = "veridata_point_records"
 
 // ============ Favorites ============
 
@@ -228,7 +245,7 @@ export function loadDemoHistory(): void {
           content: "医美注射类产品（如玻尿酸填充剂）在中国按第三类医疗器械管理，需要向国家药品监督管理局（NMPA）申请注册。",
           conclusion: "医美注射类产品（如玻尿酸填充剂）在中国按第三类医疗器械管理，需要向国家药品监督管理局（NMPA）申请注册。",
           reasoning: ["根据《医疗器械监督管理条例》第十三条，第三类医疗器械实行产品注册管理", "玻尿酸填充剂属于植入人体的高风险医疗器械"],
-          legalBasis: [{ title: "《医疗器械监督管理条例》", clause: "第十三条", content: "第三类医疗器械实行产品注册管理。", url: "https://www.nmpa.gov.cn" }]
+          legalBasis: [{ title: "《医疗器械监督管理条例��", clause: "第十三条", content: "第三类医疗器械实行产品注册管理。", url: "https://www.nmpa.gov.cn" }]
         }
       ]
     },
@@ -271,4 +288,116 @@ export function loadDemoHistory(): void {
     },
   ]
   localStorage.setItem(HISTORY_KEY, JSON.stringify(demoHistory))
+}
+
+// ============ Points ============
+
+export function getPoints(): PointsData {
+  if (typeof window === "undefined") return { free: 0, gift: 0, member: 0 }
+  try {
+    const data = localStorage.getItem(POINTS_KEY)
+    if (data) {
+      return JSON.parse(data)
+    }
+  } catch {}
+  return { free: 0, gift: 0, member: 0 }
+}
+
+export function setPoints(points: PointsData): void {
+  if (typeof window === "undefined") return
+  localStorage.setItem(POINTS_KEY, JSON.stringify(points))
+}
+
+export function getTotalPoints(): number {
+  const points = getPoints()
+  return points.free + points.gift + points.member
+}
+
+export function deductOnePoint(): { success: boolean; remaining: number; deductedFrom: "free" | "gift" | "member" | null } {
+  if (typeof window === "undefined") return { success: false, remaining: 0, deductedFrom: null }
+  
+  const points = getPoints()
+  const total = points.free + points.gift + points.member
+  
+  if (total <= 0) {
+    return { success: false, remaining: 0, deductedFrom: null }
+  }
+  
+  let deductedFrom: "free" | "gift" | "member" | null = null
+  
+  // 扣减顺序：免费 → 赠送 → 会员
+  if (points.free > 0) {
+    points.free -= 1
+    deductedFrom = "free"
+  } else if (points.gift > 0) {
+    points.gift -= 1
+    deductedFrom = "gift"
+  } else if (points.member > 0) {
+    points.member -= 1
+    deductedFrom = "member"
+  }
+  
+  setPoints(points)
+  
+  // 记录扣减
+  if (deductedFrom) {
+    addPointRecord({
+      id: `pr-${Date.now()}`,
+      type: "deduct",
+      category: deductedFrom,
+      title: "问答消耗",
+      amount: -1,
+      createdAt: new Date().toISOString(),
+    })
+  }
+  
+  const remaining = points.free + points.gift + points.member
+  return { success: true, remaining, deductedFrom }
+}
+
+export function addPoints(amount: number, category: "free" | "gift" | "member", title: string = "积分充值"): void {
+  if (typeof window === "undefined") return
+  
+  const points = getPoints()
+  points[category] += amount
+  setPoints(points)
+  
+  // 记录增加
+  addPointRecord({
+    id: `pr-${Date.now()}`,
+    type: "add",
+    category,
+    title,
+    amount,
+    createdAt: new Date().toISOString(),
+  })
+}
+
+// ============ Point Records ============
+
+export function getPointRecords(): PointRecord[] {
+  if (typeof window === "undefined") return []
+  try {
+    const data = localStorage.getItem(POINTS_RECORDS_KEY)
+    if (data) {
+      return JSON.parse(data)
+    }
+  } catch {}
+  return []
+}
+
+export function addPointRecord(record: PointRecord): void {
+  if (typeof window === "undefined") return
+  const records = getPointRecords()
+  records.unshift(record)
+  // 最多保留 20 条
+  if (records.length > 20) {
+    records.splice(20)
+  }
+  localStorage.setItem(POINTS_RECORDS_KEY, JSON.stringify(records))
+}
+
+export function clearPointRecords(): void {
+  if (typeof window === "undefined") return
+  localStorage.removeItem(POINTS_RECORDS_KEY)
 }

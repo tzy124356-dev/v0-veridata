@@ -21,6 +21,7 @@ import {
   Lightbulb,
   FolderOpen,
   Share2,
+  Zap,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -36,6 +37,10 @@ import {
   addFeedback,
   getHistoryById,
   getFavoriteById,
+  getPoints,
+  getTotalPoints,
+  deductOnePoint,
+  type PointsData,
 } from "@/lib/storage"
 
 // 场景标签数据
@@ -129,6 +134,12 @@ function ChatPageContent() {
   const [knowledgeSource, setKnowledgeSource] = useState<"official" | "myVault">("official")
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  
+  // 积分相关状态
+  const [currentPoints, setCurrentPoints] = useState<PointsData>({ free: 0, gift: 0, member: 0 })
+  const [showInsufficientPointsModal, setShowInsufficientPointsModal] = useState(false)
+  const [showLowPointsHint, setShowLowPointsHint] = useState(false)
+  const [lastDeductResult, setLastDeductResult] = useState<{ remaining: number } | null>(null)
 
   // 用户消息气泡颜色
   const bubbleColor = "bg-[#4284ff]"
@@ -193,6 +204,35 @@ function ChatPageContent() {
     scrollToBottom()
   }, [messages])
 
+  // 初始化积分并检查是否需要提示
+  useEffect(() => {
+    if (typeof window === "undefined" || isChecking) return
+    const points = getPoints()
+    setCurrentPoints(points)
+    const total = points.free + points.gift + points.member
+    
+    // 首次进入时，如果积分 <= 3，显示低积分提示
+    if (total <= 3 && !localStorage.getItem("low_points_hint_shown")) {
+      setShowLowPointsHint(true)
+      localStorage.setItem("low_points_hint_shown", "true")
+    }
+  }, [isChecking])
+
+  // 刷新积分（用于 visibilitychange）
+  const refreshPoints = () => {
+    if (typeof window !== "undefined") {
+      setCurrentPoints(getPoints())
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        refreshPoints()
+      }
+    })
+  }, [])
+
   // Auth guard loading state - must be after all hooks
   if (isChecking) {
     return (
@@ -205,6 +245,13 @@ function ChatPageContent() {
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return
 
+    // 检查积分是否足够
+    const total = getTotalPoints()
+    if (total <= 0) {
+      setShowInsufficientPointsModal(true)
+      return
+    }
+
     const userQuestion = inputValue.trim()
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -216,6 +263,11 @@ function ChatPageContent() {
     setMessages((prev) => [...prev, userMessage])
     setInputValue("")
     setIsLoading(true)
+
+    // 扣减积分
+    const deductResult = deductOnePoint()
+    setLastDeductResult(deductResult)
+    setCurrentPoints(getPoints())
 
     // 模拟AI响应
     setTimeout(() => {
@@ -337,7 +389,19 @@ function ChatVersionA({
         >
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </button>
-        <span className="text-sm font-medium text-gray-700">Veridata</span>
+        
+        {/* 中间：积分角标 + 标题 */}
+        <div className="flex items-center gap-2">
+          <Link 
+            href="/points" 
+            className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-600 transition-colors hover:bg-amber-100"
+          >
+            <Zap className="h-3 w-3" />
+            <span>{currentPoints.free + currentPoints.gift + currentPoints.member}</span>
+          </Link>
+          <span className="text-sm font-medium text-gray-700">Veridata</span>
+        </div>
+        
         <Link 
           href="/history" 
           className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-gray-100"
@@ -413,11 +477,72 @@ function ChatVersionA({
               <Send className="h-4 w-4" />
             </button>
           </div>
-          <p className="mt-2 text-center text-xs text-gray-400">
-            本内容由 Veridata AI 基于知识库生成，仅供专业参考
-          </p>
+          <div className="mt-2 flex items-center justify-center gap-2">
+            <p className="text-center text-xs text-gray-400">
+              本内容由 Veridata AI 基于知识库生成，仅供专业参考
+            </p>
+            {lastDeductResult && (
+              <span className="text-xs text-amber-500">
+                · 剩余 {lastDeductResult.remaining} 积分
+              </span>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* 低积分提示 */}
+      {showLowPointsHint && (
+        <div className="fixed bottom-24 left-4 right-4 z-50 mx-auto max-w-sm rounded-xl bg-amber-50 p-3 shadow-lg">
+          <div className="flex items-start gap-2">
+            <Zap className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+            <div className="flex-1">
+              <p className="text-sm text-amber-700">
+                演示积分已不多，可在「我的-升级」补充
+              </p>
+            </div>
+            <button 
+              onClick={() => setShowLowPointsHint(false)}
+              className="text-amber-400 hover:text-amber-600"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 积分不足弹窗 */}
+      {showInsufficientPointsModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50">
+          <div className="mx-4 w-full max-w-sm overflow-hidden rounded-2xl bg-white">
+            <div className="p-6 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
+                <Zap className="h-6 w-6 text-amber-500" />
+              </div>
+              <h3 className="text-base font-semibold text-gray-900">
+                积分不足
+              </h3>
+              <p className="mt-2 text-sm text-gray-500">
+                您的积分已用完，无法继续提问。升级会员可获得更多积分。
+              </p>
+            </div>
+            <div className="flex border-t border-gray-100">
+              <button
+                onClick={() => setShowInsufficientPointsModal(false)}
+                className="flex-1 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50"
+              >
+                取消
+              </button>
+              <div className="w-px bg-gray-100" />
+              <Link
+                href="/upgrade"
+                className="flex-1 py-3 text-center text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50"
+              >
+                立即升级
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 首次反馈弹窗 */}
       {showFirstFeedback && (

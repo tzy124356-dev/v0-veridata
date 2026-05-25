@@ -5,48 +5,35 @@ import { useRouter } from "next/navigation"
 import { ArrowLeft, HelpCircle, ChevronRight, CreditCard, Gift, BookOpen, MessageSquare, X, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuthGuard } from "@/hooks/use-auth-guard"
-
-interface PointsData {
-  free: number
-  gift: number
-  member: number
-}
-
-interface PointRecord {
-  id: number
-  icon: React.ElementType
-  iconBg: string
-  iconColor: string
-  title: string
-  time: string
-  amount: number
-}
-
-const mockRecords: PointRecord[] = [
-  { id: 1, icon: CreditCard, iconBg: "bg-blue-50", iconColor: "text-blue-600", title: "轻度版续费", time: "2024-01-15 14:30", amount: 50 },
-  { id: 2, icon: Gift, iconBg: "bg-orange-50", iconColor: "text-orange-600", title: "邀请新用户注册", time: "2024-01-14 09:20", amount: 100 },
-  { id: 3, icon: BookOpen, iconBg: "bg-violet-50", iconColor: "text-violet-600", title: "补充知识库被采纳", time: "2024-01-12 16:00", amount: 10 },
-  { id: 4, icon: MessageSquare, iconBg: "bg-gray-50", iconColor: "text-gray-400", title: "问答消耗", time: "2024-01-12 11:30", amount: -1 },
-  { id: 5, icon: MessageSquare, iconBg: "bg-gray-50", iconColor: "text-gray-400", title: "问答消耗", time: "2024-01-12 11:00", amount: -1 },
-]
+import { getPoints, getPointRecords, type PointsData, type PointRecord } from "@/lib/storage"
 
 export default function PointsPage() {
   const { isChecking } = useAuthGuard()
   const router = useRouter()
-  const [points, setPoints] = useState<PointsData>({ free: 40, gift: 5, member: 50 })
+  const [points, setPoints] = useState<PointsData>({ free: 0, gift: 0, member: 0 })
+  const [records, setRecords] = useState<PointRecord[]>([])
   const [showRulesModal, setShowRulesModal] = useState(false)
 
-  useEffect(() => {
+  const refreshData = () => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("user_points")
-      if (stored) {
-        setPoints(JSON.parse(stored))
-      } else {
-        const initial = { free: 40, gift: 5, member: 50 }
-        localStorage.setItem("user_points", JSON.stringify(initial))
-        setPoints(initial)
+      setPoints(getPoints())
+      setRecords(getPointRecords())
+    }
+  }
+
+  useEffect(() => {
+    refreshData()
+  }, [])
+
+  // 页面可见时刷新数据
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        refreshData()
       }
     }
+    document.addEventListener("visibilitychange", handleVisibility)
+    return () => document.removeEventListener("visibilitychange", handleVisibility)
   }, [])
 
   const total = points.free + points.gift + points.member
@@ -149,38 +136,50 @@ export default function PointsPage() {
       <div className="mx-4 mt-4 overflow-hidden rounded-2xl bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-gray-50 px-5 py-4">
           <span className="font-semibold text-gray-900">积分记录</span>
-          <button
-            onClick={() => alert("即将上线")}
-            className="flex items-center text-xs text-gray-400"
-          >
-            查看全部
-            <ChevronRight className="h-4 w-4" />
-          </button>
+          <span className="text-xs text-gray-400">最近 20 条</span>
         </div>
         <div>
-          {mockRecords.map((record, index) => (
-            <div
-              key={record.id}
-              className={cn(
-                "flex items-center gap-3 px-5 py-3",
-                index !== mockRecords.length - 1 && "border-b border-gray-50"
-              )}
-            >
-              <div className={cn("flex h-9 w-9 items-center justify-center rounded-full", record.iconBg)}>
-                <record.icon className={cn("h-4 w-4", record.iconColor)} />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm text-gray-900">{record.title}</p>
-                <p className="text-xs text-gray-400">{record.time}</p>
-              </div>
-              <span className={cn(
-                "font-semibold",
-                record.amount > 0 ? "text-green-600" : "text-gray-400"
-              )}>
-                {record.amount > 0 ? `+${record.amount}` : record.amount}
-              </span>
+          {records.length === 0 ? (
+            <div className="py-8 text-center text-sm text-gray-400">
+              还没有积分记录
             </div>
-          ))}
+          ) : (
+            records.map((record, index) => {
+              const isDeduct = record.type === "deduct"
+              const Icon = isDeduct ? MessageSquare : (record.category === "gift" ? Gift : (record.category === "member" ? CreditCard : BookOpen))
+              const iconBg = isDeduct ? "bg-gray-50" : (record.category === "gift" ? "bg-orange-50" : (record.category === "member" ? "bg-blue-50" : "bg-violet-50"))
+              const iconColor = isDeduct ? "text-gray-400" : (record.category === "gift" ? "text-orange-600" : (record.category === "member" ? "text-blue-600" : "text-violet-600"))
+              
+              const formatTime = (isoTime: string) => {
+                const date = new Date(isoTime)
+                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+              }
+              
+              return (
+                <div
+                  key={record.id}
+                  className={cn(
+                    "flex items-center gap-3 px-5 py-3",
+                    index !== records.length - 1 && "border-b border-gray-50"
+                  )}
+                >
+                  <div className={cn("flex h-9 w-9 items-center justify-center rounded-full", iconBg)}>
+                    <Icon className={cn("h-4 w-4", iconColor)} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-900">{record.title}</p>
+                    <p className="text-xs text-gray-400">{formatTime(record.createdAt)}</p>
+                  </div>
+                  <span className={cn(
+                    "font-semibold",
+                    record.amount > 0 ? "text-green-600" : "text-gray-400"
+                  )}>
+                    {record.amount > 0 ? `+${record.amount}` : record.amount}
+                  </span>
+                </div>
+              )
+            })
+          )}
         </div>
       </div>
 

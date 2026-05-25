@@ -18,6 +18,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuthGuard } from "@/hooks/use-auth-guard"
+import { addPoints } from "@/lib/storage"
 
 // 套餐数据
 const plans = [
@@ -81,16 +82,10 @@ function UpgradeVersionA() {
   const handleSubscribe = () => {
     if (!selectedPlan || selectedPlan === "free") return
 
-    // 更新 localStorage 积分
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("user_points")
-      const points = stored ? JSON.parse(stored) : { free: 40, gift: 5, member: 0 }
-      
-      // lite +300, pro +1000
-      const addPoints = selectedPlan === "lite" ? 300 : 1000
-      points.member += addPoints
-      localStorage.setItem("user_points", JSON.stringify(points))
-    }
+    // 使用 storage 函数添加积分
+    const pointsToAdd = selectedPlan === "lite" ? 300 : 1000
+    const planName = selectedPlan === "lite" ? "轻度版订阅" : "专业版订阅"
+    addPoints(pointsToAdd, "member", planName)
 
     alert("订阅成功，积分已到账")
     setTimeout(() => {
