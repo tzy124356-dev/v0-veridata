@@ -78,12 +78,14 @@ const mockAIResponse: Omit<Message, "id" | "timestamp"> = {
       clause: "第四条",
       content:
         "医疗器械注册是指医疗器械注册申请人依照法定程序和要求提出医疗器械注册申请，药品监督管理部门依据法律法规，对其安全性、有效性研究及其结果进行系统评价。",
+      url: "https://www.nmpa.gov.cn",
     },
     {
       title: "《医疗器械分类目录》",
       clause: "整形及普通外科植入物-13",
       content:
         "注射用交联透明质酸钠凝胶属于13-09-02类别，管理类别为III类。",
+      url: "https://www.nmpa.gov.cn",
     },
   ],
   reasoning:
@@ -368,7 +370,7 @@ function ChatPageContent() {
         bubbleColor={bubbleColor}
       />
 
-      {/* 知识库范围���������窗 */}
+      {/* 知识库范围�����������窗 */}
       {showKnowledgeModal && (
         <KnowledgeModal onClose={() => setShowKnowledgeModal(false)} />
       )}
@@ -561,7 +563,7 @@ function EmptyStateA({
           )}
         >
           <FileText className="h-4 w-4" />
-          官方知���库
+          官���知���库
         </button>
         <button
           onClick={() => setKnowledgeSource("myVault")}
