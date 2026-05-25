@@ -140,7 +140,7 @@ function EmptyState({ onLoadDemo }: { onLoadDemo: () => void }) {
       <div className="flex flex-col gap-3">
         <Link
           href="/chat"
-          className="rounded-xl bg-gradient-to-r from-[#1e40af] to-[#2563eb] px-6 py-3 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-95"
+          className="rounded-xl bg-gradient-to-r from-[#1e40af] to-[#2563eb] px-6 py-3 text-center text-sm font-medium text-white transition-all hover:opacity-90 active:scale-95"
         >
           去提问
         </Link>
