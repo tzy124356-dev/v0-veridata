@@ -10,6 +10,8 @@ import {
   Mail,
   HelpCircle,
   Sparkles,
+  FileText,
+  Clock,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { HelpFeedbackModal } from "@/components/help-feedback-modal"
@@ -79,6 +81,12 @@ export default function HelpPage() {
   const [expandedCategory, setExpandedCategory] = useState<string | null>("usage")
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
+  const [showDevelopingToast, setShowDevelopingToast] = useState(false)
+
+  const handleContactService = () => {
+    setShowDevelopingToast(true)
+    setTimeout(() => setShowDevelopingToast(false), 1000)
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
@@ -223,6 +231,15 @@ export default function HelpPage() {
       {/* 反馈弹窗 */}
       {showFeedbackModal && (
         <HelpFeedbackModal onClose={() => setShowFeedbackModal(false)} />
+      )}
+
+      {/* 功能开发中提示 */}
+      {showDevelopingToast && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center">
+          <div className="rounded-xl bg-gray-800/90 px-6 py-3 text-sm text-white shadow-lg">
+            该功能正在开发中
+          </div>
+        </div>
       )}
     </div>
   )
