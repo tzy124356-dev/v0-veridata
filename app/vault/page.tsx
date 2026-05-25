@@ -17,6 +17,7 @@ import {
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { FeedbackFab } from "@/components/feedback-fab"
+import { useAuthGuard } from "@/hooks/use-auth-guard"
 
 // 文件状态类型
 type FileStatus = "uploading" | "processing" | "ready"
@@ -58,6 +59,7 @@ const mockFiles: VaultFile[] = [
 ]
 
 export default function VaultPage() {
+  const { isChecking } = useAuthGuard()
   const [files, setFiles] = useState<VaultFile[]>([])
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -78,6 +80,14 @@ export default function VaultPage() {
     return acc
   }, 0)
   const totalStorage = 5 // GB
+
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files

@@ -9,9 +9,11 @@ import {
   BookOpen,
   Check,
   CheckCheck,
+  Loader2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { useAuthGuard } from "@/hooks/use-auth-guard"
 
 // 通知类型
 type NotificationType = "all" | "feedback" | "points" | "update"
@@ -60,6 +62,7 @@ const tabs = [
 ]
 
 export default function NotificationsPage() {
+  const { isChecking } = useAuthGuard()
   const [activeTab, setActiveTab] = useState<NotificationType>("all")
   const [notifications, setNotifications] = useState(mockNotifications)
 
@@ -77,6 +80,14 @@ export default function NotificationsPage() {
   const handleMarkRead = (id: number) => {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+    )
+  }
+
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
     )
   }
 

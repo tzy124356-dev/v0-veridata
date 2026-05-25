@@ -10,6 +10,7 @@ import {
   Bell,
   HelpCircle,
   Search,
+  Loader2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -17,6 +18,7 @@ import Image from "next/image"
 import { IdentityModal } from "@/components/identity-modal"
 import { FeedbackFab } from "@/components/feedback-fab"
 import { writeUserIdentity } from "@/lib/identity-options"
+import { useAuthGuard } from "@/hooks/use-auth-guard"
 
 // 底部导航Tab类型
 type TabType = "chat" | "vault" | "profile"
@@ -50,6 +52,7 @@ const scenarioGuides = [
 ]
 
 export default function HomePage() {
+  const { isChecking } = useAuthGuard()
   const [showIdentityModal, setShowIdentityModal] = useState(false)
 
   // 首次访问自动弹出身份选择（仅弹一次）
@@ -73,6 +76,14 @@ export default function HomePage() {
     if (typeof window !== "undefined") {
       localStorage.setItem("identity_modal_shown", "true")
     }
+  }
+
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
   }
 
   return (

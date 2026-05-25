@@ -11,9 +11,11 @@ import {
   FileText,
   Check,
   ChevronRight,
+  Loader2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { useAuthGuard } from "@/hooks/use-auth-guard"
 
 // 模拟收藏数据
 const mockFavorites = [
@@ -44,6 +46,7 @@ const mockFavorites = [
 ]
 
 export default function FavoritesPage() {
+  const { isChecking } = useAuthGuard()
   const [searchQuery, setSearchQuery] = useState("")
   const [favorites, setFavorites] = useState(mockFavorites)
 
@@ -58,6 +61,14 @@ export default function FavoritesPage() {
   }
 
   const isEmpty = favorites.length === 0
+
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import {
   User,
   ChevronRight,
@@ -17,6 +18,8 @@ import {
   Copy,
   Sparkles,
   Bell,
+  LogOut,
+  Loader2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -29,6 +32,7 @@ import {
   getFieldLabels,
   UserIdentity,
 } from "@/lib/identity-options"
+import { useAuthGuard, clearAuthStorage } from "@/hooks/use-auth-guard"
 
 // 用户数据统计
 const userStats = {
@@ -38,7 +42,23 @@ const userStats = {
 }
 
 export default function ProfilePage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const { isChecking } = useAuthGuard()
+  const router = useRouter()
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
+
+  const handleLogout = () => {
+    clearAuthStorage()
+    setShowLogoutModal(false)
+    router.replace("/login")
+  }
+
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#f0f7ff] to-white">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#f0f7ff] to-white">
@@ -69,7 +89,7 @@ export default function ProfilePage() {
 
       {/* 内容区域 */}
       <main className="flex-1 overflow-y-auto px-5 pt-4 pb-20 scrollbar-hide">
-        <ProfileContent isLoggedIn={isLoggedIn} onLogout={() => setIsLoggedIn(false)} />
+        <ProfileContent onLogout={() => setShowLogoutModal(true)} />
       </main>
 
       {/* 悬浮反馈按钮 */}
@@ -77,16 +97,48 @@ export default function ProfilePage() {
 
       {/* 底部导航 */}
       <BottomNavigation activeTab="profile" />
+
+      {/* 退出登录确认弹窗 */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50">
+          <div className="mx-4 w-full max-w-sm overflow-hidden rounded-2xl bg-white">
+            <div className="p-6 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+                <LogOut className="h-6 w-6 text-red-500" />
+              </div>
+              <h3 className="text-base font-semibold text-gray-900">
+                退出登录
+              </h3>
+              <p className="mt-2 text-sm text-gray-500">
+                确定要退出当前账号吗？
+              </p>
+            </div>
+            <div className="flex border-t border-gray-100">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                className="flex-1 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50"
+              >
+                取消
+              </button>
+              <div className="w-px bg-gray-100" />
+              <button
+                onClick={handleLogout}
+                className="flex-1 py-3 text-sm font-medium text-red-500 transition-colors hover:bg-red-50"
+              >
+                退出
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
 // 简洁卡片式 - 用户卡片 + 精简菜单 + 大按钮退出
 function ProfileContent({
-  isLoggedIn,
   onLogout,
 }: {
-  isLoggedIn: boolean
   onLogout: () => void
 }) {
   const [totalPoints, setTotalPoints] = useState(95)
@@ -152,8 +204,7 @@ function ProfileContent({
   return (
     <>
       {/* 用户信息卡片 */}
-      {isLoggedIn ? (
-        <div className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
+      <div className="mb-4 rounded-2xl bg-white p-5 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
               <User className="h-7 w-7 text-white" />
@@ -239,47 +290,29 @@ function ProfileContent({
             </div>
           </div>
         </div>
-      ) : (
-        <Link
-          href="/login"
-          className="mb-4 flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm"
-        >
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
-            <User className="h-7 w-7 text-gray-400" />
-          </div>
-          <div className="flex-1">
-            <h2 className="mb-1 text-base font-semibold text-gray-900">点击登录</h2>
-            <p className="text-xs text-gray-500">登录后享受更多功能</p>
-          </div>
-          <ChevronRight className="h-5 w-5 text-gray-400" />
-        </Link>
-      )}
 
       {/* 会员信息 */}
-      {isLoggedIn && (
-        <Link
-          href="/upgrade"
-          className="mb-3 flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm transition-colors hover:bg-gray-50"
-        >
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
-              <Crown className="h-4 w-4 text-amber-500" />
-            </div>
-            <span className="text-sm text-gray-900">会员信息</span>
+      <Link
+        href="/upgrade"
+        className="mb-3 flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm transition-colors hover:bg-gray-50"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50">
+            <Crown className="h-4 w-4 text-amber-500" />
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-amber-600">轻度版</span>
-            <ChevronRight className="h-4 w-4 text-gray-300" />
-          </div>
-        </Link>
-      )}
+          <span className="text-sm text-gray-900">会员信息</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-amber-600">轻度版</span>
+          <ChevronRight className="h-4 w-4 text-gray-300" />
+        </div>
+      </Link>
 
       {/* 我的积分 */}
-      {isLoggedIn && (
-        <Link
-          href="/points"
-          className="mb-3 flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm transition-colors hover:bg-gray-50"
-        >
+      <Link
+        href="/points"
+        className="mb-3 flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm transition-colors hover:bg-gray-50"
+      >
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50">
               <Coins className="h-4 w-4 text-violet-500" />
@@ -346,14 +379,12 @@ function ProfileContent({
       </div>
 
       {/* 退出登录 */}
-      {isLoggedIn && (
-        <button
-          onClick={onLogout}
-          className="w-full rounded-2xl bg-white py-3.5 text-sm text-gray-400 shadow-sm transition-colors hover:text-red-500"
-        >
-          退出登录
-        </button>
-      )}
+      <button
+        onClick={onLogout}
+        className="w-full rounded-2xl bg-white py-3.5 text-sm text-gray-400 shadow-sm transition-colors hover:text-red-500"
+      >
+        退出登录
+      </button>
 
       <p className="mt-6 text-center text-xs text-gray-300">v1.0.0</p>
 

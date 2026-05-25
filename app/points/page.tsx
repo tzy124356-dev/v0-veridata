@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, HelpCircle, ChevronRight, CreditCard, Gift, BookOpen, MessageSquare, X } from "lucide-react"
+import { ArrowLeft, HelpCircle, ChevronRight, CreditCard, Gift, BookOpen, MessageSquare, X, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useAuthGuard } from "@/hooks/use-auth-guard"
 
 interface PointsData {
   free: number
@@ -30,6 +31,7 @@ const mockRecords: PointRecord[] = [
 ]
 
 export default function PointsPage() {
+  const { isChecking } = useAuthGuard()
   const router = useRouter()
   const [points, setPoints] = useState<PointsData>({ free: 40, gift: 5, member: 50 })
   const [showRulesModal, setShowRulesModal] = useState(false)
@@ -48,6 +50,14 @@ export default function PointsPage() {
   }, [])
 
   const total = points.free + points.gift + points.member
+
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f8fafc]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[#f8fafc] pb-24">

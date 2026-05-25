@@ -14,8 +14,10 @@ import {
   HardDrive,
   Star,
   Info,
+  Loader2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useAuthGuard } from "@/hooks/use-auth-guard"
 
 // 套餐数据
 const plans = [
@@ -52,6 +54,16 @@ const plans = [
 ]
 
 export default function UpgradePage() {
+  const { isChecking } = useAuthGuard()
+  
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#f0f7ff] to-white">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f0f7ff] to-white">
       <UpgradeVersionA />

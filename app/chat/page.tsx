@@ -27,6 +27,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ShareCardModal } from "@/components/share-card-modal"
 import { useError } from "@/components/error-states"
+import { useAuthGuard } from "@/hooks/use-auth-guard"
 
 // 场景标签数据
 const scenarioTags = [
@@ -273,6 +274,7 @@ const mockHistoryMessages: Record<string, Message[]> = {
 }
 
 function ChatPageContent() {
+  const { isChecking } = useAuthGuard()
   const searchParams = useSearchParams()
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState("")
@@ -285,6 +287,15 @@ function ChatPageContent() {
 
   // 用户消息气泡颜色
   const bubbleColor = "bg-[#4284ff]"
+
+  // Auth guard loading state
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   // 处理URL中的预设问题、知识库来源、历史记录和收藏
   useEffect(() => {
@@ -777,7 +788,7 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
         </div>
       )}
 
-      {/* 反馈弹窗 */}
+      {/* 反馈���窗 */}
       {showFeedbackModal && (
         <FeedbackModal onClose={() => setShowFeedbackModal(false)} />
       )}

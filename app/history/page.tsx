@@ -8,9 +8,11 @@ import {
   Trash2,
   Clock,
   ChevronRight,
+  Loader2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { useAuthGuard } from "@/hooks/use-auth-guard"
 
 // 模拟历史数据
 const mockHistory = [
@@ -47,6 +49,7 @@ const mockHistory = [
 ]
 
 export default function HistoryPage() {
+  const { isChecking } = useAuthGuard()
   const [searchQuery, setSearchQuery] = useState("")
   const [history, setHistory] = useState(mockHistory)
 
@@ -59,6 +62,14 @@ export default function HistoryPage() {
   }
 
   const isEmpty = history.length === 0
+
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

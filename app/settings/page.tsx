@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
   ArrowLeft,
   ChevronRight,
@@ -11,10 +12,14 @@ import {
   Info,
   FileText,
   Database,
+  Loader2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useAuthGuard, clearAuthStorage } from "@/hooks/use-auth-guard"
 
 export default function SettingsPage() {
+  const { isChecking } = useAuthGuard()
+  const router = useRouter()
   const [showClearCacheModal, setShowClearCacheModal] = useState(false)
   const [showLogoutModal, setShowLogoutModal] = useState(false)
   const [cacheCleared, setCacheCleared] = useState(false)
@@ -66,9 +71,17 @@ export default function SettingsPage() {
   }
 
   const handleLogout = () => {
-    // TODO: 实现退出登录逻辑
+    clearAuthStorage()
     setShowLogoutModal(false)
-    window.location.href = "/profile"
+    router.replace("/login")
+  }
+
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#f0f7ff] to-white">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
   }
 
   return (
