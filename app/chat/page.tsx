@@ -370,7 +370,7 @@ function ChatPageContent() {
         bubbleColor={bubbleColor}
       />
 
-      {/* 知识库范围�����������窗 */}
+      {/* 知识库范围弹窗 */}
       {showKnowledgeModal && (
         <KnowledgeModal onClose={() => setShowKnowledgeModal(false)} />
       )}
@@ -563,7 +563,7 @@ function EmptyStateA({
           )}
         >
           <FileText className="h-4 w-4" />
-          官���知���库
+          官方知识库
         </button>
         <button
           onClick={() => setKnowledgeSource("myVault")}
@@ -955,7 +955,7 @@ function FirstFeedbackModal({ onClose }: { onClose: (feedback?: "good" | "bad") 
             <ThumbsUp className="h-6 w-6 text-[#1e40af]" />
           </div>
           <h3 className="text-base font-semibold text-gray-900">今天的回答对您有帮助吗？</h3>
-          <p className="mt-1 text-xs text-gray-400">你的反馈将帮助我们持续优化械研知识库</p>
+          <p className="mt-1 text-xs text-gray-400">你的反馈��帮助我们持续优化械研知识库</p>
         </div>
         <div className="mt-5 grid grid-cols-2 gap-3">
           <button
