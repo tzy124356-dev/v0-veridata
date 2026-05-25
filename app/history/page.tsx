@@ -215,25 +215,26 @@ function HistoryItem({
         <p className="mb-3 text-xs text-muted-foreground line-clamp-2">
           {item.preview}
         </p>
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Clock className="h-3.5 w-3.5" />
-          <span>{item.time}</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Clock className="h-3.5 w-3.5" />
+            <span>{item.time}</span>
+          </div>
+          {/* 删除按钮 */}
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              onDelete(item.id)
+            }}
+            className={cn(
+              "flex h-7 w-7 items-center justify-center rounded-full bg-destructive/10 text-destructive opacity-0 transition-all hover:bg-destructive/20 active:scale-95 group-hover:opacity-100"
+            )}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
         </div>
       </Link>
-
-      {/* 删除按钮 */}
-      <button
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          onDelete(item.id)
-        }}
-        className={cn(
-          "absolute right-3 bottom-3 flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10 text-destructive opacity-0 transition-all hover:bg-destructive/20 active:scale-95 group-hover:opacity-100"
-        )}
-      >
-        <Trash2 className="h-4 w-4" />
-      </button>
     </div>
   )
 }
