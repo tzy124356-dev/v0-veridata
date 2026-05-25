@@ -269,7 +269,7 @@ function ProfileContent({
                 className="flex items-center gap-1 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-[#1e40af] shadow-sm hover:shadow"
               >
                 <Copy className="h-3 w-3" />
-                {copied ? "已复制" : "复制链接"}
+                {copied ? "已复制" : "复制"}
               </button>
             </div>
           )}
