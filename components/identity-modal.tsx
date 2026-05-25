@@ -68,7 +68,7 @@ export function IdentityModal({
             <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
           </div>
 
-          <div className="px-6 pb-24">
+          <div className="px-6 pb-8">
             {/* 头部 */}
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">
@@ -96,8 +96,8 @@ export function IdentityModal({
                     className={cn(
                       "rounded-full px-4 py-2 text-sm transition-all active:scale-95",
                       position === option.id
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary/50 text-secondary-foreground hover:bg-secondary"
+                        ? "bg-[#1e40af] text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     )}
                   >
                     {option.label}
@@ -107,7 +107,7 @@ export function IdentityModal({
             </div>
 
             {/* 关注领域 - 多选 */}
-            <div className="mb-8">
+            <div className="mb-6">
               <h3 className="mb-3 text-sm font-medium text-foreground">
                 主要关注领域
                 <span className="ml-1 text-xs text-muted-foreground">（可多选）</span>
@@ -120,8 +120,8 @@ export function IdentityModal({
                     className={cn(
                       "flex items-center gap-1.5 rounded-full px-4 py-2 text-sm transition-all active:scale-95",
                       selectedFields.includes(option.id)
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-secondary/50 text-secondary-foreground hover:bg-secondary"
+                        ? "bg-[#1e40af] text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     )}
                   >
                     {selectedFields.includes(option.id) && (
@@ -140,8 +140,8 @@ export function IdentityModal({
               className={cn(
                 "w-full rounded-xl py-3.5 text-sm font-medium transition-all",
                 canSubmit
-                  ? "gradient-accent text-primary-foreground hover:opacity-90 active:scale-[0.98]"
-                  : "bg-secondary text-muted-foreground"
+                  ? "bg-gradient-to-r from-[#1e40af] to-[#3b82f6] text-white hover:opacity-90 active:scale-[0.98]"
+                  : "bg-gray-100 text-gray-400"
               )}
             >
               完成
@@ -150,7 +150,7 @@ export function IdentityModal({
             {/* 跳过提示 */}
             <button
               onClick={onClose}
-              className="mt-3 w-full py-2 text-sm text-muted-foreground hover:text-foreground"
+              className="mt-4 w-full py-2 text-center text-sm text-gray-400 hover:text-gray-600"
             >
               暂不填写，之后可在"我的"中修改
             </button>
