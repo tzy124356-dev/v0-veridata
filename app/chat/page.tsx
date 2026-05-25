@@ -29,6 +29,10 @@ import { useRouter } from "next/navigation"
 import { ShareCardModal } from "@/components/share-card-modal"
 import { useError } from "@/components/error-states"
 import { useAuthGuard } from "@/hooks/use-auth-guard"
+import { KnowledgeModal } from "@/components/knowledge-modal"
+import { FirstFeedbackModal } from "@/components/first-feedback-modal"
+import { AnswerFeedbackModal } from "@/components/answer-feedback-modal"
+import { InsufficientPointsModal, LowPointsHint } from "@/components/insufficient-points-modal"
 import { 
   isFavorited, 
   addFavorite, 
@@ -503,56 +507,12 @@ function ChatVersionA({
 
       {/* 低积分提示 */}
       {showLowPointsHint && (
-        <div className="fixed bottom-24 left-4 right-4 z-50 mx-auto max-w-sm rounded-xl bg-amber-50 p-3 shadow-lg">
-          <div className="flex items-start gap-2">
-            <Zap className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
-            <div className="flex-1">
-              <p className="text-sm text-amber-700">
-                演示积分已不多，可在「我的-升级」补充
-              </p>
-            </div>
-            <button 
-              onClick={() => setShowLowPointsHint(false)}
-              className="text-amber-400 hover:text-amber-600"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
+        <LowPointsHint onClose={() => setShowLowPointsHint(false)} />
       )}
 
       {/* 积分不足弹窗 */}
       {showInsufficientPointsModal && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50">
-          <div className="mx-4 w-full max-w-sm overflow-hidden rounded-2xl bg-white">
-            <div className="p-6 text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
-                <Zap className="h-6 w-6 text-amber-500" />
-              </div>
-              <h3 className="text-base font-semibold text-gray-900">
-                积分不足
-              </h3>
-              <p className="mt-2 text-sm text-gray-500">
-                您的积分已用完，无法继续提问。升级会员可获得更多积分。
-              </p>
-            </div>
-            <div className="flex border-t border-gray-100">
-              <button
-                onClick={() => setShowInsufficientPointsModal(false)}
-                className="flex-1 py-3 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-50"
-              >
-                取消
-              </button>
-              <div className="w-px bg-gray-100" />
-              <Link
-                href="/upgrade"
-                className="flex-1 py-3 text-center text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50"
-              >
-                立即升级
-              </Link>
-            </div>
-          </div>
-        </div>
+        <InsufficientPointsModal onClose={() => setShowInsufficientPointsModal(false)} />
       )}
 
       {/* 首次反馈弹窗 */}
@@ -842,7 +802,7 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
 
       {/* 反馈弹窗 */}
       {showFeedbackModal && (
-        <FeedbackModal 
+        <AnswerFeedbackModal 
           onClose={() => setShowFeedbackModal(false)} 
           onSubmit={handleFeedbackSubmit}
           relatedQuestion={relatedQuestion}
@@ -869,202 +829,6 @@ function LoadingIndicatorA() {
         <Loader2 className="h-4 w-4 animate-spin text-white" />
       </div>
       <span className="text-sm text-gray-500">正在检索知���库...</span>
-    </div>
-  )
-}
-
-// 反馈弹窗
-function FeedbackModal({ onClose, onSubmit, relatedQuestion }: { onClose: () => void; onSubmit?: (data: { type: string; content: string }) => void; relatedQuestion?: string }) {
-  const [selectedReasons, setSelectedReasons] = useState<string[]>([])
-  const [feedbackText, setFeedbackText] = useState("")
-  const [submitted, setSubmitted] = useState(false)
-
-  const feedbackReasons = [
-    "回答不准确",
-    "引用法规有误",
-    "内容不完整",
-    "与问题不相关",
-    "格式混乱",
-    "其他问题",
-  ]
-
-  const toggleReason = (reason: string) => {
-    setSelectedReasons(prev => 
-      prev.includes(reason) 
-        ? prev.filter(r => r !== reason)
-        : [...prev, reason]
-    )
-  }
-
-  const handleSubmit = () => {
-    // 调用 onSubmit 回调保存反馈
-    if (onSubmit) {
-      onSubmit({
-        type: selectedReasons.join(", ") || "其他",
-        content: feedbackText || selectedReasons.join(", "),
-      })
-    }
-    setSubmitted(true)
-    setTimeout(() => {
-      onClose()
-    }, 1000)
-  }
-
-  if (submitted) {
-    return (
-      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50">
-        <div className="rounded-2xl bg-white p-6 text-center">
-          <div className="mb-3 flex h-12 w-12 mx-auto items-center justify-center rounded-full bg-green-100">
-            <ThumbsUp className="h-6 w-6 text-green-600" />
-          </div>
-          <p className="text-sm text-gray-700">感谢您的反馈</p>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="fixed inset-0 z-[200] flex items-end justify-center bg-black/50">
-      <div className="w-full max-w-lg animate-in slide-in-from-bottom duration-300 rounded-t-3xl bg-white p-6" style={{ maxHeight: "80vh" }}>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">问题反馈</h2>
-          <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-gray-100">
-            <X className="h-5 w-5 text-gray-400" />
-          </button>
-        </div>
-
-        <p className="mb-3 text-sm text-gray-500">请选择问题类型（可多选）</p>
-        <div className="mb-4 flex flex-wrap gap-2">
-          {feedbackReasons.map((reason) => (
-            <button
-              key={reason}
-              onClick={() => toggleReason(reason)}
-              className={cn(
-                "rounded-full px-3 py-1.5 text-sm transition-all",
-                selectedReasons.includes(reason)
-                  ? "bg-[#2d61d3] text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              )}
-            >
-              {reason}
-            </button>
-          ))}
-        </div>
-
-        <p className="mb-2 text-sm text-gray-500">补充说明（可选）</p>
-        <textarea
-          value={feedbackText}
-          onChange={(e) => setFeedbackText(e.target.value)}
-          placeholder="请描述您遇到的具体问题..."
-          className="mb-4 w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700 placeholder:text-gray-400 focus:border-[#1e40af]/30 focus:outline-none focus:ring-2 focus:ring-[#1e40af]/10"
-          rows={3}
-        />
-
-        <button
-          onClick={handleSubmit}
-          disabled={selectedReasons.length === 0}
-          className={cn(
-            "w-full rounded-xl py-3 text-sm font-medium transition-all",
-            selectedReasons.length > 0
-              ? "bg-gradient-to-r from-[#1e40af] to-[#3b82f6] text-white"
-              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-          )}
-        >
-          提交反馈
-        </button>
-      </div>
-    </div>
-  )
-}
-
-// 知识库范围弹窗
-function KnowledgeModal({ onClose }: { onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50">
-      <div className="w-full max-w-lg animate-in slide-in-from-bottom duration-300 rounded-t-3xl bg-white p-6" style={{ maxHeight: "70vh" }}>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">当前械研知识库覆盖范围</h2>
-          <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-gray-100">
-            <X className="h-5 w-5 text-gray-400" />
-          </button>
-        </div>
-
-        <div className="mb-4 space-y-2">
-          <p className="text-sm text-gray-700">
-            当前聚焦<span className="font-medium text-[#1e40af]">医美针剂注册</span>领域
-          </p>
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded-xl bg-gray-50 p-3">
-              <p className="text-lg font-semibold text-gray-900">13大类</p>
-              <p className="text-xs text-gray-400">医疗器械分类</p>
-            </div>
-            <div className="rounded-xl bg-gray-50 p-3">
-              <p className="text-lg font-semibold text-gray-900">IVD</p>
-              <p className="text-xs text-gray-400">体外诊断试剂</p>
-            </div>
-            <div className="rounded-xl bg-gray-50 p-3">
-              <p className="text-lg font-semibold text-gray-900">128 份</p>
-              <p className="text-xs text-gray-400">法规规章</p>
-            </div>
-            <div className="rounded-xl bg-gray-50 p-3">
-              <p className="text-lg font-semibold text-gray-900">45 份</p>
-              <p className="text-xs text-gray-400">技术指导原则</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-6 rounded-xl bg-[#1e40af]/5 p-3">
-          <p className="text-xs leading-relaxed text-gray-600">
-            知识库持续扩充中，暂未覆盖的类目我们正在收录。如果找不到你需要的内容，欢迎通过反馈告诉我们，我们会优先补充。
-          </p>
-        </div>
-
-        <button
-          onClick={onClose}
-          className="w-full rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]"
-        >
-          我知道了，开始提问
-        </button>
-      </div>
-    </div>
-  )
-}
-
-// 首次反馈弹���
-function FirstFeedbackModal({ onClose }: { onClose: (feedback?: "good" | "bad") => void }) {
-  return (
-    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50">
-      <div className="w-full max-w-lg animate-in slide-in-from-bottom duration-300 rounded-t-3xl bg-white p-6">
-        <div className="mb-2 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#1e40af]/10">
-            <ThumbsUp className="h-6 w-6 text-[#1e40af]" />
-          </div>
-          <h3 className="text-base font-semibold text-gray-900">今天的回答对您有帮助吗？</h3>
-          <p className="mt-1 text-xs text-gray-400">你的反馈将帮助我们持续优化知识库</p>
-        </div>
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          <button
-            onClick={() => onClose("bad")}
-            className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white py-3 text-sm text-gray-600 hover:bg-gray-50"
-          >
-            <ThumbsDown className="h-4 w-4" />
-            还需改进
-          </button>
-          <button
-            onClick={() => onClose("good")}
-            className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3 text-sm font-medium text-white"
-          >
-            <ThumbsUp className="h-4 w-4" />
-            很有帮助
-          </button>
-        </div>
-        <button
-          onClick={() => onClose()}
-          className="mt-3 w-full py-2 text-center text-xs text-gray-400"
-        >
-          暂不评价
-        </button>
-      </div>
     </div>
   )
 }
