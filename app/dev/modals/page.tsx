@@ -16,6 +16,7 @@ import { ShareCardModal } from "@/components/share-card-modal"
 import { ClearCacheModal, LogoutModal } from "@/components/logout-modal"
 import { FeedbackModal } from "@/components/feedback-modal"
 import { HelpFeedbackModal } from "@/components/help-feedback-modal"
+import { KnowledgeUpdateModal } from "@/components/knowledge-update-modal"
 import { useError } from "@/components/error-states"
 
 // 弹窗配置
@@ -34,6 +35,12 @@ const modalGroups = [
         name: "知识库范围",
         englishId: "KnowledgeModal",
         trigger: "首次进 chat 页时弹一次",
+      },
+      {
+        id: "knowledgeUpdate",
+        name: "知识库更新通知",
+        englishId: "KnowledgeUpdateModal",
+        trigger: "官方知识库内容更新后弹出",
       },
       {
         id: "firstFeedback",
@@ -275,6 +282,10 @@ export default function DevModalsPage() {
 
       {activeModal === "knowledge" && (
         <KnowledgeModal onClose={closeModal} />
+      )}
+
+      {activeModal === "knowledgeUpdate" && (
+        <KnowledgeUpdateModal onClose={closeModal} />
       )}
 
       {activeModal === "firstFeedback" && (
