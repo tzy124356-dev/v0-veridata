@@ -4,67 +4,16 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { MessageCircle, Phone, CheckCircle2 } from "lucide-react"
+import { MessageCircle, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export default function LoginPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [loginType, setLoginType] = useState<"wechat" | "phone" | null>(null)
   const [loginSuccess, setLoginSuccess] = useState(false)
 
   // 模拟微信授权登录
   const handleWechatLogin = async () => {
-    setLoginType("wechat")
-    setIsLoading(true)
-
-    // 模拟授权过程
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    setLoginSuccess(true)
-    await new Promise((resolve) => setTimeout(resolve, 800))
-
-    // 设置登录状态和初始化数据
-    if (typeof window !== "undefined") {
-      localStorage.setItem("wechat_logged_in", "true")
-      
-      // 初始化积分（未购买会员）
-      if (!localStorage.getItem("user_points")) {
-        localStorage.setItem("user_points", JSON.stringify({ free: 5, gift: 0, member: 0 }))
-      }
-      
-      // 生成邀请码
-      if (!localStorage.getItem("user_invite_code")) {
-        const code = "YJ" + Math.floor(10000 + Math.random() * 90000)
-        localStorage.setItem("user_invite_code", code)
-      }
-
-      // 检测邀请关系，发放新人礼包
-      const invitedBy = localStorage.getItem("invited_by")
-      if (invitedBy) {
-        // 新用户获得 30 积分新人礼
-        const pointsRaw = localStorage.getItem("user_points")
-        if (pointsRaw) {
-          try {
-            const points = JSON.parse(pointsRaw)
-            points.gift = (points.gift ?? 0) + 30
-            localStorage.setItem("user_points", JSON.stringify(points))
-          } catch {}
-        }
-        // 记录邀请关系，invited_by 用过后清除
-        // 注：实际场景中，邀请人的 +100 积分由后端在新用户注册成功后异步发放
-        localStorage.setItem("invited_by_used", invitedBy)
-        localStorage.removeItem("invited_by")
-      }
-    }
-
-    // 跳转到首页
-    router.push("/")
-  }
-
-  // 模拟手机号授权登录
-  const handlePhoneLogin = async () => {
-    setLoginType("phone")
     setIsLoading(true)
 
     // 模拟授权过程
@@ -116,7 +65,7 @@ export default function LoginPage() {
       {/* 顶部品牌区域 */}
       <div className="flex flex-1 flex-col items-center justify-center px-6 pb-8">
         {/* Logo - 使用首页相同的 crab-logo.png */}
-        <div className="mb-6 flex h-28 w-28 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#3b82f6] p-4 shadow-lg">
+        <div className="mb-6 flex h-28 w-28 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#3b82f6] p-2 shadow-lg">
           <div className="relative h-full w-full">
             <Image
               src="/crab-logo.png"
@@ -143,13 +92,11 @@ export default function LoginPage() {
           onClick={handleWechatLogin}
           disabled={isLoading}
           className={cn(
-            "mb-3 flex w-full items-center justify-center gap-2 rounded-xl py-4 text-base font-medium transition-all active:scale-[0.98]",
-            isLoading && loginType === "wechat"
-              ? "bg-[#07c160] text-white"
-              : "bg-[#07c160] text-white hover:bg-[#06ad56]"
+            "mb-6 flex w-full items-center justify-center gap-2 rounded-xl py-4 text-base font-medium transition-all active:scale-[0.98]",
+            "bg-[#07c160] text-white hover:bg-[#06ad56]"
           )}
         >
-          {isLoading && loginType === "wechat" ? (
+          {isLoading ? (
             loginSuccess ? (
               <>
                 <CheckCircle2 className="h-5 w-5" />
@@ -165,37 +112,6 @@ export default function LoginPage() {
             <>
               <MessageCircle className="h-5 w-5" />
               微信一键登录
-            </>
-          )}
-        </button>
-
-        {/* 手机号授权登录按钮 */}
-        <button
-          onClick={handlePhoneLogin}
-          disabled={isLoading}
-          className={cn(
-            "mb-6 flex w-full items-center justify-center gap-2 rounded-xl border py-4 text-base font-medium transition-all active:scale-[0.98]",
-            isLoading && loginType === "phone"
-              ? "border-[#1e40af] bg-[#1e40af]/5 text-[#1e40af]"
-              : "border-gray-200 bg-white text-gray-700 hover:border-[#1e40af] hover:text-[#1e40af]"
-          )}
-        >
-          {isLoading && loginType === "phone" ? (
-            loginSuccess ? (
-              <>
-                <CheckCircle2 className="h-5 w-5 text-[#1e40af]" />
-                授权成功
-              </>
-            ) : (
-              <>
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#1e40af] border-t-transparent" />
-                正在授权...
-              </>
-            )
-          ) : (
-            <>
-              <Phone className="h-5 w-5" />
-              手机号一键登录
             </>
           )}
         </button>
