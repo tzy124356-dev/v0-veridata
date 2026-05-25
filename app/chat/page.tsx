@@ -368,7 +368,7 @@ function ChatPageContent() {
         bubbleColor={bubbleColor}
       />
 
-      {/* 知识库范围�������窗 */}
+      {/* 知识库范围���������窗 */}
       {showKnowledgeModal && (
         <KnowledgeModal onClose={() => setShowKnowledgeModal(false)} />
       )}
@@ -561,7 +561,7 @@ function EmptyStateA({
           )}
         >
           <FileText className="h-4 w-4" />
-          官方知识库
+          官方知���库
         </button>
         <button
           onClick={() => setKnowledgeSource("myVault")}
@@ -668,7 +668,12 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
                 <div className="mb-1 flex items-center justify-between">
                   <span className="text-sm font-medium text-gray-900">{basis.title}</span>
                   {basis.url && (
-                    <a href={basis.url} target="_blank" rel="noopener noreferrer" className="text-[#1e40af] hover:text-[#1e40af]/80">
+                    <a 
+                      href={basis.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-white text-[#1e40af] shadow-sm transition-colors hover:bg-gray-50"
+                    >
                       <ExternalLink className="h-3.5 w-3.5" />
                     </a>
                   )}
