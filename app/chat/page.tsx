@@ -368,7 +368,7 @@ function ChatPageContent() {
         bubbleColor={bubbleColor}
       />
 
-      {/* 知识库范围弹窗 */}
+      {/* 知识库范围���窗 */}
       {showKnowledgeModal && (
         <KnowledgeModal onClose={() => setShowKnowledgeModal(false)} />
       )}
@@ -649,7 +649,7 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
         <div className="rounded-2xl border border-[#1e40af]/10 bg-white p-4 shadow-sm">
           <div className="mb-2 flex items-center gap-2">
             <div className="h-1.5 w-1.5 rounded-full bg-[#1e40af]" />
-            <span className="text-xs font-medium text-[#1e40af]">结论</span>
+            <span className="text-xs font-medium text-[#1e40af]">综合研判</span>
           </div>
           <p className="text-sm leading-relaxed text-gray-700">{message.conclusion}</p>
         </div>
