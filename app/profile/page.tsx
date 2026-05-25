@@ -173,15 +173,23 @@ function ProfileContent({
     }
   }, [])
 
-  const handleCopyInviteCode = async () => {
+  const handleCopyInviteCode = () => {
     if (!inviteCode) return
+    // 使用 fallback 方式复制，避免 Clipboard API 权限问题
+    const textArea = document.createElement("textarea")
+    textArea.value = inviteCode
+    textArea.style.position = "fixed"
+    textArea.style.left = "-9999px"
+    document.body.appendChild(textArea)
+    textArea.select()
     try {
-      await navigator.clipboard.writeText(`${window.location.origin}/invite/${inviteCode}`)
+      document.execCommand("copy")
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
     } catch {
-      alert(`邀请链接：${window.location.origin}/invite/${inviteCode}`)
+      // 静默失败
     }
+    document.body.removeChild(textArea)
   }
 
   const handleIdentityUpdate = (data: UserIdentity) => {
