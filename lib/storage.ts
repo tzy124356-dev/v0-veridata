@@ -21,7 +21,7 @@ export interface HistoryItem {
     type: "user" | "assistant"
     content: string
     conclusion?: string
-    reasoning?: string[]
+    reasoning?: string
     legalBasis?: Array<{
       title: string
       clause: string
@@ -252,8 +252,8 @@ export function loadDemoHistory(): void {
           type: "assistant", 
           content: "医美注射类产品（如玻尿酸填充剂）在中国按第三类医疗器械管理，需要向国家药品监督管理局（NMPA）申请注册。",
           conclusion: "医美注射类产品（如玻尿酸填充剂）在中国按第三类医疗器械管理，需要向国家药品监督管理局（NMPA）申请注册。",
-          reasoning: ["根据《医疗器械监督管理条例》第十三条，第三类医疗器械实行产品注册管理", "玻尿酸填充剂属于植入人体的高风险医疗器械"],
-          legalBasis: [{ title: "《医疗器械监督管理条例��", clause: "第十三条", content: "第三类医疗器械实行产品注册管理。", url: "https://www.nmpa.gov.cn" }]
+          reasoning: "根据《医疗器械监督管理条例》第十三条，第三类医疗器械实行产品注册管理。玻尿酸填充剂属于植入人体的高风险医疗器械。",
+          legalBasis: [{ title: "《医疗器械监督管理条例》", clause: "第十三条", content: "第三类医疗器械实行产品注册管理。", url: "https://www.nmpa.gov.cn" }]
         }
       ]
     },
