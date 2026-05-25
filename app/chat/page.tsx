@@ -248,7 +248,7 @@ const mockHistoryMessages: Record<string, Message[]> = {
       legalBasis: [
         { title: "医疗器械临床评价技术指导原则", clause: "第四章", content: "临床评价应包括临床文献数据、临床经验数据和临床试验数据的系统分析。", url: "#" },
       ],
-      reasoning: "临床评价是证明医疗器械安全性和有效性的关键环节，评价方式和深度需与产品风险程度相匹配。",
+      reasoning: "临床评价是证明医疗器械安全性和有效性的关键环节，评价方式和深度需与产品���险程度相匹配。",
       timestamp: new Date("2024-01-14T09:20:30"),
     },
   ],
@@ -288,18 +288,13 @@ function ChatPageContent() {
   // 用户消息气泡颜色
   const bubbleColor = "bg-[#4284ff]"
 
-  // Auth guard loading state
-  if (isChecking) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    )
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
   // 处理URL中的预设问题、知识库来源、历史记录和收藏
   useEffect(() => {
-    if (hasInitialized) return
+    if (hasInitialized || isChecking) return
     const presetQuestion = searchParams.get("q")
     const source = searchParams.get("source")
     const historyId = searchParams.get("history")
@@ -329,15 +324,20 @@ function ChatPageContent() {
       setShowKnowledgeModal(true)
     }
     setHasInitialized(true)
-  }, [searchParams, hasInitialized])
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+  }, [searchParams, hasInitialized, isChecking])
 
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Auth guard loading state - must be after all hooks
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return
