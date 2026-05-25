@@ -6,22 +6,32 @@ import Link from "next/link"
 import Image from "next/image"
 import { MessageCircle, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { PhoneBindModal } from "@/components/phone-bind-modal"
 
 export default function LoginPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [loginSuccess, setLoginSuccess] = useState(false)
+  const [showPhoneBindModal, setShowPhoneBindModal] = useState(false)
 
   // 模拟微信授权登录
   const handleWechatLogin = async () => {
     setIsLoading(true)
 
-    // 模拟授权过程
+    // 模拟微信授权过程
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
     setLoginSuccess(true)
     await new Promise((resolve) => setTimeout(resolve, 800))
 
+    // 微信授权成功后，弹出手机号绑定弹窗
+    setIsLoading(false)
+    setLoginSuccess(false)
+    setShowPhoneBindModal(true)
+  }
+
+  // 手机号绑定成功后完成登录
+  const handlePhoneBindSuccess = () => {
     // 设置登录状态和初始化数据
     if (typeof window !== "undefined") {
       localStorage.setItem("wechat_logged_in", "true")
@@ -49,8 +59,6 @@ export default function LoginPage() {
             localStorage.setItem("user_points", JSON.stringify(points))
           } catch {}
         }
-        // 记录邀请关系，invited_by 用过后清除
-        // 注：实际场景中，邀请人的 +100 积分由后端在新用户注册成功后异步发放
         localStorage.setItem("invited_by_used", invitedBy)
         localStorage.removeItem("invited_by")
       }
@@ -65,8 +73,8 @@ export default function LoginPage() {
       {/* 顶部品牌区域 */}
       <div className="flex flex-1 flex-col items-center justify-center px-6 pb-8">
         {/* Logo - 使用首页相同的 crab-logo.png */}
-        <div className="mb-6 flex h-28 w-28 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#3b82f6] p-2 shadow-lg">
-          <div className="relative h-full w-full">
+        <div className="mb-6 flex h-28 w-28 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#3b82f6] shadow-lg">
+          <div className="relative h-20 w-20">
             <Image
               src="/crab-logo.png"
               alt="械研 Logo"
@@ -139,6 +147,14 @@ export default function LoginPage() {
       <div className="flex items-center justify-center pb-8">
         <div className="h-1 w-32 rounded-full bg-gray-200" />
       </div>
+
+      {/* 手机号绑定弹窗 */}
+      {showPhoneBindModal && (
+        <PhoneBindModal 
+          onClose={() => setShowPhoneBindModal(false)}
+          onSuccess={handlePhoneBindSuccess}
+        />
+      )}
     </div>
   )
 }

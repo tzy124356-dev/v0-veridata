@@ -17,6 +17,7 @@ import { ClearCacheModal, LogoutModal } from "@/components/logout-modal"
 import { FeedbackModal } from "@/components/feedback-modal"
 import { HelpFeedbackModal } from "@/components/help-feedback-modal"
 import { KnowledgeUpdateModal } from "@/components/knowledge-update-modal"
+import { PhoneBindModal } from "@/components/phone-bind-modal"
 import { useError } from "@/components/error-states"
 
 // 弹窗配置
@@ -29,6 +30,12 @@ const modalGroups = [
         name: "身份选择",
         englishId: "IdentityModal",
         trigger: "首次进首页 0.9s 自动弹；或 profile 点铅笔图标",
+      },
+      {
+        id: "phoneBind",
+        name: "手机号绑定",
+        englishId: "PhoneBindModal",
+        trigger: "微信授权成功后弹出，需验证手机号完成注册",
       },
       {
         id: "knowledge",
@@ -278,6 +285,10 @@ export default function DevModalsPage() {
           onSubmit={closeModal}
           onClose={closeModal}
         />
+      )}
+
+      {activeModal === "phoneBind" && (
+        <PhoneBindModal onClose={closeModal} onSuccess={closeModal} />
       )}
 
       {activeModal === "knowledge" && (
