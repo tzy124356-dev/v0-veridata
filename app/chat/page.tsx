@@ -28,6 +28,15 @@ import { useRouter } from "next/navigation"
 import { ShareCardModal } from "@/components/share-card-modal"
 import { useError } from "@/components/error-states"
 import { useAuthGuard } from "@/hooks/use-auth-guard"
+import { 
+  isFavorited, 
+  addFavorite, 
+  removeFavoriteByMessageId, 
+  addHistory, 
+  addFeedback,
+  getHistoryById,
+  getFavoriteById,
+} from "@/lib/storage"
 
 // 场景标签数据
 const scenarioTags = [
@@ -109,170 +118,6 @@ function ChatPageLoading() {
   )
 }
 
-// 模拟收藏对话数据（与收藏页面对应）
-const mockFavoriteMessages: Record<string, Message[]> = {
-  "1": [
-    {
-      id: "f1-1",
-      type: "user",
-      content: "医美针剂注册申报需要准备哪些材料？",
-      timestamp: new Date("2024-01-15T14:30:00"),
-    },
-    {
-      id: "f1-2",
-      type: "assistant",
-      content: "根据《医疗器械注册与备案管理办法》，医美针剂作为第三类医疗器械，注册申报需要准备以下材料...",
-      conclusion: "医美针剂注册申报需准备：1) 注册申请表；2) 证明性文件；3) 产品技术要求；4) 产品检验报告；5) 临床评价资料；6) 说明书和标签样稿；7) 质量管理体系文件。",
-      legalBasis: [
-        { title: "医疗器械注册与备案管理办法", clause: "第十五条", content: "申请医疗器械注册，应当按照规定提交相关资料。", url: "#" },
-        { title: "医疗器械注册申报资料要求", clause: "附件一", content: "注册申报资料包括产品技术要求、检验报告、临床评价资料等。", url: "#" },
-      ],
-      reasoning: "医美针剂通常属于第三类医疗器械，需要进行严格的注册审批流程。根据现行法规，申报材料需涵盖产品安全性、有效性的全部证明文件。",
-      timestamp: new Date("2024-01-15T14:30:30"),
-    },
-  ],
-  "2": [
-    {
-      id: "f2-1",
-      type: "user",
-      content: "透明质酸类产品的分类界定标准是什么？",
-      timestamp: new Date("2024-01-14T16:42:00"),
-    },
-    {
-      id: "f2-2",
-      type: "assistant",
-      content: "透明质酸类产品的分类主要依据其预期用途和作用机理...",
-      conclusion: "透明质酸类产品分类标准：1) 用于填充增容的属于第三类；2) 用于保湿护理的可能属于化妆品；3) 具有治疗作用的需按药品管理。具体分类需根据产品预期用途、作用部位和作用机理综合判定。",
-      legalBasis: [
-        { title: "医疗器械分类目录", clause: "13-09-02", content: "注射用交联透明质酸钠凝胶属于III类医疗器械。", url: "#" },
-        { title: "医疗器械分类规则", clause: "第六条", content: "医疗器械分类应当根据其预期目的和作用机理进行判定。", url: "#" },
-      ],
-      reasoning: "透明质酸类产品的监管类别取决于其预期用途，同一成分可能因用途不同而归入不同监管类别。",
-      timestamp: new Date("2024-01-14T16:42:30"),
-    },
-  ],
-  "3": [
-    {
-      id: "f3-1",
-      type: "user",
-      content: "注射用透明质酸钠的有效期验证方法？",
-      timestamp: new Date("2024-01-12T15:00:00"),
-    },
-    {
-      id: "f3-2",
-      type: "assistant",
-      content: "有效期验证应按照《医疗器械稳定性研究技术审查指导原则》...",
-      conclusion: "有效期验证方法：1) 加速稳定性试验；2) 长期稳定性试验；3) 运输稳定性试验。需检测物理、化学、生物学等关键质量指标随时间变化情况。",
-      legalBasis: [
-        { title: "医疗器械稳定性研究技术审查指导原则", clause: "第三章", content: "稳定性研究应包括加速试验和长期试验。", url: "#" },
-      ],
-      reasoning: "稳定性研究是确定产品有效期的科学依据，需综合考虑产品特性和储存条件。",
-      timestamp: new Date("2024-01-12T15:00:30"),
-    },
-  ],
-}
-
-// 模拟历史对话数据（与历史记录页面对应）
-const mockHistoryMessages: Record<string, Message[]> = {
-  "1": [
-    {
-      id: "h1-1",
-      type: "user",
-      content: "医美针剂注册申报需要准备哪些材料？",
-      timestamp: new Date("2024-01-15T14:30:00"),
-    },
-    {
-      id: "h1-2",
-      type: "assistant",
-      content: "根据《医疗器械注册与备案管理办法》，医美针剂作为第三类医疗器械，注册申报需要准备以下材料...",
-      conclusion: "医美针剂注册申报需准备：1) 注册申请表；2) 证明性文件；3) 产品技术要求；4) 产品检验报告；5) 临床评价资料；6) 说明书和标签样稿；7) 质量管理体系文件。",
-      legalBasis: [
-        { title: "医疗器械注册与备案管理办法", clause: "第十四条", content: "申请医疗器械注册，应当按照规定提交注册申报资料。", url: "#" },
-        { title: "医疗器械注册申报资料要求", clause: "附件要求", content: "注册申报资料应包括综述资料、研究资料、临床评价资料等。", url: "#" },
-      ],
-      reasoning: "医美针剂通常属于第三类医疗器械，需要进行严格的注册审批流程。根据现行法规，申报材料需涵盖产品安全性、有效性的全部证明文件。",
-      timestamp: new Date("2024-01-15T14:30:30"),
-    },
-  ],
-  "2": [
-    {
-      id: "h2-1",
-      type: "user",
-      content: "收到发补通知后应该如何处理？",
-      timestamp: new Date("2024-01-15T10:15:00"),
-    },
-    {
-      id: "h2-2",
-      type: "assistant",
-      content: "收到发补通知后，建议按以下步骤处理...",
-      conclusion: "收到发补通知后应：1) 仔细阅读发补意见；2) 组织团队逐条分析；3) 制定补充资料计划；4) 在规定时限内提交补充材料；5) 必要时申请延期或沟通。",
-      legalBasis: [
-        { title: "医疗器械注册审查程序", clause: "第二十条", content: "技术审评过程中需要申请人补充资料的，应当一次性告知需要补充的全部内容。", url: "#" },
-      ],
-      reasoning: "发补是注册审评过程中的常见环节，及时、准确地响应发补意见对于顺利获批至关重要。",
-      timestamp: new Date("2024-01-15T10:15:30"),
-    },
-  ],
-  "3": [
-    {
-      id: "h3-1",
-      type: "user",
-      content: "透明质酸类产品的分类界定标准是什么？",
-      timestamp: new Date("2024-01-14T16:42:00"),
-    },
-    {
-      id: "h3-2",
-      type: "assistant",
-      content: "透明质酸类产品的分类主要依据其预期用途和作用机理...",
-      conclusion: "透明质酸类产品分类标准：1) 用于填充增容的属于第三类；2) 用于保湿护理的可能属于化妆品；3) 具有治疗作用的需按药品管理。具体分类需根据产品预期用途、作用部位和作用机理综合判定。",
-      legalBasis: [
-        { title: "医疗器械分类目录", clause: "13-09-02", content: "注射用交联透明质酸钠凝胶属于第三类医疗器械。", url: "#" },
-        { title: "医疗器械分类规则", clause: "第六条", content: "根据医疗器械的结构特征、使用形式和使用状态进行分类。", url: "#" },
-      ],
-      reasoning: "透明质酸类产品的监管类别取决于其预期用途，同一成分可能因用途不同而归入不同监管类别。",
-      timestamp: new Date("2024-01-14T16:42:30"),
-    },
-  ],
-  "4": [
-    {
-      id: "h4-1",
-      type: "user",
-      content: "技术指导原则中关于临床评价的要求有哪些？",
-      timestamp: new Date("2024-01-14T09:20:00"),
-    },
-    {
-      id: "h4-2",
-      type: "assistant",
-      content: "根据《医疗器械临床评价技术指导原则》，临床评价应包括...",
-      conclusion: "临床评价要求包括：1) 临床评价路径选择；2) 同品种医疗器械临床数据分析；3) 临床文献数据分析；4) 临床试验数据（如需）；5) 临床评价报告编写。",
-      legalBasis: [
-        { title: "医疗器械临床评价技术指导原则", clause: "第四章", content: "临床评价应包括临床文献数据、临床经验数据和临床试验数据的系统分析。", url: "#" },
-      ],
-      reasoning: "临床评价是证明医疗器械安全性和有效性的关键环节，评价方式和深度需与产品���险程度相匹配。",
-      timestamp: new Date("2024-01-14T09:20:30"),
-    },
-  ],
-  "5": [
-    {
-      id: "h5-1",
-      type: "user",
-      content: "注射用透明质酸钠的有效期验证方法？",
-      timestamp: new Date("2024-01-12T15:00:00"),
-    },
-    {
-      id: "h5-2",
-      type: "assistant",
-      content: "有效期验证应按照《医疗器械稳定性研究技术审查指导原则》...",
-      conclusion: "有效期验证方法：1) 加速稳定性试验；2) 长期稳定性试验；3) 运输稳定性试验。需检测物理、化学、生物学等关键质量指标随时间变化情况。",
-      legalBasis: [
-        { title: "医疗器械稳定性研究技术审查指导原则", clause: "第三章", content: "稳定性研究应包括加速稳定性试验和实时稳定性试验。", url: "#" },
-      ],
-      reasoning: "稳定性研究是确定产品有效期的科学依据，需综合考虑产品特性和储存条件。",
-      timestamp: new Date("2024-01-12T15:00:30"),
-    },
-  ],
-}
-
 function ChatPageContent() {
   const { isChecking } = useAuthGuard()
   const searchParams = useSearchParams()
@@ -308,16 +153,34 @@ function ChatPageContent() {
       setKnowledgeSource("myVault")
     }
     // 加载历史对话时不弹窗
-    if (historyId && mockHistoryMessages[historyId]) {
-      setMessages(mockHistoryMessages[historyId])
-      setHasInitialized(true)
-      return
+    if (historyId) {
+      const historyItem = getHistoryById(historyId)
+      if (historyItem?.messages) {
+        setMessages(historyItem.messages as Message[])
+        setHasInitialized(true)
+        return
+      }
     }
     // 加载收藏对话时不弹窗
-    if (favoriteId && mockFavoriteMessages[favoriteId]) {
-      setMessages(mockFavoriteMessages[favoriteId])
-      setHasInitialized(true)
-      return
+    if (favoriteId) {
+      const favoriteItem = getFavoriteById(favoriteId)
+      if (favoriteItem) {
+        // 从收藏重建消息列表
+        const msgs: Message[] = [
+          { id: `${favoriteId}-user`, type: "user", content: favoriteItem.question },
+          { 
+            id: favoriteItem.messageId, 
+            type: "assistant", 
+            content: favoriteItem.answer,
+            conclusion: favoriteItem.answer,
+            reasoning: favoriteItem.reasoning ? [favoriteItem.reasoning] : undefined,
+            legalBasis: favoriteItem.source ? [{ title: favoriteItem.source, clause: "", content: "", url: "https://www.nmpa.gov.cn" }] : undefined,
+          }
+        ]
+        setMessages(msgs)
+        setHasInitialized(true)
+        return
+      }
     }
     // 仅首次进入时弹出知识库选择弹窗
     if (typeof window !== "undefined" && !localStorage.getItem("knowledge_modal_shown")) {
@@ -342,10 +205,11 @@ function ChatPageContent() {
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return
 
+    const userQuestion = inputValue.trim()
     const userMessage: Message = {
       id: Date.now().toString(),
       type: "user",
-      content: inputValue.trim(),
+      content: userQuestion,
       timestamp: new Date(),
     }
 
@@ -360,7 +224,28 @@ function ChatPageContent() {
         ...mockAIResponse,
         timestamp: new Date(),
       }
-      setMessages((prev) => [...prev, aiMessage])
+      setMessages((prev) => {
+        const newMessages = [...prev, aiMessage]
+        
+        // 自动保存到历史记录
+        addHistory({
+          id: `hist-${Date.now()}`,
+          question: userQuestion,
+          answerSummary: (mockAIResponse.conclusion || mockAIResponse.content || "").slice(0, 50) + "...",
+          source: knowledgeSource === "official" ? "官方知识库" : "我的知识库",
+          createdAt: new Date().toISOString(),
+          messages: newMessages.map(m => ({
+            id: m.id,
+            type: m.type,
+            content: m.content,
+            conclusion: m.conclusion,
+            reasoning: m.reasoning,
+            legalBasis: m.legalBasis,
+          })),
+        })
+        
+        return newMessages
+      })
       setIsLoading(false)
     }, 2000)
   }
@@ -615,7 +500,12 @@ function EmptyStateA({
 function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Message; bubbleColor: string; relatedQuestion?: string }) {
   const [showReasoning, setShowReasoning] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [bookmarked, setBookmarked] = useState(false)
+  const [bookmarked, setBookmarked] = useState(() => {
+    if (typeof window !== "undefined" && message.type === "assistant") {
+      return isFavorited(message.id)
+    }
+    return false
+  })
   const [liked, setLiked] = useState(false)
   const [showLikeToast, setShowLikeToast] = useState(false)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
@@ -641,8 +531,24 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
   }
 
   const handleBookmark = () => {
-    setBookmarked(!bookmarked)
-    // TODO: 同步到"我的"收藏
+    const newBookmarked = !bookmarked
+    setBookmarked(newBookmarked)
+    
+    if (newBookmarked) {
+      // 添加到收藏
+      addFavorite({
+        id: `fav-${Date.now()}`,
+        messageId: message.id,
+        question: relatedQuestion || "未知问题",
+        answer: message.conclusion || message.content,
+        source: message.legalBasis?.[0]?.title,
+        reasoning: message.reasoning?.[0],
+        savedTime: new Date().toISOString(),
+      })
+    } else {
+      // 从收藏移除
+      removeFavoriteByMessageId(message.id)
+    }
   }
 
   const handleLike = () => {
@@ -655,6 +561,16 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
 
   const handleDislike = () => {
     setShowFeedbackModal(true)
+  }
+
+  const handleFeedbackSubmit = (data: { type: string; content: string }) => {
+    addFeedback({
+      id: `feedback-${Date.now()}`,
+      type: data.type,
+      content: data.content,
+      relatedQuestion: relatedQuestion,
+      createdAt: new Date().toISOString(),
+    })
   }
 
   if (message.type === "user") {
@@ -788,9 +704,13 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
         </div>
       )}
 
-      {/* 反馈���窗 */}
+      {/* 反馈弹窗 */}
       {showFeedbackModal && (
-        <FeedbackModal onClose={() => setShowFeedbackModal(false)} />
+        <FeedbackModal 
+          onClose={() => setShowFeedbackModal(false)} 
+          onSubmit={handleFeedbackSubmit}
+          relatedQuestion={relatedQuestion}
+        />
       )}
 
       {/* 分享卡片弹窗 */}
@@ -818,7 +738,7 @@ function LoadingIndicatorA() {
 }
 
 // 反馈弹窗
-function FeedbackModal({ onClose }: { onClose: () => void }) {
+function FeedbackModal({ onClose, onSubmit, relatedQuestion }: { onClose: () => void; onSubmit?: (data: { type: string; content: string }) => void; relatedQuestion?: string }) {
   const [selectedReasons, setSelectedReasons] = useState<string[]>([])
   const [feedbackText, setFeedbackText] = useState("")
   const [submitted, setSubmitted] = useState(false)
@@ -841,7 +761,13 @@ function FeedbackModal({ onClose }: { onClose: () => void }) {
   }
 
   const handleSubmit = () => {
-    // TODO: 提交反馈到后端
+    // 调用 onSubmit 回调保存反馈
+    if (onSubmit) {
+      onSubmit({
+        type: selectedReasons.join(", ") || "其他",
+        content: feedbackText || selectedReasons.join(", "),
+      })
+    }
     setSubmitted(true)
     setTimeout(() => {
       onClose()
@@ -968,7 +894,7 @@ function KnowledgeModal({ onClose }: { onClose: () => void }) {
   )
 }
 
-// 首次反馈弹窗
+// 首次反馈弹���
 function FirstFeedbackModal({ onClose }: { onClose: (feedback?: "good" | "bad") => void }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50">

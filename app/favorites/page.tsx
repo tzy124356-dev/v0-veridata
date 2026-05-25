@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   ArrowLeft,
   Search,
@@ -12,43 +12,25 @@ import {
   Check,
   ChevronRight,
   Loader2,
+  Plus,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useAuthGuard } from "@/hooks/use-auth-guard"
-
-// 模拟收藏数据
-const mockFavorites = [
-  {
-    id: 1,
-    question: "医美针剂注册申报需要准备哪些材料？",
-    answer:
-      "根据《医疗器械注册与备案管理办法》，医美针剂作为第三类医疗器械，注册申报需要准备以下材料：1. 注册申请表；2. 证明性文件；3. 医疗器械安全有效基本要求清单...",
-    source: "《医疗器械注册与备案管理办法》第十五条",
-    savedTime: "今天 14:30",
-  },
-  {
-    id: 2,
-    question: "透明质酸类产品的分类界定标准是什么？",
-    answer:
-      "透明质酸类产品的分类主要依据其预期用途和作用机理。用于注射填充的透明质酸钠产品，按照第三类医疗器械管理...",
-    source: "《医疗器械分类目录》",
-    savedTime: "昨天 16:42",
-  },
-  {
-    id: 3,
-    question: "注射用透明质酸钠的有效期验证方法？",
-    answer:
-      "有效期验证应按照《医疗器械稳定性研究技术审查指导原则》进行，包括实时稳定性研究和加速稳定性研究...",
-    source: "《医疗器械稳定性研究技术审查指导原则》",
-    savedTime: "3天前",
-  },
-]
+import { getFavorites, removeFavorite, loadDemoFavorites, type FavoriteItem } from "@/lib/storage"
 
 export default function FavoritesPage() {
   const { isChecking } = useAuthGuard()
   const [searchQuery, setSearchQuery] = useState("")
-  const [favorites, setFavorites] = useState(mockFavorites)
+  const [favorites, setFavorites] = useState<FavoriteItem[]>([])
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setFavorites(getFavorites())
+      setIsLoaded(true)
+    }
+  }, [])
 
   const filteredFavorites = favorites.filter(
     (item) =>
@@ -56,13 +38,37 @@ export default function FavoritesPage() {
       item.answer.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleDelete = (id: number) => {
-    setFavorites((prev) => prev.filter((item) => item.id !== id))
+  const handleDelete = (id: string) => {
+    removeFavorite(id)
+    setFavorites(getFavorites())
+  }
+
+  const handleLoadDemo = () => {
+    loadDemoFavorites()
+    setFavorites(getFavorites())
   }
 
   const isEmpty = favorites.length === 0
 
-  if (isChecking) {
+  // 格式化时间显示
+  const formatTime = (isoTime: string) => {
+    const date = new Date(isoTime)
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+    
+    if (diffDays === 0) {
+      return `今天 ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+    } else if (diffDays === 1) {
+      return `昨天 ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+    } else if (diffDays < 7) {
+      return `${diffDays}天前`
+    } else {
+      return `${date.getMonth() + 1}/${date.getDate()}`
+    }
+  }
+
+  if (isChecking || !isLoaded) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -109,11 +115,11 @@ export default function FavoritesPage() {
       {/* 白色内容区域 */}
       <main className="flex-1 bg-background px-5 py-6">
         {isEmpty ? (
-          <EmptyState />
+          <EmptyState onLoadDemo={handleLoadDemo} />
         ) : filteredFavorites.length === 0 ? (
           <NoResultsState query={searchQuery} />
         ) : (
-          <FavoritesList favorites={filteredFavorites} onDelete={handleDelete} />
+          <FavoritesList favorites={filteredFavorites} onDelete={handleDelete} formatTime={formatTime} />
         )}
       </main>
     </div>
@@ -121,7 +127,7 @@ export default function FavoritesPage() {
 }
 
 // 空状态
-function EmptyState() {
+function EmptyState({ onLoadDemo }: { onLoadDemo: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-16">
       <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#1e40af]/10">
@@ -131,12 +137,21 @@ function EmptyState() {
       <p className="mb-6 text-center text-sm text-muted-foreground">
         问答后可收藏你觉得有价值的回答
       </p>
-      <Link
-        href="/chat"
-        className="rounded-xl bg-gradient-to-r from-[#1e40af] to-[#2563eb] px-6 py-3 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-95"
-      >
-        去提问
-      </Link>
+      <div className="flex flex-col gap-3">
+        <Link
+          href="/chat"
+          className="rounded-xl bg-gradient-to-r from-[#1e40af] to-[#2563eb] px-6 py-3 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-95"
+        >
+          去提问
+        </Link>
+        <button
+          onClick={onLoadDemo}
+          className="flex items-center justify-center gap-1 rounded-xl border border-gray-200 px-6 py-3 text-sm font-medium text-gray-500 transition-all hover:bg-gray-50 active:scale-95"
+        >
+          <Plus className="h-4 w-4" />
+          加载演示数据
+        </button>
+      </div>
     </div>
   )
 }
@@ -160,33 +175,37 @@ function NoResultsState({ query }: { query: string }) {
 function FavoritesList({
   favorites,
   onDelete,
+  formatTime,
 }: {
-  favorites: typeof mockFavorites
-  onDelete: (id: number) => void
+  favorites: FavoriteItem[]
+  onDelete: (id: string) => void
+  formatTime: (time: string) => string
 }) {
   return (
     <div className="space-y-4">
       {favorites.map((item) => (
-        <FavoriteItem key={item.id} item={item} onDelete={onDelete} />
+        <FavoriteItemCard key={item.id} item={item} onDelete={onDelete} formatTime={formatTime} />
       ))}
     </div>
   )
 }
 
 // 收藏项
-function FavoriteItem({
+function FavoriteItemCard({
   item,
   onDelete,
+  formatTime,
 }: {
-  item: (typeof mockFavorites)[0]
-  onDelete: (id: number) => void
+  item: FavoriteItem
+  onDelete: (id: string) => void
+  formatTime: (time: string) => string
 }) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(
-        `问：${item.question}\n\n答：${item.answer}\n\n来源：${item.source}`
+        `问：${item.question}\n\n答：${item.answer}\n\n来源：${item.source || "未知"}`
       )
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
@@ -211,16 +230,18 @@ function FavoriteItem({
         </p>
 
         {/* 来源 */}
-        <div className="mb-4 flex items-center gap-2 text-xs text-muted-foreground">
-          <FileText className="h-3.5 w-3.5 text-[#1e40af]" />
-          <span>{item.source}</span>
-        </div>
+        {item.source && (
+          <div className="mb-4 flex items-center gap-2 text-xs text-muted-foreground">
+            <FileText className="h-3.5 w-3.5 text-[#1e40af]" />
+            <span>{item.source}</span>
+          </div>
+        )}
 
         {/* 底部操作栏 */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Clock className="h-3.5 w-3.5" />
-            <span>收藏于 {item.savedTime}</span>
+            <span>收藏于 {formatTime(item.savedTime)}</span>
           </div>
 
           <div className="flex items-center gap-2">
