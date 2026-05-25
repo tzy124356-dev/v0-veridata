@@ -322,6 +322,12 @@ function ChatPageContent() {
         knowledgeSource={knowledgeSource}
         setKnowledgeSource={setKnowledgeSource}
         bubbleColor={bubbleColor}
+        currentPoints={currentPoints}
+        showInsufficientPointsModal={showInsufficientPointsModal}
+        setShowInsufficientPointsModal={setShowInsufficientPointsModal}
+        showLowPointsHint={showLowPointsHint}
+        setShowLowPointsHint={setShowLowPointsHint}
+        lastDeductResult={lastDeductResult}
       />
 
       {/* 知识库范围弹窗 */}
@@ -350,6 +356,12 @@ function ChatVersionA({
   knowledgeSource,
   setKnowledgeSource,
   bubbleColor,
+  currentPoints,
+  showInsufficientPointsModal,
+  setShowInsufficientPointsModal,
+  showLowPointsHint,
+  setShowLowPointsHint,
+  lastDeductResult,
 }: {
   messages: Message[]
   inputValue: string
@@ -362,6 +374,12 @@ function ChatVersionA({
   knowledgeSource: "official" | "myVault"
   setKnowledgeSource: (source: "official" | "myVault") => void
   bubbleColor: string
+  currentPoints: PointsData
+  showInsufficientPointsModal: boolean
+  setShowInsufficientPointsModal: (v: boolean) => void
+  showLowPointsHint: boolean
+  setShowLowPointsHint: (v: boolean) => void
+  lastDeductResult: { remaining: number } | null
 }) {
   const searchParams = useSearchParams()
   const { showError } = useError()
@@ -857,7 +875,7 @@ function LoadingIndicatorA() {
       <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-[#1e40af] to-[#3b82f6]">
         <Loader2 className="h-4 w-4 animate-spin text-white" />
       </div>
-      <span className="text-sm text-gray-500">正在检索知识库...</span>
+      <span className="text-sm text-gray-500">正在检索知���库...</span>
     </div>
   )
 }
