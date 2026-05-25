@@ -229,7 +229,7 @@ function HistoryItem({
           onDelete(item.id)
         }}
         className={cn(
-          "absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10 text-destructive opacity-0 transition-all hover:bg-destructive/20 active:scale-95 group-hover:opacity-100"
+          "absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10 text-destructive opacity-0 transition-all hover:bg-destructive/20 active:scale-95 group-hover:opacity-100"
         )}
       >
         <Trash2 className="h-4 w-4" />
