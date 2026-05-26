@@ -136,10 +136,6 @@ export default function LoginPage() {
           <Link href="/privacy" className="text-[#1e40af] hover:underline">
             隐私政策
           </Link>
-          <span className="text-gray-300">|</span>
-          <Link href="/disclaimer" className="text-[#1e40af] hover:underline">
-            免责声明
-          </Link>
         </div>
       </div>
 
