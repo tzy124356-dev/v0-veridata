@@ -140,7 +140,7 @@ export default function HelpPage() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1e40af]/10">
-                        <Icon className="h-4.5 w-4.5 text-[#1e40af]" />
+                        <Icon className={cn("h-4.5 w-4.5 text-[#1e40af]", Icon === MessageSquare && "-scale-x-100")} />
                       </div>
                       <span className="text-sm font-medium text-gray-900">
                         {category.title}
