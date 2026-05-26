@@ -154,13 +154,6 @@ const modalGroups = [
         trigger: "通过 useError().showError() 触发",
         errorType: "loadFailed",
       },
-      {
-        id: "errorEmpty",
-        name: "错误状态 - 知识库无答案",
-        englishId: "ErrorModal",
-        trigger: "通过 useError().showError() 触发",
-        errorType: "empty",
-      },
     ],
   },
 ]
