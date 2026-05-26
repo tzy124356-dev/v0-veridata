@@ -107,7 +107,7 @@ export function FeedbackFab() {
         onTouchEnd={handleEnd}
         onClick={handleClick}
       >
-        <MessageCircle className="h-5 w-5" />
+        <MessageCircle className="h-5 w-5" style={{ transform: 'scaleX(-1)' }} />
         <span className="mt-0.5 text-[9px] leading-none">反馈</span>
       </div>
       <FeedbackModal 
