@@ -77,11 +77,10 @@ export default function HelpPage() {
   const [expandedCategory, setExpandedCategory] = useState<string | null>("usage")
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
-  const [showDevelopingToast, setShowDevelopingToast] = useState(false)
+  const [showWechatQRModal, setShowWechatQRModal] = useState(false)
 
   const handleContactService = () => {
-    setShowDevelopingToast(true)
-    setTimeout(() => setShowDevelopingToast(false), 1000)
+    setShowWechatQRModal(true)
   }
 
   return (
@@ -229,11 +228,27 @@ export default function HelpPage() {
         <HelpFeedbackModal onClose={() => setShowFeedbackModal(false)} />
       )}
 
-      {/* 功能开发中提示 */}
-      {showDevelopingToast && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center">
-          <div className="rounded-xl bg-gray-800/90 px-6 py-3 text-sm text-white shadow-lg">
-            该功能正在开发中
+      {/* 微信客服二维码弹窗 */}
+      {showWechatQRModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50" onClick={() => setShowWechatQRModal(false)}>
+          <div className="mx-4 w-full max-w-xs rounded-2xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-4 text-center">
+              <h3 className="text-lg font-semibold text-gray-900">联系客服</h3>
+              <p className="mt-1 text-sm text-gray-500">扫描下方二维码添加客服微信</p>
+            </div>
+            <div className="mx-auto mb-4 flex h-48 w-48 items-center justify-center rounded-xl bg-gray-100">
+              <div className="text-center">
+                <div className="mb-2 text-4xl">📱</div>
+                <p className="text-xs text-gray-400">微信客服二维码</p>
+              </div>
+            </div>
+            <p className="mb-4 text-center text-xs text-gray-400">工作日 9:00-18:00 在线</p>
+            <button
+              onClick={() => setShowWechatQRModal(false)}
+              className="w-full rounded-xl bg-[#1e40af] py-3 text-sm font-medium text-white transition-colors hover:bg-[#1e3a8a]"
+            >
+              我知道了
+            </button>
           </div>
         </div>
       )}
