@@ -11,7 +11,7 @@ const items = [
   {
     title: "医疗器械注册产品",
     subtitle: "境内 + 进口",
-    count: "第13类",
+    count: "约 15,000 个",
     showHelp: true,
   },
   {
@@ -23,12 +23,12 @@ const items = [
   {
     title: "审评依据",
     subtitle: "指导原则 · 法规政策",
-    count: "1,998 份",
+    count: "约 2,000 份",
   },
   {
     title: "审评结果",
     subtitle: "审评报告 · 批件公告",
-    count: "11,538 份",
+    count: "约 12,000 份",
   },
 ]
 
