@@ -167,6 +167,7 @@ function HomeContent() {
                 alt="械研"
                 width={104}
                 height={104}
+                priority
                 className="relative block object-contain brightness-0 invert drop-shadow-lg"
               />
             </div>
