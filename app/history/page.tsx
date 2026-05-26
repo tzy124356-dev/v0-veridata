@@ -9,12 +9,11 @@ import {
   Clock,
   ChevronRight,
   Loader2,
-  Plus,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useAuthGuard } from "@/hooks/use-auth-guard"
-import { getHistory, removeHistory, loadDemoHistory, type HistoryItem } from "@/lib/storage"
+import { getHistory, removeHistory, type HistoryItem } from "@/lib/storage"
 
 export default function HistoryPage() {
   const { isChecking } = useAuthGuard()
@@ -35,11 +34,6 @@ export default function HistoryPage() {
 
   const handleDelete = (id: string) => {
     removeHistory(id)
-    setHistory(getHistory())
-  }
-
-  const handleLoadDemo = () => {
-    loadDemoHistory()
     setHistory(getHistory())
   }
 
@@ -102,7 +96,7 @@ export default function HistoryPage() {
       {/* 白色内容区域 */}
       <main className="flex-1 bg-background px-5 py-6">
         {isEmpty ? (
-          <EmptyState onLoadDemo={handleLoadDemo} />
+          <EmptyState />
         ) : filteredHistory.length === 0 ? (
           <NoResultsState query={searchQuery} />
         ) : (
@@ -121,11 +115,11 @@ export default function HistoryPage() {
 }
 
 // 空状态
-function EmptyState({ onLoadDemo }: { onLoadDemo: () => void }) {
+function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-16">
       <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#1e40af]/10">
-        <MessageSquare className="h-8 w-8 text-[#1e40af]" />
+        <MessageSquare className="h-8 w-8 text-[#1e40af] -scale-x-100" />
       </div>
       <p className="mb-2 font-medium text-foreground">还没有问答记录</p>
       <p className="mb-6 text-sm text-muted-foreground">去提问吧</p>
@@ -136,13 +130,6 @@ function EmptyState({ onLoadDemo }: { onLoadDemo: () => void }) {
         >
           开始提问
         </Link>
-        <button
-          onClick={onLoadDemo}
-          className="flex items-center justify-center gap-1 rounded-xl border border-gray-200 px-6 py-3 text-sm font-medium text-gray-500 transition-all hover:bg-gray-50 active:scale-95"
-        >
-          <Plus className="h-4 w-4" />
-          加载演示数据
-        </button>
       </div>
     </div>
   )
