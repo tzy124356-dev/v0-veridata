@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 // 导入所有弹窗组件
 import { IdentityModal } from "@/components/identity-modal"
 import { KnowledgeModal } from "@/components/knowledge-modal"
+import { KnowledgeModalV2 } from "@/components/knowledge-modal-v2"
 import { FirstFeedbackModal } from "@/components/first-feedback-modal"
 import { InsufficientPointsModal } from "@/components/insufficient-points-modal"
 import { HelpFeedbackModal } from "@/components/help-feedback-modal"
@@ -35,6 +36,12 @@ const modalGroups = [
         name: "知识库范围",
         englishId: "KnowledgeModal",
         trigger: "首次进 chat 页时弹一次",
+      },
+      {
+        id: "knowledgeV2",
+        name: "知识库范围 V2（带问号）",
+        englishId: "KnowledgeModalV2",
+        trigger: "点击左上格子问号弹出分类详情",
       },
       {
         id: "knowledgeUpdate",
@@ -268,6 +275,10 @@ export default function DevModalsPage() {
 
       {activeModal === "knowledge" && (
         <KnowledgeModal onClose={closeModal} />
+      )}
+
+      {activeModal === "knowledgeV2" && (
+        <KnowledgeModalV2 onClose={closeModal} />
       )}
 
       {activeModal === "knowledgeUpdate" && (
