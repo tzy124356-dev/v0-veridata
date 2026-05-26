@@ -29,7 +29,7 @@ export function ClearCacheModal({ onClose, onConfirm, cacheCleared }: ClearCache
                 清除缓存
               </h3>
               <p className="mt-2 text-sm text-gray-500">
-                确定要清除所有缓存数据吗？这不会删除您的账户数据。
+                确定要清除所有缓存数据吗？这不会删除您的账号及自建知识库数据。
               </p>
             </div>
             <div className="flex border-t border-gray-100">
