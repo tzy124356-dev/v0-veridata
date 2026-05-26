@@ -6,32 +6,14 @@ import Link from "next/link"
 import Image from "next/image"
 import { MessageCircle, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { PhoneBindModal } from "@/components/phone-bind-modal"
 
 export default function LoginPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [loginSuccess, setLoginSuccess] = useState(false)
-  const [showPhoneBindModal, setShowPhoneBindModal] = useState(false)
 
-  // 模拟微信授权登录
-  const handleWechatLogin = async () => {
-    setIsLoading(true)
-
-    // 模拟微信授权过程
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    setLoginSuccess(true)
-    await new Promise((resolve) => setTimeout(resolve, 800))
-
-    // 微信授权成功后，弹出手机号绑定弹窗
-    setIsLoading(false)
-    setLoginSuccess(false)
-    setShowPhoneBindModal(true)
-  }
-
-  // 手机号绑定成功后完成登录
-  const handlePhoneBindSuccess = () => {
+  // 完成登录逻辑
+  const completeLogin = () => {
     // 设置登录状态和初始化数据
     if (typeof window !== "undefined") {
       localStorage.setItem("wechat_logged_in", "true")
@@ -66,6 +48,21 @@ export default function LoginPage() {
 
     // 跳转到首页
     router.push("/")
+  }
+
+  // 模拟微信授权登录
+  const handleWechatLogin = async () => {
+    setIsLoading(true)
+
+    // 模拟微信授权过程
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    setLoginSuccess(true)
+    await new Promise((resolve) => setTimeout(resolve, 800))
+
+    // 微信授权成功后直接完成登录
+    setIsLoading(false)
+    completeLogin()
   }
 
   return (
@@ -147,14 +144,6 @@ export default function LoginPage() {
       <div className="flex items-center justify-center pb-8">
         <div className="h-1 w-32 rounded-full bg-gray-200" />
       </div>
-
-      {/* 手机号绑定弹窗 */}
-      {showPhoneBindModal && (
-        <PhoneBindModal 
-          onClose={() => setShowPhoneBindModal(false)}
-          onSuccess={handlePhoneBindSuccess}
-        />
-      )}
     </div>
   )
 }
