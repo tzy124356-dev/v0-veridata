@@ -32,7 +32,6 @@ import { KnowledgeModal } from "@/components/knowledge-modal"
 import { FirstFeedbackModal } from "@/components/first-feedback-modal"
 import { AnswerFeedbackModal } from "@/components/answer-feedback-modal"
 import { InsufficientPointsModal } from "@/components/insufficient-points-modal"
-import { IdentityModal } from "@/components/identity-modal"
 import { 
   isFavorited, 
   addFavorite, 
@@ -134,7 +133,6 @@ function ChatPageContent() {
   const [inputValue, setInputValue] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [showKnowledgeModal, setShowKnowledgeModal] = useState(false)
-  const [showIdentityModal, setShowIdentityModal] = useState(false)
   const [hasInitialized, setHasInitialized] = useState(false)
   const [knowledgeSource, setKnowledgeSource] = useState<"official" | "myVault">("official")
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -213,15 +211,6 @@ function ChatPageContent() {
     if (typeof window === "undefined" || isChecking) return
     const points = getPoints()
     setCurrentPoints(points)
-  }, [isChecking])
-
-  // 首次访问自动弹出身份选择（仅弹一次）
-  useEffect(() => {
-    if (typeof window === "undefined" || isChecking) return
-    const shown = localStorage.getItem("identity_modal_shown")
-    if (shown === "true") return
-    const timer = setTimeout(() => setShowIdentityModal(true), 900)
-    return () => clearTimeout(timer)
   }, [isChecking])
 
   // 刷新积分（用于 visibilitychange）
@@ -346,25 +335,6 @@ function ChatPageContent() {
       {showInsufficientPointsModal && (
         <InsufficientPointsModal onClose={() => setShowInsufficientPointsModal(false)} />
       )}
-
-      {/* 身份选择弹窗 */}
-      {showIdentityModal && (
-        <IdentityModal
-          isOpen={showIdentityModal}
-          onSubmit={() => {
-            setShowIdentityModal(false)
-            if (typeof window !== "undefined") {
-              localStorage.setItem("identity_modal_shown", "true")
-            }
-          }}
-          onClose={() => {
-            setShowIdentityModal(false)
-            if (typeof window !== "undefined") {
-              localStorage.setItem("identity_modal_shown", "true")
-            }
-          }}
-        />
-      )}
     </div>
   )
 }
@@ -445,7 +415,7 @@ function ChatVersionA({
             <button onClick={() => showError({ type: "network" })} className="rounded-md bg-white px-2 py-1 text-[10px] text-gray-700 ring-1 ring-gray-200">网络断开</button>
             <button onClick={() => showError({ type: "serverError" })} className="rounded-md bg-white px-2 py-1 text-[10px] text-gray-700 ring-1 ring-gray-200">AI 超时</button>
             <button onClick={() => showError({ type: "loadFailed" })} className="rounded-md bg-white px-2 py-1 text-[10px] text-gray-700 ring-1 ring-gray-200">上传失败</button>
-            <button onClick={() => showError({ type: "empty" })} className="rounded-md bg-white px-2 py-1 text-[10px] text-gray-700 ring-1 ring-gray-200">知识库无答案</button>
+            <button onClick={() => showError({ type: "empty" })} className="rounded-md bg-white px-2 py-1 text-[10px] text-gray-700 ring-1 ring-gray-200">知���库无答案</button>
           </div>
         </div>
       )}
