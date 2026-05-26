@@ -20,10 +20,6 @@ export function KnowledgeUpdateModal({ onClose }: KnowledgeUpdateModalProps) {
           </p>
         </div>
 
-        <p className="mb-5 text-center text-xs text-gray-400">
-          本内容由械研 VERIDATA 官方知识库维护，仅用于专业参考。
-        </p>
-
         <button
           onClick={onClose}
           className="w-full rounded-xl bg-gradient-to-r from-[#1e40af] to-[#3b82f6] py-3 text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]"
