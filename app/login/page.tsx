@@ -18,6 +18,9 @@ export default function LoginPage() {
     if (typeof window !== "undefined") {
       localStorage.setItem("wechat_logged_in", "true")
       
+      // 清除身份弹窗标记，确保新用户首次登录后显示身份选择弹窗
+      localStorage.removeItem("identity_modal_shown")
+      
       // 初始化积分（未购买会员）
       if (!localStorage.getItem("user_points")) {
         localStorage.setItem("user_points", JSON.stringify({ free: 5, gift: 0, member: 0 }))
