@@ -72,15 +72,15 @@ export function useError() {
 const errorConfig = {
   network: {
     icon: WifiOff,
-    title: "网络连接失败",
-    message: "请检查您的网络连接后重试",
+    title: "网络断开",
+    message: "信号好像丢了，网络恢复后我们继续",
     iconBg: "bg-orange-100",
     iconColor: "text-orange-500",
   },
   loadFailed: {
     icon: AlertCircle,
-    title: "加载失败",
-    message: "数据加载出现问题，请稍后重试",
+    title: "文件上传失败",
+    message: "上传失败，请检查文件格式后重新上传",
     iconBg: "bg-red-100",
     iconColor: "text-red-500",
   },
@@ -93,8 +93,8 @@ const errorConfig = {
   },
   serverError: {
     icon: ServerCrash,
-    title: "服务器错误",
-    message: "服务暂时不可用，请稍后再试",
+    title: "AI 响应超时",
+    message: "正在为你深度检索知识库，请稍候",
     iconBg: "bg-red-100",
     iconColor: "text-red-500",
   },
@@ -237,8 +237,8 @@ export function EmptyState({
 
 // 内联加载失败组件
 export function LoadFailedState({
-  title = "加载失败",
-  message = "数据加载出现问题",
+  title = "文件上传失败",
+  message = "上传失败，请检查文件格式后重新上传",
   onRetry,
 }: {
   title?: string
@@ -276,8 +276,8 @@ export function NetworkErrorState({
       <div className="flex h-20 w-20 items-center justify-center rounded-full bg-orange-50">
         <WifiOff className="h-10 w-10 text-orange-400" />
       </div>
-      <h3 className="mt-4 text-base font-medium text-gray-700">网络连接失败</h3>
-      <p className="mt-1 text-sm text-gray-400">请检查您的网络连接</p>
+      <h3 className="mt-4 text-base font-medium text-gray-700">网络断开</h3>
+      <p className="mt-1 text-sm text-gray-400">信号好像丢了，网络恢复后我们继续</p>
       {onRetry && (
         <button
           onClick={onRetry}
