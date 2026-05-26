@@ -184,8 +184,7 @@ export default function DevModalsPage() {
     }
     if (errorType) {
       showError({ 
-        type: errorType as "network" | "serverError" | "loadFailed" | "empty",
-        message: "这是调试预览的错误消息"
+        type: errorType as "network" | "serverError" | "loadFailed" | "empty"
       })
       return
     }
