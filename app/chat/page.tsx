@@ -32,6 +32,7 @@ import { KnowledgeModal } from "@/components/knowledge-modal"
 import { FirstFeedbackModal } from "@/components/first-feedback-modal"
 import { AnswerFeedbackModal } from "@/components/answer-feedback-modal"
 import { InsufficientPointsModal } from "@/components/insufficient-points-modal"
+import { IdentityModal } from "@/components/identity-modal"
 import { 
   isFavorited, 
   addFavorite, 
@@ -133,6 +134,7 @@ function ChatPageContent() {
   const [inputValue, setInputValue] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [showKnowledgeModal, setShowKnowledgeModal] = useState(false)
+  const [showIdentityModal, setShowIdentityModal] = useState(false)
   const [hasInitialized, setHasInitialized] = useState(false)
   const [knowledgeSource, setKnowledgeSource] = useState<"official" | "myVault">("official")
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -211,6 +213,15 @@ function ChatPageContent() {
     if (typeof window === "undefined" || isChecking) return
     const points = getPoints()
     setCurrentPoints(points)
+  }, [isChecking])
+
+  // 首次访问自动弹出身份选择（仅弹一次）
+  useEffect(() => {
+    if (typeof window === "undefined" || isChecking) return
+    const shown = localStorage.getItem("identity_modal_shown")
+    if (shown === "true") return
+    const timer = setTimeout(() => setShowIdentityModal(true), 900)
+    return () => clearTimeout(timer)
   }, [isChecking])
 
   // 刷新积分（用于 visibilitychange）
@@ -334,6 +345,25 @@ function ChatPageContent() {
       {/* 积分不足弹窗 */}
       {showInsufficientPointsModal && (
         <InsufficientPointsModal onClose={() => setShowInsufficientPointsModal(false)} />
+      )}
+
+      {/* 身份选择弹窗 */}
+      {showIdentityModal && (
+        <IdentityModal
+          isOpen={showIdentityModal}
+          onSubmit={() => {
+            setShowIdentityModal(false)
+            if (typeof window !== "undefined") {
+              localStorage.setItem("identity_modal_shown", "true")
+            }
+          }}
+          onClose={() => {
+            setShowIdentityModal(false)
+            if (typeof window !== "undefined") {
+              localStorage.setItem("identity_modal_shown", "true")
+            }
+          }}
+        />
       )}
     </div>
   )
