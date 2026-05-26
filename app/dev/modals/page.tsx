@@ -11,6 +11,12 @@ import { FirstFeedbackModal } from "@/components/first-feedback-modal"
 import { InsufficientPointsModal } from "@/components/insufficient-points-modal"
 import { HelpFeedbackModal } from "@/components/help-feedback-modal"
 import { KnowledgeUpdateModal } from "@/components/knowledge-update-modal"
+import { AnswerFeedbackModal } from "@/components/answer-feedback-modal"
+import { ShareCardModal } from "@/components/share-card-modal"
+import { PointsRulesModal } from "@/components/points-rules-modal"
+import { TeamContactModal } from "@/components/team-contact-modal"
+import { LogoutModal, ClearCacheModal } from "@/components/logout-modal"
+import { FeedbackModal } from "@/components/feedback-modal"
 import { useError } from "@/components/error-states"
 
 // 弹窗配置
