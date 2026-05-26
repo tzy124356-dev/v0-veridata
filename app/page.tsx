@@ -57,12 +57,12 @@ export default function HomePage() {
 
   // 首次访问自动弹出身份选择（仅弹一次）
   useEffect(() => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined" || isChecking) return
     const shown = localStorage.getItem("identity_modal_shown")
     if (shown === "true") return
     const timer = setTimeout(() => setShowIdentityModal(true), 900)
     return () => clearTimeout(timer)
-  }, [])
+  }, [isChecking])
 
   const handleIdentitySubmit = (data: { position: string; fields: string[] }) => {
     writeUserIdentity(data)
