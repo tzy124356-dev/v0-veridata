@@ -201,7 +201,7 @@ export default function PointsPage() {
               setRedeemInput(e.target.value.toUpperCase())
               setRedeemError("")
             }}
-            placeholder="输入兑换码（YJ + 5 位数字）"
+            placeholder="输入兑换码"
             className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm placeholder:text-gray-400 focus:border-[#1e40af]/50 focus:outline-none focus:ring-2 focus:ring-[#1e40af]/10"
           />
           <button
