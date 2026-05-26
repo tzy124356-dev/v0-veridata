@@ -8,13 +8,6 @@ import { cn } from "@/lib/utils"
 import { IdentityModal } from "@/components/identity-modal"
 import { KnowledgeModal } from "@/components/knowledge-modal"
 import { FirstFeedbackModal } from "@/components/first-feedback-modal"
-import { InsufficientPointsModal, LowPointsHint } from "@/components/insufficient-points-modal"
-import { PointsRulesModal } from "@/components/points-rules-modal"
-import { TeamContactModal } from "@/components/team-contact-modal"
-import { AnswerFeedbackModal } from "@/components/answer-feedback-modal"
-import { ShareCardModal } from "@/components/share-card-modal"
-import { ClearCacheModal, LogoutModal } from "@/components/logout-modal"
-import { FeedbackModal } from "@/components/feedback-modal"
 import { HelpFeedbackModal } from "@/components/help-feedback-modal"
 import { KnowledgeUpdateModal } from "@/components/knowledge-update-modal"
 import { useError } from "@/components/error-states"
@@ -53,18 +46,6 @@ const modalGroups = [
   {
     title: "积分与升级类",
     modals: [
-      {
-        id: "insufficientPoints",
-        name: "积分不足提示",
-        englishId: "InsufficientPointsModal",
-        trigger: "chat 提问且积分=0 时弹",
-      },
-      {
-        id: "lowPointsHint",
-        name: "低积分提示",
-        englishId: "LowPointsHint",
-        trigger: "首次进 chat 且积分≤3 时弹（底部条样式）",
-      },
       {
         id: "pointsRules",
         name: "积分规则说明",
@@ -290,14 +271,6 @@ export default function DevModalsPage() {
 
       {activeModal === "firstFeedback" && (
         <FirstFeedbackModal onClose={closeModal} />
-      )}
-
-      {activeModal === "insufficientPoints" && (
-        <InsufficientPointsModal onClose={closeModal} />
-      )}
-
-      {activeModal === "lowPointsHint" && (
-        <LowPointsHint onClose={closeModal} />
       )}
 
       {activeModal === "pointsRules" && (

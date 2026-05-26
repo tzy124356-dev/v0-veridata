@@ -31,7 +31,6 @@ import { useAuthGuard } from "@/hooks/use-auth-guard"
 import { KnowledgeModal } from "@/components/knowledge-modal"
 import { FirstFeedbackModal } from "@/components/first-feedback-modal"
 import { AnswerFeedbackModal } from "@/components/answer-feedback-modal"
-import { InsufficientPointsModal, LowPointsHint } from "@/components/insufficient-points-modal"
 import { 
   isFavorited, 
   addFavorite, 
@@ -140,8 +139,6 @@ function ChatPageContent() {
   
   // 积分相关状态
   const [currentPoints, setCurrentPoints] = useState<PointsData>({ free: 0, gift: 0, member: 0 })
-  const [showInsufficientPointsModal, setShowInsufficientPointsModal] = useState(false)
-  const [showLowPointsHint, setShowLowPointsHint] = useState(false)
   const [lastDeductResult, setLastDeductResult] = useState<{ remaining: number } | null>(null)
 
   // 用户消息气泡颜色
@@ -207,18 +204,11 @@ function ChatPageContent() {
     scrollToBottom()
   }, [messages])
 
-  // 初始化积分并检查是否需要提示
+  // 初始化积分
   useEffect(() => {
     if (typeof window === "undefined" || isChecking) return
     const points = getPoints()
     setCurrentPoints(points)
-    const total = points.free + points.gift + points.member
-    
-    // 首次进入时，如果积分 <= 3，显示低积分提示
-    if (total <= 3 && !localStorage.getItem("low_points_hint_shown")) {
-      setShowLowPointsHint(true)
-      localStorage.setItem("low_points_hint_shown", "true")
-    }
   }, [isChecking])
 
   // 刷新积分（用于 visibilitychange）
@@ -248,13 +238,6 @@ function ChatPageContent() {
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return
 
-    // 检查积分是否足够
-    const total = getTotalPoints()
-    if (total <= 0) {
-      setShowInsufficientPointsModal(true)
-      return
-    }
-
     const userQuestion = inputValue.trim()
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -267,7 +250,7 @@ function ChatPageContent() {
     setInputValue("")
     setIsLoading(true)
 
-    // 扣减积分
+    // ��减积分
     const deductResult = deductOnePoint()
     setLastDeductResult(deductResult)
     setCurrentPoints(getPoints())
@@ -326,10 +309,6 @@ function ChatPageContent() {
         setKnowledgeSource={setKnowledgeSource}
         bubbleColor={bubbleColor}
         currentPoints={currentPoints}
-        showInsufficientPointsModal={showInsufficientPointsModal}
-        setShowInsufficientPointsModal={setShowInsufficientPointsModal}
-        showLowPointsHint={showLowPointsHint}
-        setShowLowPointsHint={setShowLowPointsHint}
         lastDeductResult={lastDeductResult}
       />
 
@@ -360,10 +339,6 @@ function ChatVersionA({
   setKnowledgeSource,
   bubbleColor,
   currentPoints,
-  showInsufficientPointsModal,
-  setShowInsufficientPointsModal,
-  showLowPointsHint,
-  setShowLowPointsHint,
   lastDeductResult,
 }: {
   messages: Message[]
@@ -378,10 +353,6 @@ function ChatVersionA({
   setKnowledgeSource: (source: "official" | "myVault") => void
   bubbleColor: string
   currentPoints: PointsData
-  showInsufficientPointsModal: boolean
-  setShowInsufficientPointsModal: (v: boolean) => void
-  showLowPointsHint: boolean
-  setShowLowPointsHint: (v: boolean) => void
   lastDeductResult: { remaining: number } | null
 }) {
   const searchParams = useSearchParams()
@@ -494,16 +465,6 @@ function ChatVersionA({
           </p>
         </div>
       </div>
-
-      {/* 低积分提示 */}
-      {showLowPointsHint && (
-        <LowPointsHint onClose={() => setShowLowPointsHint(false)} />
-      )}
-
-      {/* 积分不足弹窗 */}
-      {showInsufficientPointsModal && (
-        <InsufficientPointsModal onClose={() => setShowInsufficientPointsModal(false)} />
-      )}
 
       {/* 首次反馈弹窗 */}
       {showFirstFeedback && (
