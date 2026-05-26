@@ -133,7 +133,7 @@ function EmptyState() {
           href="/chat"
           className="rounded-xl bg-gradient-to-r from-[#1e40af] to-[#2563eb] px-6 py-3 text-center text-sm font-medium text-white transition-all hover:opacity-90 active:scale-95"
         >
-          去提问
+          开始提问
         </Link>
       </div>
     </div>
