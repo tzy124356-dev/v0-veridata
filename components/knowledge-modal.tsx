@@ -1,6 +1,6 @@
 "use client"
 
-import { HelpCircle, X } from "lucide-react"
+import { X } from "lucide-react"
 
 interface KnowledgeModalProps {
   onClose: () => void
@@ -10,8 +10,8 @@ const items = [
   {
     title: "医疗器械注册产品",
     subtitle: "境内 + 进口",
-    count: null,
-    showHelp: true,
+    count: "第13类",
+    extra: "13-09-01 / 02.1 / 02.2",
   },
   {
     title: "IVD 注册产品",
@@ -52,20 +52,18 @@ export function KnowledgeModal({ onClose }: KnowledgeModalProps) {
         <div className="mb-4 grid grid-cols-2 gap-3">
           {items.map((item) => (
             <div key={item.title} className="flex flex-col gap-1 rounded-xl bg-gray-50 p-3">
-              <div className="flex items-start justify-between gap-1">
-                <p className="text-sm font-semibold leading-tight text-gray-900">{item.title}</p>
-                {item.showHelp && (
-                  <HelpCircle className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-gray-400" aria-label="说明" />
-                )}
-              </div>
+              <p className="text-sm font-semibold leading-tight text-gray-900">{item.title}</p>
               <p className="text-xs leading-tight text-gray-400">{item.subtitle}</p>
               <p
                 className={`mt-1 text-base font-bold leading-tight ${
-                  item.pending ? "text-gray-400" : item.count ? "text-[#1e40af]" : "text-gray-300"
+                  item.pending ? "text-gray-400" : "text-[#1e40af]"
                 }`}
               >
-                {item.count ?? "—"}
+                {item.count}
               </p>
+              {item.extra && (
+                <p className="text-[11px] font-medium leading-tight text-gray-500">{item.extra}</p>
+              )}
             </div>
           ))}
         </div>
