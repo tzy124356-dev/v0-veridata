@@ -31,6 +31,7 @@ import { useAuthGuard } from "@/hooks/use-auth-guard"
 import { KnowledgeModal } from "@/components/knowledge-modal"
 import { FirstFeedbackModal } from "@/components/first-feedback-modal"
 import { AnswerFeedbackModal } from "@/components/answer-feedback-modal"
+import { InsufficientPointsModal } from "@/components/insufficient-points-modal"
 import { 
   isFavorited, 
   addFavorite, 
@@ -139,6 +140,7 @@ function ChatPageContent() {
   
   // 积分相关状态
   const [currentPoints, setCurrentPoints] = useState<PointsData>({ free: 0, gift: 0, member: 0 })
+  const [showInsufficientPointsModal, setShowInsufficientPointsModal] = useState(false)
   const [lastDeductResult, setLastDeductResult] = useState<{ remaining: number } | null>(null)
 
   // 用户消息气泡颜色
@@ -238,6 +240,13 @@ function ChatPageContent() {
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return
 
+    // 检查积分是否足够
+    const total = getTotalPoints()
+    if (total <= 0) {
+      setShowInsufficientPointsModal(true)
+      return
+    }
+
     const userQuestion = inputValue.trim()
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -320,6 +329,11 @@ function ChatPageContent() {
             localStorage.setItem("knowledge_modal_shown", "true")
           }
         }} />
+      )}
+
+      {/* 积分不足弹窗 */}
+      {showInsufficientPointsModal && (
+        <InsufficientPointsModal onClose={() => setShowInsufficientPointsModal(false)} />
       )}
     </div>
   )

@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { IdentityModal } from "@/components/identity-modal"
 import { KnowledgeModal } from "@/components/knowledge-modal"
 import { FirstFeedbackModal } from "@/components/first-feedback-modal"
+import { InsufficientPointsModal } from "@/components/insufficient-points-modal"
 import { HelpFeedbackModal } from "@/components/help-feedback-modal"
 import { KnowledgeUpdateModal } from "@/components/knowledge-update-modal"
 import { useError } from "@/components/error-states"
@@ -46,6 +47,12 @@ const modalGroups = [
   {
     title: "积分与升级类",
     modals: [
+      {
+        id: "insufficientPoints",
+        name: "积分不足提示",
+        englishId: "InsufficientPointsModal",
+        trigger: "chat 提问且积分=0 时弹",
+      },
       {
         id: "pointsRules",
         name: "积分规则说明",
@@ -270,6 +277,10 @@ export default function DevModalsPage() {
 
       {activeModal === "firstFeedback" && (
         <FirstFeedbackModal onClose={closeModal} />
+      )}
+
+      {activeModal === "insufficientPoints" && (
+        <InsufficientPointsModal onClose={closeModal} />
       )}
 
       {activeModal === "pointsRules" && (
