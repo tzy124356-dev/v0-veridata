@@ -60,12 +60,14 @@ export function KnowledgeModal({ onClose }: KnowledgeModalProps) {
         <div className="mb-4 grid grid-cols-2 gap-3">
           {items.map((item) => (
             <div key={item.title} className="flex flex-col gap-1 rounded-xl bg-gray-50 p-3">
-              <div className="flex items-start justify-between gap-1">
-                <p className="text-sm font-semibold leading-tight text-gray-900">{item.title}</p>
+              <div className="flex items-center gap-1">
+                <p className="whitespace-nowrap text-[13px] font-semibold leading-tight text-gray-900">
+                  {item.title}
+                </p>
                 {item.showHelp && (
                   <button
                     onClick={() => setShowHelp(true)}
-                    className="flex-shrink-0 rounded-full p-0.5 transition-colors hover:bg-gray-200"
+                    className="ml-0.5 flex-shrink-0 rounded-full p-0.5 transition-colors hover:bg-gray-200"
                     aria-label="查看分类详情"
                   >
                     <HelpCircle className="h-3.5 w-3.5 text-gray-400" />
