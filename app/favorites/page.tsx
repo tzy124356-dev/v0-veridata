@@ -12,12 +12,11 @@ import {
   Check,
   ChevronRight,
   Loader2,
-  Plus,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useAuthGuard } from "@/hooks/use-auth-guard"
-import { getFavorites, removeFavorite, loadDemoFavorites, type FavoriteItem } from "@/lib/storage"
+import { getFavorites, removeFavorite, type FavoriteItem } from "@/lib/storage"
 
 export default function FavoritesPage() {
   const { isChecking } = useAuthGuard()
@@ -40,11 +39,6 @@ export default function FavoritesPage() {
 
   const handleDelete = (id: string) => {
     removeFavorite(id)
-    setFavorites(getFavorites())
-  }
-
-  const handleLoadDemo = () => {
-    loadDemoFavorites()
     setFavorites(getFavorites())
   }
 
@@ -115,7 +109,7 @@ export default function FavoritesPage() {
       {/* 白色内容区域 */}
       <main className="flex-1 bg-background px-5 py-6">
         {isEmpty ? (
-          <EmptyState onLoadDemo={handleLoadDemo} />
+          <EmptyState />
         ) : filteredFavorites.length === 0 ? (
           <NoResultsState query={searchQuery} />
         ) : (
@@ -127,16 +121,13 @@ export default function FavoritesPage() {
 }
 
 // 空状态
-function EmptyState({ onLoadDemo }: { onLoadDemo: () => void }) {
+function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-16">
       <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#1e40af]/10">
         <Bookmark className="h-8 w-8 text-[#1e40af]" />
       </div>
-      <p className="mb-2 font-medium text-foreground">还没有收藏</p>
-      <p className="mb-6 text-center text-sm text-muted-foreground">
-        问答后可收藏你觉得有价值的回答
-      </p>
+      <p className="mb-6 font-medium text-foreground">还没有收藏</p>
       <div className="flex flex-col gap-3">
         <Link
           href="/chat"
@@ -144,13 +135,6 @@ function EmptyState({ onLoadDemo }: { onLoadDemo: () => void }) {
         >
           去提问
         </Link>
-        <button
-          onClick={onLoadDemo}
-          className="flex items-center justify-center gap-1 rounded-xl border border-gray-200 px-6 py-3 text-sm font-medium text-gray-500 transition-all hover:bg-gray-50 active:scale-95"
-        >
-          <Plus className="h-4 w-4" />
-          加载演示数据
-        </button>
       </div>
     </div>
   )
