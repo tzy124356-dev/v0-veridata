@@ -22,47 +22,47 @@ export default function TermsPage() {
       <main className="flex-1 px-5 py-6">
         <div className="rounded-xl bg-white p-5 shadow-sm">
           <p className="mb-4 text-sm leading-relaxed text-gray-600">
-            欢迎使用械研 VERIDATA（以下简称"本平台"）。请您在使用本平台服务之前，仔细阅读以下服务协议。
+            欢迎使用械研 VERIDATA。在使用本平台前，请您仔细阅读并理解本协议。您使用本平台，即表示同意本协议内容。
           </p>
 
           <h2 className="mb-2 text-sm font-semibold text-gray-900">一、服务说明</h2>
           <p className="mb-4 text-sm leading-relaxed text-gray-600">
-            械研 VERIDATA 是面向医疗器械注册领域的 AI 辅助工具，为注册工程师、法规事务人员、医美针剂相关企业主等专业人士提供知识库问答、档案管理、政策查询等功能支持。
+            械研 VERIDATA 是面向医疗器械注册领域的 AI 辅助工具，提供知识库问答、档案管理、政策查询等功能，帮助用户提升资料查询和注册分析效率。
           </p>
 
-          <h2 className="mb-2 text-sm font-semibold text-gray-900">二、使用范围</h2>
+          <h2 className="mb-2 text-sm font-semibold text-gray-900">二、内容说明</h2>
           <p className="mb-4 text-sm leading-relaxed text-gray-600">
-            本平台的回答内容基于专业知识库和 AI 算法生成，仅供专业参考使用。本平台内容不替代法规原文、监管部门意见、律师意见或注册审评结论。用户在做出任何决策前，应自行核实相关信息并咨询相关专业人士。
+            本平台生成的回答基于知识库、用户输入及 AI 算法，仅供专业参考，不替代法规原文、监管部门意见、律师意见或注册审评结论。用户应自行核实相关信息后再作决策。
           </p>
 
-          <h2 className="mb-2 text-sm font-semibold text-gray-900">三、账号与授权</h2>
+          <h2 className="mb-2 text-sm font-semibold text-gray-900">三、账号使用</h2>
           <p className="mb-4 text-sm leading-relaxed text-gray-600">
-            用户通过微信或手机号授权登录本平台，需保证所提供信息的真实性。用户应妥善保管账号信息，因账号泄露导致的损失由用户自行承担。
+            用户可通过微信登录本平台。用户应保证授权信息真实有效，并妥善保管账号信息。因账号泄露造成的损失，由用户自行承担。
           </p>
 
-          <h2 className="mb-2 text-sm font-semibold text-gray-900">四、用户行为规范</h2>
+          <h2 className="mb-2 text-sm font-semibold text-gray-900">四、用户规范</h2>
           <p className="mb-4 text-sm leading-relaxed text-gray-600">
-            用户不得上传违法、侵权、恶意、涉密或无权处理的资料。不得利用本平台从事任何违反法律法规或损害他人合法权益的行为。
+            用户不得上传违法、侵权、涉密、恶意或无权处理的资料，不得利用本平台从事违反法律法规或损害他人权益的行为。
           </p>
 
-          <h2 className="mb-2 text-sm font-semibold text-gray-900">五、知识库与上传内容</h2>
+          <h2 className="mb-2 text-sm font-semibold text-gray-900">五、上传内容</h2>
           <p className="mb-4 text-sm leading-relaxed text-gray-600">
-            用户上传的文档仅用于其本人的知识库问答与功能体验，本平台承诺不会将用户上传内容用于其他商业目的或向第三方泄露。
+            用户上传的资料主要用于本人知识库问答和档案管理。本平台不会将用户上传内容用于无关商业用途，也不会未经授权向第三方泄露，但法律法规另有要求的除外。
           </p>
 
           <h2 className="mb-2 text-sm font-semibold text-gray-900">六、积分与会员</h2>
           <p className="mb-4 text-sm leading-relaxed text-gray-600">
-            本平台的积分可用于问答次数或相关功能权益，具体规则以积分中心及会员页面展示为准。积分不可兑换现金，会员权益以实际购买时的说明为准。
+            本平台可能提供积分、会员等服务，具体规则以页面展示为准。积分不可兑换现金，会员权益以购买时说明为准。
           </p>
 
           <h2 className="mb-2 text-sm font-semibold text-gray-900">七、责任限制</h2>
           <p className="mb-4 text-sm leading-relaxed text-gray-600">
-            因用户对 AI 生成内容的理解、使用所造成的决策后果，由用户自行结合专业判断承担。本平台不对因使用或无法使用本平台服务而导致的任何直接、间接损害承担责任。
+            用户应结合专业判断使用本平台内容。因理解、使用 AI 生成内容所产生的决策后果，由用户自行承担。本平台不承担由此产生的直接或间接损失。
           </p>
 
           <h2 className="mb-2 text-sm font-semibold text-gray-900">八、协议更新</h2>
           <p className="mb-4 text-sm leading-relaxed text-gray-600">
-            本平台可根据产品迭代和法律法规变化更新本协议。更新后的协议一经发布即生效，继续使用本平台服务即表示您接受更新后的协议。
+            本平台可根据产品功能、业务发展或法律法规变化更新本协议。更新后继续使用本平台，即视为接受更新内容。
           </p>
 
           <div className="mt-6 border-t border-gray-100 pt-4">
