@@ -9,7 +9,6 @@ import {
   Shield,
   Trash2,
   LogOut,
-  Info,
   FileText,
   Database,
   Loader2,
@@ -41,12 +40,6 @@ export default function SettingsPage() {
     {
       title: "关于",
       items: [
-        {
-          icon: Info,
-          label: "关于我们",
-          type: "link" as const,
-          href: "/about",
-        },
         {
           icon: FileText,
           label: "用户协议",
