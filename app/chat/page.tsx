@@ -21,7 +21,6 @@ import {
   Lightbulb,
   FolderOpen,
   Share2,
-  Zap,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -412,17 +411,8 @@ function ChatVersionA({
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </button>
         
-        {/* 中间：积分角标 + 标题 */}
-        <div className="flex items-center gap-2">
-          <Link 
-            href="/points" 
-            className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-600 transition-colors hover:bg-amber-100"
-          >
-            <Zap className="h-3 w-3" />
-            <span>{currentPoints.free + currentPoints.gift + currentPoints.member}</span>
-          </Link>
-          <span className="text-sm font-medium text-gray-700">Veridata</span>
-        </div>
+        {/* 中间：标题居中 */}
+        <span className="text-sm font-medium text-gray-700">Veridata</span>
         
         <Link 
           href="/history" 
