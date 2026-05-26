@@ -187,11 +187,11 @@ export default function PointsPage() {
         </button>
       </div>
 
-      {/* 兑换好友的码卡片 */}
+      {/* 兑换好友邀请码卡片 */}
       <div className="mx-4 mt-4 rounded-2xl bg-white p-5 shadow-sm">
         <div className="mb-3 flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-[#1e40af]" />
-          <span className="font-semibold text-gray-900">兑换好友的码</span>
+          <span className="font-semibold text-gray-900">兑换好友邀请码</span>
         </div>
         <div className="flex gap-2">
           <input
