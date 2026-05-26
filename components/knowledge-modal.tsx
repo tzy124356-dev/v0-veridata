@@ -18,9 +18,6 @@ export function KnowledgeModal({ onClose }: KnowledgeModalProps) {
         </div>
 
         <div className="mb-4 space-y-2">
-          <p className="text-sm text-gray-700">
-            当前聚焦<span className="font-medium text-[#1e40af]">医美针剂注册</span>领域
-          </p>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="rounded-xl bg-gray-50 p-3">
               <p className="text-lg font-semibold text-gray-900">13大类</p>
