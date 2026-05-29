@@ -21,12 +21,12 @@ const items = [
     pending: true,
   },
   {
-    title: "审评依据",
+    title: "法规依据",
     subtitle: "指导原则 · 法规政策",
     count: "约 2,000 份",
   },
   {
-    title: "审评结果",
+    title: "获批文档",
     subtitle: "审评报告 · 批件公告",
     count: "约 12,000 份",
   },
@@ -76,8 +76,8 @@ export function KnowledgeModal({ onClose }: KnowledgeModalProps) {
               </div>
               <p className="text-xs leading-tight text-gray-400">{item.subtitle}</p>
               <p
-                className={`mt-1 text-base font-bold leading-tight ${
-                  item.pending ? "text-gray-400" : "text-[#1e40af]"
+                className={`mt-1 font-bold leading-tight ${
+                  item.pending ? "text-sm text-gray-400" : "text-base text-[#1e40af]"
                 }`}
               >
                 {item.count}
