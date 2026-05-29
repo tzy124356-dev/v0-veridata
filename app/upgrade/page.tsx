@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils"
 import { useAuthGuard } from "@/hooks/use-auth-guard"
 import { addPoints } from "@/lib/storage"
 import { TeamContactModal } from "@/components/team-contact-modal"
+import { WechatPayModal } from "@/components/wechat-pay-modal"
 
 // 套餐数据
 const plans = [
@@ -79,19 +80,24 @@ function UpgradeVersionA() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
   const [showTeamModal, setShowTeamModal] = useState(false)
+  const [showPayModal, setShowPayModal] = useState(false)
+
+  const currentPlan = plans.find((p) => p.id === selectedPlan)
 
   const handleSubscribe = () => {
     if (!selectedPlan || selectedPlan === "free") return
+    // 调起微信支付结果弹窗
+    setShowPayModal(true)
+  }
 
-    // 使用 storage 函数添加积分
+  // 支付成功后发放积分并跳转
+  const handlePaySuccess = () => {
+    if (!selectedPlan || selectedPlan === "free") return
     const pointsToAdd = selectedPlan === "lite" ? 300 : 1000
     const planName = selectedPlan === "lite" ? "轻度版订阅" : "专业版订阅"
     addPoints(pointsToAdd, "member", planName)
-
-    alert("订阅成功，积分已到账")
-    setTimeout(() => {
-      router.push("/points")
-    }, 1000)
+    setShowPayModal(false)
+    router.push("/points")
   }
 
   return (
@@ -252,6 +258,17 @@ function UpgradeVersionA() {
       {/* 团队版弹窗 */}
       {showTeamModal && (
         <TeamContactModal onClose={() => setShowTeamModal(false)} />
+      )}
+
+      {/* 微信支付结果弹窗 */}
+      {showPayModal && currentPlan && (
+        <WechatPayModal
+          planName={currentPlan.name}
+          amount={billingCycle === "monthly" ? currentPlan.price : currentPlan.yearPrice}
+          cycleLabel={billingCycle === "monthly" ? "月" : "年"}
+          onClose={() => setShowPayModal(false)}
+          onSuccess={handlePaySuccess}
+        />
       )}
     </div>
   )

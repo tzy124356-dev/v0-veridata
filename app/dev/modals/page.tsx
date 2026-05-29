@@ -17,6 +17,7 @@ import { PointsRulesModal } from "@/components/points-rules-modal"
 import { TeamContactModal } from "@/components/team-contact-modal"
 import { LogoutModal, ClearCacheModal } from "@/components/logout-modal"
 import { FeedbackModal } from "@/components/feedback-modal"
+import { WechatPayModal } from "@/components/wechat-pay-modal"
 import { useError } from "@/components/error-states"
 
 // 弹窗配置
@@ -99,6 +100,17 @@ const modalGroups = [
         name: "反馈成功 Toast（点赞后）",
         englishId: "LikeToast",
         trigger: "点 ThumbsUp 后中央闪现",
+      },
+    ],
+  },
+  {
+    title: "支付类",
+    modals: [
+      {
+        id: "wechatPay",
+        name: "微信支付结果",
+        englishId: "WechatPayModal",
+        trigger: "升级页点「微信支付订阅」时弹",
       },
     ],
   },
@@ -325,6 +337,16 @@ export default function DevModalsPage() {
 
       {activeModal === "helpFeedback" && (
         <HelpFeedbackModal onClose={closeModal} />
+      )}
+
+      {activeModal === "wechatPay" && (
+        <WechatPayModal
+          planName="轻度版"
+          amount={39}
+          cycleLabel="月"
+          onClose={closeModal}
+          onSuccess={closeModal}
+        />
       )}
 
       {/* 复制成功 Toast */}
