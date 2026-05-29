@@ -225,8 +225,8 @@ function ProfileContent({
               </div>
               {identity ? (
                 <p className="truncate text-xs text-gray-500">
-                  {getPositionLabel(identity.position)}
-                  {identity.fields.length > 0 && ` · ${getFieldLabels(identity.fields).join("、")}`}
+                  {getPositionLabel(identity.position, identity.customPosition)}
+                  {identity.fields.length > 0 && ` · ${getFieldLabels(identity.fields, identity.customField).join("、")}`}
                 </p>
               ) : (
                 <button
@@ -401,6 +401,8 @@ function ProfileContent({
         onSubmit={handleIdentityUpdate}
         initialPosition={identity?.position}
         initialFields={identity?.fields}
+        initialCustomPosition={identity?.customPosition}
+        initialCustomField={identity?.customField}
       />
     </>
   )

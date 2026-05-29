@@ -1,30 +1,47 @@
 export const positionOptions = [
-  { id: "engineer", label: "注册工程师" },
-  { id: "specialist", label: "注册专员" },
-  { id: "regulatory", label: "法规事务" },
-  { id: "entrepreneur", label: "企业主/创业者" },
+  { id: "regulatory", label: "法规注册" },
+  { id: "rnd", label: "器械研发" },
+  { id: "quality", label: "质量管理" },
+  { id: "clinical", label: "临床医学" },
+  { id: "consulting", label: "咨询与服务机构" },
+  { id: "management", label: "企业管理者" },
+  { id: "testing", label: "检测与认证机构" },
   { id: "other", label: "其他" },
 ]
 
 export const fieldOptions = [
-  { id: "aesthetics", label: "医美针剂" },
-  { id: "device", label: "医疗器械（其他品类）" },
-  { id: "ivd", label: "体外诊断试剂" },
+  { id: "aesthetics", label: "医疗美容" },
+  { id: "energy", label: "能量外科平台" },
+  { id: "ortho", label: "骨科与运动医学" },
+  { id: "vascular", label: "血管/非血管植介入" },
+  { id: "ophthalmology", label: "眼科" },
+  { id: "dental", label: "口腔" },
+  { id: "rehab", label: "康复器械" },
+  { id: "reproduction", label: "妇产与辅助生殖" },
+  { id: "imaging", label: "医用成像器械" },
+  { id: "software", label: "医疗软件/AI" },
+  { id: "ivd", label: "体外诊断" },
   { id: "other", label: "其他" },
 ]
 
 export interface UserIdentity {
   position: string
   fields: string[]
+  customPosition?: string
+  customField?: string
 }
 
-export function getPositionLabel(id: string): string {
+export function getPositionLabel(id: string, customPosition?: string): string {
+  if (id === "other") return customPosition?.trim() || "其他"
   return positionOptions.find((o) => o.id === id)?.label ?? "未设置"
 }
 
-export function getFieldLabels(ids: string[]): string[] {
+export function getFieldLabels(ids: string[], customField?: string): string[] {
   return ids
-    .map((id) => fieldOptions.find((o) => o.id === id)?.label)
+    .map((id) => {
+      if (id === "other") return customField?.trim() || "其他"
+      return fieldOptions.find((o) => o.id === id)?.label
+    })
     .filter(Boolean) as string[]
 }
 

@@ -64,7 +64,12 @@ export default function HomePage() {
     return () => clearTimeout(timer)
   }, [isChecking])
 
-  const handleIdentitySubmit = (data: { position: string; fields: string[] }) => {
+  const handleIdentitySubmit = (data: {
+    position: string
+    fields: string[]
+    customPosition?: string
+    customField?: string
+  }) => {
     writeUserIdentity(data)
     if (typeof window !== "undefined") {
       localStorage.setItem("identity_modal_shown", "true")
