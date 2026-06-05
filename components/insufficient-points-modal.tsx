@@ -23,7 +23,7 @@ export function InsufficientPointsModal({ onClose }: { onClose: () => void }) {
         </p>
         <div className="flex flex-col gap-3">
           <Link
-            href="/pricing"
+            href="/upgrade"
             className="block rounded-xl bg-gradient-to-r from-[#1e40af] to-[#2563eb] py-3 text-center text-sm font-medium text-white transition-all hover:opacity-90"
             onClick={onClose}
           >
