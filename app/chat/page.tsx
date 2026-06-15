@@ -646,6 +646,21 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
 
   return (
     <div className="space-y-3">
+      {/* 推导逻辑 */}
+      {message.reasoning && (
+        <div className="rounded-2xl border border-[#1e40af]/10 bg-white p-4 shadow-sm">
+          <button onClick={() => setShowReasoning(!showReasoning)} className="flex w-full items-center justify-between">
+            <div className="flex items-center gap-2">
+              {showReasoning ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+              <span className="text-xs font-medium text-gray-400">{showReasoning ? "收起推理过程" : "展开推理过程"}</span>
+            </div>
+          </button>
+          {showReasoning && (
+            <div className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-gray-600">{message.reasoning}</div>
+          )}
+        </div>
+      )}
+
       {/* 结论 */}
       {message.conclusion && (
         <div className="rounded-2xl border border-[#1e40af]/10 bg-white p-4 shadow-sm">
@@ -685,21 +700,6 @@ function MessageBubbleA({ message, bubbleColor, relatedQuestion }: { message: Me
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* 推导逻辑 */}
-      {message.reasoning && (
-        <div className="rounded-2xl border border-[#1e40af]/10 bg-white p-4 shadow-sm">
-          <button onClick={() => setShowReasoning(!showReasoning)} className="flex w-full items-center justify-between">
-            <div className="flex items-center gap-2">
-              {showReasoning ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
-              <span className="text-xs font-medium text-gray-400">{showReasoning ? "收起推理过程" : "展开推理过程"}</span>
-            </div>
-          </button>
-          {showReasoning && (
-            <div className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-gray-600">{message.reasoning}</div>
-          )}
         </div>
       )}
 
